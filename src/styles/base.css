@@ -5,8 +5,8 @@
 }
 
 html {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--bg);
+  color: var(--fg);
   -webkit-text-size-adjust: 100%;
 }
 
@@ -28,8 +28,8 @@ html.full::-webkit-scrollbar {
 
 body {
   margin: 0;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--font-sans);
   font-size: var(--step-body);
   line-height: 1.55;
@@ -74,7 +74,7 @@ button {
 }
 
 :focus-visible {
-  outline: 2px solid var(--o);
+  outline: 2px solid var(--ink);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -85,8 +85,8 @@ button {
   top: -4rem;
   z-index: 1000;
   padding: 0.6rem 1rem;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
   border-radius: 8px;
   font-weight: 600;
 }
@@ -100,8 +100,11 @@ button {
 .t-p { color: var(--p); }
 .t-e { color: var(--e); }
 
-/* SplitText line masks need room for descenders */
+/* SplitText line masks need room for descenders; lines give words a 3D stage */
 .split-line-mask {
   padding-bottom: 0.08em;
   margin-bottom: -0.08em;
+}
+.split-line {
+  perspective: 700px;
 }

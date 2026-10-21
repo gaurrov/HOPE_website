@@ -16,14 +16,14 @@
   display: inline-block;
 }
 
-/* Extruded look: stacked shadows in a darker shade of each letter's colour */
-.wordmark--3d .l {
-  --depth: color-mix(in srgb, currentColor 45%, #000);
+/* Sticker look shared with the loader: ink outline plus a hard ink extrusion */
+.wordmark--3d .l,
+.glyph--3d {
+  -webkit-text-stroke: 0.03em var(--ink);
   text-shadow:
-    0 1px 0 var(--depth), 0 2px 0 var(--depth), 0 3px 0 var(--depth),
-    0 4px 0 var(--depth), 0 5px 0 var(--depth), 0 6px 0 var(--depth),
-    0 7px 0 var(--depth), 0 8px 0 var(--depth),
-    0 18px 30px rgb(0 0 0 / 0.55);
+    0.01em 0.01em 0 var(--ink), 0.02em 0.02em 0 var(--ink), 0.03em 0.03em 0 var(--ink),
+    0.04em 0.04em 0 var(--ink), 0.05em 0.05em 0 var(--ink),
+    0.06em 0.09em 0.12em rgb(13 19 48 / 0.18);
 }
 
 /* ---------- Glow button ---------- */
@@ -39,9 +39,9 @@
   border: 1.5px solid transparent;
   border-radius: 999px;
   background:
-    linear-gradient(var(--ink), var(--ink)) padding-box,
+    linear-gradient(var(--bg), var(--bg)) padding-box,
     var(--ring) border-box;
-  color: var(--paper);
+  color: var(--fg);
   font-family: var(--font-sans);
   font-size: 0.975rem;
   font-weight: 650;
@@ -57,14 +57,14 @@
   border-radius: inherit;
   background: var(--ring);
   filter: blur(14px);
-  opacity: 0.45;
+  opacity: 0.35;
   transition: opacity 0.3s;
 }
 .btn:hover {
   --angle: 360deg;
 }
 .btn:hover::before {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 .btn:active {
   transform: scale(0.97);
@@ -73,11 +73,6 @@
   min-height: 40px;
   padding: 0 1.1rem;
   font-size: 0.9rem;
-}
-.btn--lg {
-  min-height: 56px;
-  padding: 0 2rem;
-  font-size: 1.15rem;
 }
 
 /* ---------- Icon button ---------- */
@@ -92,9 +87,9 @@
   border: 1.5px solid transparent;
   border-radius: 12px;
   background:
-    linear-gradient(var(--ink), var(--ink)) padding-box,
+    linear-gradient(var(--bg), var(--bg)) padding-box,
     var(--ring) border-box;
-  color: var(--paper);
+  color: var(--fg);
   cursor: pointer;
   transition: transform 0.25s var(--ease-out);
 }
@@ -106,7 +101,7 @@
   border-radius: inherit;
   background: var(--ring);
   filter: blur(12px);
-  opacity: 0.35;
+  opacity: 0.3;
 }
 .icon-btn:hover {
   transform: translateY(-2px);
@@ -123,8 +118,8 @@
   position: relative;
   overflow: hidden;
   background:
-    repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--tone) 9%, transparent) 14px 15px),
-    radial-gradient(120% 90% at 20% 10%, color-mix(in srgb, var(--tone) 38%, var(--ink-2)), var(--ink-2) 70%);
+    repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--tone) 16%, transparent) 14px 15px),
+    radial-gradient(120% 90% at 20% 10%, color-mix(in srgb, var(--tone) 30%, var(--paper)), var(--mist) 75%);
 }
 .frame[data-tone='o'] { --tone: var(--o); }
 .frame[data-tone='p'] { --tone: var(--p); }
@@ -145,7 +140,7 @@
   gap: 0.35rem;
   text-align: center;
   padding: 1rem;
-  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: color-mix(in srgb, var(--fg) 60%, transparent);
 }
 .frame__label {
   font-size: 0.95rem;
@@ -155,13 +150,14 @@
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-variation-settings: 'wdth' 100;
-  color: var(--tone);
+  color: color-mix(in srgb, var(--tone) 55%, var(--ink));
 }
+/* Dark fade for white text over a photo */
 .frame--shade::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgb(9 13 34 / 0.92) 0%, rgb(9 13 34 / 0.45) 38%, transparent 65%);
+  background: linear-gradient(to top, rgb(var(--shade) / 0.88) 0%, rgb(var(--shade) / 0.4) 38%, transparent 65%);
   pointer-events: none;
 }
 

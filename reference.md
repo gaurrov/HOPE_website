@@ -99,6 +99,16 @@ it's a reasonable reading of the evidence that I didn't confirm in source.
    in the physics drop, the warp field, around the vibe heading and next to sponsors.
 5. **Lite mode is a real mode.** The reference offers the opt-out before the first animation plays.
 
+### 1.7 Scroll motion details (second pass, small wheel steps)
+
+- **Wheel input is amplified.** A 120px wheel tick moved the page 150px (about 1.25×), and Lenis smooths the glide. *Observed.*
+- **The hero tilts away.** Scrolling out of the hero pitches the photo cylinder towards the camera, so it
+  curves like a bowl, while the 3D wordmark rises off the top. *Observed in frames between 0 and 450px.*
+- **3D brackets persist across sections.** The same extruded bracket shapes appear over the statement and
+  stay through the "About DevFest" heading. They tumble in 3D, drift at different depths and never stop moving. *Observed.*
+- **The About strip takes over the wheel.** Inside About, vertical scroll position stayed at 1625px while
+  wheel input moved the cards sideways, and the "next" button turned into a right arrow. *Observed; implementation inferred.*
+
 ---
 
 ## Part 2: HOPE design system
@@ -108,16 +118,21 @@ it's a reasonable reading of the evidence that I didn't confirm in source.
 HOPE is a programming training house, so the visual language comes from **a code editor's syntax
 highlighting**. The reference builds on Google's four brand colours; HOPE builds on four syntax token
 colours, one per letter of **H‑O‑P‑E**. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
-The dark background is the midnight of an editor at 2 a.m., not pure black.
+
+The page is **white and clean**. Colour comes from the four tokens and from photos, never from tinted
+backgrounds. Brand shapes (the wordmark and glyphs) use a **sticker** treatment: token-colour fill, an
+ink outline and a hard ink extrusion. That gives them the solid 3D presence the reference gets from WebGL.
 
 ### 2.2 Colour tokens (`src/styles/tokens.css`)
 
-| Token | Hex | Role |
+| Token | Value | Role |
 |---|---|---|
-| `--ink` | `#0D1330` | Page background (midnight) |
-| `--ink-2` | `#161E45` | Raised surfaces, placeholder frames |
-| `--paper` | `#EEF1F8` | Main text on ink; background of the one light section |
-| `--muted` | `#8A93B8` | Secondary text (the "comment" colour) |
+| `--paper` / `--bg` | `#FFFFFF` | Page background, everywhere |
+| `--ink` / `--fg` | `#0D1330` | Text, outlines, sticker extrusions |
+| `--mist` | `#F3F5FA` | Placeholder frames, quiet surfaces |
+| `--muted` | `#5B6488` | Secondary text (5.9:1 on white) |
+| `--line` | ink at 12% | Hairlines, tracks, tag borders |
+| `--on-photo` | `#FFFFFF` | Text sitting on a photo, always over a `.frame--shade` gradient |
 | `--h` | `#4FC3F7` | H, cyan (function names) |
 | `--o` | `#FFB547` | O, amber (numbers) |
 | `--p` | `#7EE081` | P, green (strings) |
@@ -127,7 +142,8 @@ Rules:
 - Each of H, O, P, E keeps its own colour wherever the wordmark appears.
 - The four token colours appear **together** (as a gradient, a border or a glyph field) or as one
   colour per item in a list. Never pick one token as a site-wide accent.
-- Body text is always `--paper` on `--ink`, or `--ink` on `--paper`.
+- Token colours are too light for body text on white. Use them only as fills with an ink outline,
+  borders or decoration. Text is always `--fg` on `--bg`, or `--on-photo` over a shaded photo.
 
 ### 2.3 Typography
 
@@ -140,58 +156,65 @@ Type scale, fluid with `clamp()`:
 
 | Step | Size | Weight | Use |
 |---|---|---|---|
-| `--step-hero` | clamp(5rem, 20vw, 18rem) | 800 mono | Wordmark |
-| `--step-display` | clamp(3rem, 9vw, 8.5rem) | 800 | Section statements and pinned headings |
-| `--step-h2` | clamp(2.25rem, 5vw, 4.5rem) | 700 | Card and panel titles |
-| `--step-lead` | clamp(1.15rem, 1.6vw, 1.5rem) | 500 | Lead paragraphs |
+| `--step-hero` | clamp(5rem, 22vw, 18rem) | 800 mono | Wordmark |
+| `--step-display` | clamp(3rem, 9vw, 8.5rem) | 720 | Section statements and pinned headings |
+| `--step-h2` | clamp(2.25rem, 5vw, 4.5rem) | 720 | Card and panel titles |
+| `--step-lead` | clamp(1.15rem, 1.6vw, 1.5rem) | 500–600 | Lead paragraphs |
 | `--step-body` | 1.0625rem | 400 | Body |
 | `--step-small` | 0.875rem | 500 | Meta, footer |
 
 - Sentence case everywhere. No all-caps labels, no letter-spaced eyebrows.
-- Display line-height 0.95 with tight negative tracking (−0.03em); body line-height 1.55.
+- Display line-height 0.98 with tracking −0.015em (tighter makes Bricolage letters collide); body line-height 1.55.
 - Keep line length under 70 characters (`max-width: 34ch` for leads).
 
 ### 2.4 Components
 
 | Component | Spec |
 |---|---|
-| **Glow button** (`.btn`) | Pill. Ink fill, 1.5px border made from a conic gradient of the four tokens, and a blurred copy of the same gradient behind it as a glow. On hover the gradient rotates (`@property --angle`). The label names the action: "Apply for the next batch", not "Submit". |
-| **Icon button** (`.icon-btn`) | 44×44 rounded square (menu) or circle (prev/next, socials) with the same border and glow. |
-| **Photo frame** (`[data-photo]`) | Every image slot on the site. With no photo, it renders a tinted placeholder that shows the slot name; with a photo, it renders an `<img>`. See "Adding photos" in `README.md`. |
-| **Parallelogram card** (`.track`) | Full-bleed photo, cut with `clip-path` to a 10% skew so neighbouring cards interlock. Bottom gradient; title and copy bottom-left. |
-| **Diagonal split** (`.split`) | Two panels cut at 60%→40% with a 6px gap. Left content is left-aligned and right content is right-aligned. |
-| **Glyph** (`.glyph`) | Programming punctuation in Martian Mono, coloured with one of the four tokens. Used in the drop, the warp and around headings. |
+| **Sticker wordmark / glyph** (`.wordmark--3d`, `.glyph--3d`) | Token fill, `-webkit-text-stroke: 0.03em` ink, five stacked ink `text-shadow`s for the extrusion, plus one soft shadow. Same look as the loader. |
+| **Glow button** (`.btn`) | Pill. White fill, 1.5px border made from a conic gradient of the four tokens, and a blurred copy behind it as a glow. On hover the gradient rotates (`@property --angle`). The label names the action, such as "Apply for the next batch". |
+| **Icon button** (`.icon-btn`) | 44×44 rounded square (menu) or 52px circle (prev/next, socials) with the same border and glow. |
+| **Photo frame** (`[data-photo]`) | Every image slot on the site. With no photo, it renders a light tinted placeholder that shows the slot name; with a photo, it renders an `<img>`. See "Adding photos" in `README.md`. |
+| **Parallelogram card** (`.track`) | Full-bleed photo cut with `clip-path` to a 12% skew, 2.5vw apart. Bottom shade; white title and copy bottom-left. Swings in 3D as it crosses the screen. |
+| **Diagonal split** (`.split`) | Two photo panels cut at 60%→40% with an 8px gap. Left content top-left; right content bottom-right and right-aligned. |
+| **Mentor card** (`.mentor`) | 4:5 portrait frame, name, "role, department", and topic tags with token-colour borders. Rendered from `src/mentors.js`. Mentors are assigned by the college, so there is never an apply action. |
 | **Progress bar** | Fixed bottom centre, 40vw wide, 3px tall, with an H→O→P→E gradient fill tied to scroll. |
-| **Menu overlay** | Full-screen ink layer revealed with a clip-path circle from the menu button. |
+| **Menu overlay** | Full-screen white layer revealed with a clip-path circle from the menu button. |
 
 ### 2.5 Page choreography (home)
 
 | Reference beat | HOPE version | Module |
 |---|---|---|
 | Boot gate | **Glitch loader**, no buttons. The four-colour **HOPE** wordmark glitches (colour-split ghosts, a band that tears sideways, letters flickering into code characters) while the page loads: at least 3 s, until the `load` event, at most 5 s. Then it locks clean and the zoom starts. | `intro.js` |
-| Logo mask → tunnel | Letters fill with gallery photos, the page goes dark, the camera **zooms through the counter of the O**, and photos fly past in CSS 3D | `intro.js` |
-| Hero ring | Curved cylinder of gallery photos rotating behind an extruded HOPE wordmark; scroll speeds it up | `ring.js` |
-| Statement + physics | "Learn to code the way engineers do…" lines rise from a mask while code glyphs drop and bounce onto them | `statement.js` |
-| About horizontal | **Tracks**: pinned horizontal strip of parallelogram cards, one per training track | `tracks.js` |
-| Location → Save the date | **The lab → Next batch**: an edge-detected sketch of the lab fills with colour, then batch dates and an Apply CTA rise in | `venue.js` |
-| Warp | A starfield of code glyphs streams outward, faster the further you scroll. It starts from ink because the lab section ends dark. | `warp.js` |
-| Vibe heading + split | "Pick your side of the keyboard" crosses the screen, then a **Learn / Mentor** diagonal split | `paths.js` |
-| Sponsors / partners | **People** behind HOPE (portrait frames), then a marquee of places alumni went | static + CSS |
-| Footer | "See you in the lab", glow CTAs, extruded wordmark, socials, lite toggle | static |
+| Logo mask → tunnel | Letters fill with gallery photos, the camera **zooms through the counter of the O**, and photos fly past in CSS 3D on white | `intro.js` |
+| Hero ring | Clean white hero with no buttons: a curved cylinder of gallery photos rotating behind the sticker wordmark. On scroll the ring **tilts back** (rotateX) and the four letters **scatter in 3D**, each on its own path. | `hero.js` |
+| Statement + 3D shapes | "Learn to code the way engineers do…": words **flip up** out of their lines (rotateX from −80°). Sticker glyphs float at different depths: near ones big, fast and spinning, far ones small, slow and blurred. Each also bobs gently on its own. | `scenes.js` |
+| About horizontal | **Tracks**: pinned horizontal strip. Cards **swing round a curve** (rotateY −38° → 0° → 38°, pushed back in z at the edges) so the strip echoes the hero ring. | `scenes.js` |
+| Location → Save the date | **The lab → Next batch**: an edge-detected sketch of the lab fills with colour, then batch dates and an Apply CTA rise in | `scenes.js` |
+| Warp | A starfield of ink-outlined code glyphs streams outward on white, faster the further you scroll | `warp.js` |
+| Vibe heading + split | "Your first commit starts here" rides across the screen **on a wave** (each letter on a sine curve). Then the **Learn / Mentors** split slides together: Learn has the student apply CTA, Mentors links to the list. | `scenes.js` |
+| Sponsors / partners | **Meet the mentors** (cards dealt in from below, slightly rotated), then a marquee of places alumni went | `scenes.js` + CSS |
+| Footer | "See you in the lab", glow CTAs, sticker wordmark, socials, lite toggle | static |
 
 ### 2.6 Motion rules
 
 1. **The intro is the only timed animation.** It starts by itself on page load: 3–5 s of glitch while
    the page loads, then about 4 s of zoom. Scroll stays locked (`lenis.stop()`) until it finishes.
 2. Everything else is **scrubbed** (`scrub: true` or a number) to scroll. No fade-in-on-enter for every
-   block. If something moves, it is a pinned stage or a mask reveal.
-3. Headings reveal with SplitText `mask: "lines"` (or `"chars"` for one-word headings), `yPercent: 100 → 0`.
-4. Easing: `power3.out` for reveals, `power2.inOut` for camera moves, `none` for anything scrubbed linearly.
-5. Pins use `end: "+=N%"` where N is about 100 per idea: horizontal strips are as long as their
-   overflow, and sketch→photo takes 200%.
-6. **Lite mode** (`html.lite`) is set by the footer toggle (stored in `localStorage`)
-   or `prefers-reduced-motion: reduce`. In lite mode there is no intro, no Lenis and no pins; tracks
-   become a swipeable row and the warp section is hidden. Every page must stay fully readable in lite mode.
+   block. If something moves, it is a pinned stage, a mask reveal or a depth layer.
+3. **Use depth, not just vertical movement.** Every stage gets a z-axis: a tilt (rotateX/rotateY), a
+   scatter in z, or parallax layers. Use `perspective` 700–1400px on the stage and `transform-style: preserve-3d` on movers.
+4. Headings reveal with SplitText `mask: "lines"` (or `"chars"`), `yPercent: 100 → 0`. Hero statements also flip words in with `rotationX`.
+5. Smooth scroll: Lenis `lerp: 0.085`, `wheelMultiplier: 1.2`, so a flick glides about 1.2× its wheel distance, like the reference.
+6. Easing: `power3.out` for reveals, `power2.inOut` for camera moves, `none` for anything scrubbed linearly.
+7. Pins use `end: "+=N%"` where N is about 100 per idea: horizontal strips are as long as their
+   overflow, and sketch→photo takes 200%. A pinned stage must never end on an empty screen; the next
+   section rises over the last visible element.
+8. An entrance tween and a scroll tween must never animate the same transform property on the same element.
+   For example, the hero entrance uses `yPercent`/`scale` and the scroll scatter uses `x/y/z/rotation`.
+9. **Lite mode** (`html.lite`) is set by the footer toggle (stored in `localStorage`)
+   or `prefers-reduced-motion: reduce`. In lite mode there is no intro, no Lenis, no pins and no bobbing;
+   tracks become a swipeable row and the warp section is hidden. Every page must stay fully readable in lite mode.
 
 ### 2.7 Image rules
 
@@ -205,7 +228,7 @@ Type scale, fluid with `clamp()`:
 
 ### 2.8 Rules for new pages
 
-- Start from `--ink` with the fixed chrome: menu button, progress bar, prev/next.
+- Start from the white `--bg` with the fixed chrome: menu button, progress bar, prev/next.
 - Give each page **one** pinned stage at most, unless it is the home page.
-- Reuse the glow button, photo frame, parallelogram card and diagonal split before inventing new components.
+- Reuse the sticker glyph, glow button, photo frame, parallelogram card, diagonal split and mentor card before inventing new components.
 - Check every new section at 375px wide and in lite mode.

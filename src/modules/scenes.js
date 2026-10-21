@@ -1,6 +1,7 @@
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
+
+const depthOf = (el) => parseFloat(el.style.getPropertyValue('--d')) || 1;
 
 // Text rises from a mask, scrubbed to scroll. reference.md §2.6 rule 3
 export function setupReveals() {
@@ -15,28 +16,38 @@ export function setupReveals() {
   });
 }
 
-// Code glyphs drop and bounce onto the statement.
+// Words flip up out of their lines; code glyphs drift past at different depths.
 export function setupStatement() {
   const section = document.querySelector('.statement');
-  const glyphs = section.querySelectorAll('.glyph');
-  // Resting place and angle come from each glyph's inline style (shared with lite mode)
-  const restAngle = (i) => parseFloat(glyphs[i].style.getPropertyValue('--r')) || 0;
 
-  gsap.fromTo(
-    glyphs,
-    { y: () => -section.offsetHeight, rotation: (i) => (i % 2 ? 140 : -120) },
-    {
-      y: 0,
-      rotation: restAngle,
-      duration: (i) => 1.2 + (i % 3) * 0.25,
-      stagger: { each: 0.09, from: 'random' },
-      ease: 'bounce.out',
-      scrollTrigger: { trigger: section, start: 'top 35%', toggleActions: 'play none none reverse' },
-    },
-  );
+  const split = SplitText.create('.statement__text', { type: 'lines,words', mask: 'lines', linesClass: 'split-line' });
+  gsap.from(split.words, {
+    yPercent: 110,
+    rotationX: -80,
+    transformOrigin: '50% 100%',
+    stagger: 0.06,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: section, start: 'top 70%', end: 'center 50%', scrub: 1 },
+  });
+
+  // Nearer glyphs (bigger --d) travel further and spin more: parallax depth
+  section.querySelectorAll('.glyph').forEach((g, i) => {
+    const d = depthOf(g);
+    const dir = i % 2 ? 1 : -1;
+    gsap.fromTo(
+      g,
+      { y: d * 320, rotation: dir * -40 * d },
+      {
+        y: d * -320,
+        rotation: dir * 60 * d,
+        ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top bottom', end: 'bottom top', scrub: true },
+      },
+    );
+  });
 }
 
-// Pinned horizontal strip of track cards.
+// Pinned horizontal strip; cards swing round a curve like the hero ring as they pass.
 export function setupTracks() {
   const section = document.querySelector('.tracks');
   const strip = section.querySelector('.tracks__strip');
@@ -45,6 +56,7 @@ export function setupTracks() {
   const title = SplitText.create('.tracks__title', { type: 'chars', mask: 'chars' });
   gsap.from(title.chars, {
     yPercent: 100,
+    rotation: 12,
     stagger: 0.03,
     ease: 'power3.out',
     scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 10%', scrub: 1 },
@@ -63,17 +75,14 @@ export function setupTracks() {
     },
   });
 
-  // Photos drift inside their cards as the strip moves
-  section.querySelectorAll('.track > .frame').forEach((frame) => {
-    gsap.fromTo(
-      frame,
-      { xPercent: -6 },
-      {
-        xPercent: 6,
-        ease: 'none',
-        scrollTrigger: { trigger: frame.parentElement, containerAnimation: move, start: 'left right', end: 'right left', scrub: true },
-      },
-    );
+  section.querySelectorAll('.track').forEach((card) => {
+    const along = { trigger: card, containerAnimation: move, start: 'left right', end: 'right left', scrub: true };
+    // Enter from the right turned towards the centre, face the viewer mid-screen, leave turned away
+    gsap.timeline({ scrollTrigger: along })
+      .fromTo(card, { rotationY: -38, z: -260 }, { rotationY: 0, z: 0, ease: 'power1.out' })
+      .to(card, { rotationY: 38, z: -260, ease: 'power1.in' });
+    // Photo drifts inside its card
+    gsap.fromTo(card.querySelector('.frame'), { xPercent: -6 }, { xPercent: 6, ease: 'none', scrollTrigger: along });
   });
 }
 
@@ -106,9 +115,17 @@ export function setupVenue() {
     .to({}, { duration: 0.4 });
 }
 
-// Heading crosses the screen while glyphs drift; then the split's diagonal settles.
+// Heading rides across the screen on a wave while glyphs drift; then the split closes in.
 export function setupPaths() {
   const heading = document.querySelector('.paths__heading');
+  const { chars } = SplitText.create(heading, { type: 'chars', charsClass: 'char' });
+  const setY = chars.map((c) => gsap.quickSetter(c, 'y', 'px'));
+  const setR = chars.map((c) => gsap.quickSetter(c, 'rotation', 'deg'));
+  let amp = 0;
+  const measure = () => (amp = parseFloat(getComputedStyle(heading).fontSize) * 0.16);
+  measure();
+  addEventListener('resize', measure);
+
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: '.paths',
@@ -118,22 +135,38 @@ export function setupPaths() {
       scrub: 1,
       invalidateOnRefresh: true,
     },
+    onUpdate() {
+      const phase = tl.progress() * 18;
+      chars.forEach((_, i) => {
+        setY[i](Math.sin(i * 0.45 - phase) * amp);
+        setR[i](Math.cos(i * 0.45 - phase) * 6);
+      });
+    },
   });
-  tl.fromTo(heading, { x: () => innerWidth }, { x: () => -heading.offsetWidth, ease: 'none' }, 0);
+  // Ends with the last words still on screen so the split rises over them, not over a blank page
+  tl.fromTo(heading, { x: () => innerWidth }, { x: () => innerWidth * 0.55 - heading.offsetWidth, ease: 'none' }, 0);
   document.querySelectorAll('.paths .glyph--float').forEach((g, i) => {
-    tl.to(g, { y: (i % 2 ? 1 : -1) * 220, rotation: `+=${i % 2 ? 120 : -90}`, ease: 'none' }, 0);
+    tl.to(g, { y: (i % 2 ? 1 : -1) * 240, rotation: `+=${i % 2 ? 140 : -110}`, ease: 'none' }, 0);
   });
 
   gsap.matchMedia().add('(min-width: 721px)', () => {
-    gsap.fromTo(
-      '.split',
-      { '--cut-top': '78%', '--cut-bot': '58%' },
-      {
-        '--cut-top': '60%',
-        '--cut-bot': '40%',
-        ease: 'none',
-        scrollTrigger: { trigger: '.split', start: 'top bottom', end: 'top top', scrub: true },
-      },
-    );
+    const enter = { trigger: '.split', start: 'top bottom', end: 'top top', scrub: true };
+    gsap.timeline({ scrollTrigger: enter })
+      .fromTo('.split', { '--cut-top': '78%', '--cut-bot': '58%' }, { '--cut-top': '60%', '--cut-bot': '40%', ease: 'none' }, 0)
+      .fromTo('.split__panel--a .frame', { xPercent: -14 }, { xPercent: 0, ease: 'none' }, 0)
+      .fromTo('.split__panel--b .frame', { xPercent: 14 }, { xPercent: 0, ease: 'none' }, 0)
+      .from('.split__body', { y: 80, autoAlpha: 0, stagger: 0.15, ease: 'power2.out' }, 0.35);
+  });
+}
+
+// Mentor cards are dealt in as the grid arrives.
+export function setupMentors() {
+  gsap.from('.mentor', {
+    y: 140,
+    rotation: (i) => [-6, 0, 6][i % 3],
+    autoAlpha: 0,
+    stagger: 0.12,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.mentors__grid', start: 'top 92%', end: 'top 30%', scrub: 1 },
   });
 }

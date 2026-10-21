@@ -29,15 +29,11 @@ export const photos = {
   // The lab. A wide photo of the room; the line-drawing version is generated automatically
   venue: '',
 
-  // Learn / Mentor split
+  // Learn / Mentors split
   'path-learn': '',
-  'path-mentor': '',
+  'path-mentors': '',
 
-  // People
-  'person-1': '',
-  'person-2': '',
-  'person-3': '',
-  'person-4': '',
+  // Mentor portraits are set in src/mentors.js
 };
 
 export const gallerySlots = Object.keys(photos).filter((k) => k.startsWith('gallery-'));

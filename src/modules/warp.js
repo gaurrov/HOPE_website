@@ -10,11 +10,12 @@ export function setupWarp() {
   const ctx = canvas.getContext('2d');
   const css = getComputedStyle(document.documentElement);
   const colors = TOKENS.map((t) => css.getPropertyValue(t).trim());
+  const bg = css.getPropertyValue('--bg').trim() || '#fff';
   const ink = css.getPropertyValue('--ink').trim();
   const font = css.getPropertyValue('--font-mono').trim();
 
   const FAR = 1600;
-  const stars = Array.from({ length: 150 }, (_, i) => spawn({ glyph: GLYPHS[i % GLYPHS.length], color: colors[i % 4] }, true));
+  const stars = Array.from({ length: 115 }, (_, i) => spawn({ glyph: GLYPHS[i % GLYPHS.length], color: colors[i % 4] }, true));
   let w = 0;
   let h = 0;
   let progress = 0;
@@ -38,8 +39,10 @@ export function setupWarp() {
   function draw() {
     const speed = 4 + progress * 38;
     const f = Math.min(w, h) * 0.9;
-    ctx.fillStyle = ink;
+    ctx.fillStyle = bg;
     ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = ink;
+    ctx.lineJoin = 'round';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     for (const s of stars) {
@@ -56,6 +59,9 @@ export function setupWarp() {
       ctx.globalAlpha = Math.min(1, (FAR - s.z) / 500);
       ctx.fillStyle = s.color;
       ctx.font = `800 ${size}px ${font}`;
+      // Ink outline drawn first so the fill sits on top, matching the sticker wordmark
+      ctx.lineWidth = Math.max(1, size * 0.07);
+      ctx.strokeText(s.glyph, x, y);
       ctx.fillText(s.glyph, x, y);
     }
     ctx.globalAlpha = 1;

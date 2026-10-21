@@ -1,20 +1,27 @@
 /* HOPE design tokens. See reference.md §2.2 and §2.3 */
 :root {
-  /* Colour */
+  /* Base palette */
   --ink: #0d1330;
-  --ink-2: #161e45;
-  --paper: #eef1f8;
-  --muted: #8a93b8;
+  --paper: #ffffff;
+  --mist: #f3f5fa;
   --h: #4fc3f7;
   --o: #ffb547;
   --p: #7ee081;
   --e: #ff6fa3;
+
+  /* Roles */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --muted: #5b6488;
+  --line: rgb(13 19 48 / 0.12);
+  --on-photo: #ffffff;
+  --shade: 9 13 34; /* rgb triplet for photo gradients */
   --hope-gradient: linear-gradient(90deg, var(--h), var(--o), var(--p), var(--e));
 
   /* Type */
   --font-mono: 'Martian Mono', ui-monospace, monospace;
   --font-sans: 'Bricolage Grotesque', system-ui, sans-serif;
-  --step-hero: clamp(5rem, 20vw, 18rem);
+  --step-hero: clamp(5rem, 22vw, 18rem);
   --step-display: clamp(3rem, 9vw, 8.5rem);
   --step-h2: clamp(2.25rem, 5vw, 4.5rem);
   --step-lead: clamp(1.15rem, 1.6vw, 1.5rem);

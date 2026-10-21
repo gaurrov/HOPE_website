@@ -1,5 +1,5 @@
 /* =========================================================
-   Intro gate (full mode only)
+   Intro: glitch loader, then zoom through the O (full mode only)
    Layers, bottom to top: tunnel → paper → stage
    ========================================================= */
 .intro {
@@ -14,7 +14,7 @@ html.full .intro {
 .intro__paper {
   position: absolute;
   inset: 0;
-  background: var(--paper);
+  background: var(--bg);
 }
 .intro__stage {
   position: absolute;
@@ -35,6 +35,13 @@ html.full .intro {
   font-size: clamp(4.5rem, 21vw, 15rem);
   will-change: transform;
 }
+.intro__mark .l {
+  -webkit-text-stroke: 0.035em var(--ink);
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
 /* Colour-split copies of the wordmark, sliced and shifted by the glitch */
 .glitch-layer {
   position: absolute;
@@ -47,18 +54,11 @@ html.full .intro {
 .glitch-layer--e { color: var(--e); }
 /* The tear band hides the letters under it so the shifted copy reads as a break */
 .glitch-layer--tear {
-  background: var(--paper);
+  background: var(--bg);
   mix-blend-mode: normal;
 }
-.intro__mark .l {
-  -webkit-text-stroke: 0.035em var(--ink);
-  background-size: cover;
-  background-position: center;
-  -webkit-background-clip: text;
-  background-clip: text;
-}
 .intro__expand {
-  color: var(--ink);
+  color: var(--fg);
   font-size: var(--step-lead);
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -72,7 +72,7 @@ html.full .intro {
   height: 3px;
   margin-top: 0.5rem;
   border-radius: 3px;
-  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  background: var(--line);
   overflow: hidden;
 }
 .intro__load span {
@@ -88,7 +88,7 @@ html.full .intro {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: var(--ink);
+  background: var(--bg);
   perspective: 900px;
 }
 .tunnel__track {
@@ -103,6 +103,7 @@ html.full .intro {
   aspect-ratio: 4 / 3;
   border-radius: 12px;
   translate: -50% -50%;
+  box-shadow: 0 20px 50px rgb(13 19 48 / 0.15);
 }
 
 /* =========================================================
@@ -124,6 +125,7 @@ html.full .intro {
 .site-head__logo {
   font-size: 1.25rem;
   text-decoration: none;
+  -webkit-text-stroke: 0.6px var(--ink);
   opacity: 0;
   translate: 0 -8px;
   transition: opacity 0.4s, translate 0.4s var(--ease-out);
@@ -145,7 +147,7 @@ html.lite .site-head__logo {
   z-index: 45;
   display: grid;
   place-items: center;
-  background: color-mix(in srgb, var(--ink) 96%, transparent);
+  background: color-mix(in srgb, var(--bg) 97%, transparent);
   clip-path: circle(0 at var(--mx, 100%) var(--my, 0%));
   transition: clip-path 0.7s var(--ease-out);
 }
@@ -164,11 +166,18 @@ html.lite .site-head__logo {
   letter-spacing: -0.015em;
   line-height: 1.1;
   text-decoration: none;
+  transition: translate 0.3s var(--ease-out);
 }
-.menu li:nth-child(4n + 1) a:hover { color: var(--h); }
-.menu li:nth-child(4n + 2) a:hover { color: var(--o); }
-.menu li:nth-child(4n + 3) a:hover { color: var(--p); }
-.menu li:nth-child(4n + 4) a:hover { color: var(--e); }
+.menu a:hover {
+  translate: 0.3em 0;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.12em;
+}
+.menu li:nth-child(4n + 1) a:hover { text-decoration-color: var(--h); }
+.menu li:nth-child(4n + 2) a:hover { text-decoration-color: var(--o); }
+.menu li:nth-child(4n + 3) a:hover { text-decoration-color: var(--p); }
+.menu li:nth-child(4n + 4) a:hover { text-decoration-color: var(--e); }
 
 .progress {
   position: fixed;
@@ -179,7 +188,7 @@ html.lite .site-head__logo {
   height: 3px;
   translate: -50% 0;
   border-radius: 3px;
-  background: color-mix(in srgb, var(--paper) 16%, transparent);
+  background: var(--line);
   overflow: hidden;
 }
 .progress__fill {
@@ -203,7 +212,7 @@ html.lite .site-head__logo {
 }
 
 /* =========================================================
-   Hero: curved photo ring behind an extruded wordmark
+   Hero: curved photo ring behind the sticker wordmark
    ========================================================= */
 .hero {
   position: relative;
@@ -218,13 +227,18 @@ html.lite .site-head__logo {
   inset: 0;
   perspective: 900px;
 }
+.ring__tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
 .ring::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 45% at 50% 50%, rgb(13 19 48 / 0.55), transparent 70%),
-    linear-gradient(to bottom, var(--ink), transparent 18%, transparent 82%, var(--ink));
+    radial-gradient(42% 34% at 50% 50%, rgb(255 255 255 / 0.82), transparent 75%),
+    linear-gradient(to bottom, var(--bg), transparent 16%, transparent 84%, var(--bg));
 }
 .ring__spin {
   position: absolute;
@@ -237,7 +251,7 @@ html.lite .site-head__logo {
   width: var(--rw);
   height: var(--rh);
   margin: calc(var(--rh) / -2) 0 0 calc(var(--rw) / -2);
-  border-radius: 8px;
+  border-radius: 10px;
   backface-visibility: hidden;
 }
 .hero__content {
@@ -245,24 +259,18 @@ html.lite .site-head__logo {
   z-index: 2;
   display: grid;
   justify-items: center;
-  gap: 1.5rem;
+  gap: 1.75rem;
   padding: 0 var(--gutter);
   text-align: center;
 }
 .hero__mark {
   font-size: var(--step-hero);
+  perspective: 900px;
 }
 .hero__sub {
   font-size: var(--step-lead);
   font-weight: 600;
-  text-shadow: 0 2px 18px rgb(0 0 0 / 0.6);
-}
-.hero__ctas {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem 1.5rem;
-  margin-top: 1rem;
+  letter-spacing: -0.01em;
 }
 .hero__down {
   position: absolute;
@@ -273,14 +281,14 @@ html.lite .site-head__logo {
 }
 
 /* =========================================================
-   Statement with dropping glyphs
+   Statement with code glyphs floating at different depths
    ========================================================= */
 .statement {
   position: relative;
-  min-height: 100svh;
+  min-height: 130svh;
   display: grid;
   place-items: center;
-  padding: 16vh var(--gutter) 30vh;
+  padding: 18vh var(--gutter);
   overflow: hidden;
 }
 .statement__text {
@@ -292,30 +300,47 @@ html.lite .site-head__logo {
 }
 .statement__glyphs .glyph {
   position: absolute;
-  font-size: clamp(3rem, 7vw, 6.5rem);
-  z-index: 2;
+  font-size: calc(clamp(3rem, 7vw, 6.5rem) * var(--d, 1));
+  z-index: calc(var(--d, 1) * 10);
+}
+/* Far glyphs sit behind the text and soften, like depth of field */
+.statement__glyphs .glyph--far {
+  z-index: 0;
+  filter: blur(1.5px);
+  opacity: 0.85;
+}
+.glyph__bob {
+  display: inline-block;
+  animation: bob var(--bob, 5s) ease-in-out infinite alternate;
+}
+@keyframes bob {
+  from { transform: translateY(-10px) rotate(-6deg); }
+  to { transform: translateY(12px) rotate(7deg); }
 }
 
 /* =========================================================
-   Tracks: pinned horizontal strip of parallelogram cards
+   Tracks: pinned horizontal strip that curves in 3D
    ========================================================= */
 .tracks__pin {
   height: 100svh;
   display: flex;
   align-items: center;
   overflow: hidden;
+  perspective: 1400px;
 }
 .tracks__strip {
-  --w: min(46vw, 640px);
-  --cut: 0.14;
+  --w: min(42vw, 600px);
+  --cut: 0.12;
   display: flex;
   align-items: center;
+  gap: 2.5vw;
   padding: 0 var(--gutter);
+  transform-style: preserve-3d;
   will-change: transform;
 }
 .tracks__title {
   flex: 0 0 auto;
-  padding-right: 6vw;
+  padding-right: 4vw;
   font-size: var(--step-display);
   white-space: nowrap;
 }
@@ -323,12 +348,8 @@ html.lite .site-head__logo {
   position: relative;
   flex: 0 0 auto;
   width: var(--w);
-  height: min(72svh, 680px);
-  margin-left: calc(var(--w) * var(--cut) * -1 + 10px);
+  height: min(70svh, 660px);
   clip-path: polygon(calc(var(--cut) * 100%) 0, 100% 0, calc(100% - var(--cut) * 100%) 100%, 0 100%);
-}
-.tracks__title + .track {
-  margin-left: 0;
 }
 .track > .frame {
   position: absolute;
@@ -339,27 +360,28 @@ html.lite .site-head__logo {
   left: 7%;
   bottom: 8%;
   z-index: 1;
-  max-width: 68%;
+  max-width: 70%;
+  color: var(--on-photo);
 }
 .track__body h3 {
   font-size: clamp(1.8rem, 3.2vw, 3rem);
   margin-bottom: 0.6rem;
 }
 .track__body p {
-  color: color-mix(in srgb, var(--paper) 85%, transparent);
+  color: color-mix(in srgb, var(--on-photo) 88%, transparent);
   max-width: 34ch;
 }
 
 /* =========================================================
-   Lab → Next batch (the one light section)
+   Lab → Next batch
    ========================================================= */
 .venue__pin {
   position: relative;
   height: 100svh;
   min-height: 600px;
   overflow: hidden;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--fg);
 }
 .venue__media,
 .venue__img {
@@ -367,7 +389,7 @@ html.lite .site-head__logo {
   inset: 0;
 }
 .venue__img.frame {
-  background: var(--paper);
+  background: var(--bg);
 }
 .venue__img--sketch > img {
   filter: url(#sketch);
@@ -379,7 +401,7 @@ html.lite .site-head__logo {
 .venue__shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgb(9 13 34 / 0.88), rgb(9 13 34 / 0.35) 45%, transparent 70%);
+  background: linear-gradient(to top, rgb(var(--shade) / 0.85), rgb(var(--shade) / 0.32) 45%, transparent 70%);
   opacity: 0;
 }
 .venue__heads {
@@ -405,7 +427,7 @@ html.lite .site-head__logo {
   justify-items: center;
   gap: 0.75rem;
   padding: 0 var(--gutter);
-  color: var(--paper);
+  color: var(--on-photo);
   text-align: center;
   opacity: 0;
 }
@@ -421,7 +443,7 @@ html.lite .site-head__logo {
   max-width: 40ch;
 }
 .venue__note {
-  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  color: color-mix(in srgb, var(--on-photo) 80%, transparent);
   font-size: var(--step-small);
   margin-bottom: 0.75rem;
 }
@@ -432,7 +454,7 @@ html.lite .site-head__logo {
 .warp {
   position: relative;
   height: 220svh;
-  background: var(--ink);
+  background: var(--bg);
 }
 .warp__pin {
   position: sticky;
@@ -446,7 +468,7 @@ html.lite .site-head__logo {
 }
 
 /* =========================================================
-   Paths: heading crosses the screen, then a diagonal split
+   Join: heading rides across on a wave, then Learn / Mentors split
    ========================================================= */
 .paths__pin {
   position: relative;
@@ -461,10 +483,12 @@ html.lite .site-head__logo {
   white-space: nowrap;
   will-change: transform;
 }
+.paths__heading .char {
+  display: inline-block;
+}
 .glyph--float {
   position: absolute;
   font-size: clamp(4rem, 9vw, 9rem);
-  opacity: 0.9;
 }
 .paths__pin .glyph--float:nth-of-type(1) { left: 16%; top: 14%; rotate: -18deg; }
 .paths__pin .glyph--float:nth-of-type(2) { right: 14%; bottom: 12%; rotate: 22deg; }
@@ -476,6 +500,7 @@ html.lite .site-head__logo {
   position: relative;
   height: 100svh;
   min-height: 640px;
+  color: var(--on-photo);
 }
 .split__panel {
   position: absolute;
@@ -486,13 +511,13 @@ html.lite .site-head__logo {
   inset: 0;
 }
 .split__panel--a {
-  clip-path: polygon(0 0, calc(var(--cut-top) - 3px) 0, calc(var(--cut-bot) - 3px) 100%, 0 100%);
+  clip-path: polygon(0 0, calc(var(--cut-top) - 4px) 0, calc(var(--cut-bot) - 4px) 100%, 0 100%);
 }
 .split__panel--b {
-  clip-path: polygon(calc(var(--cut-top) + 3px) 0, 100% 0, 100% 100%, calc(var(--cut-bot) + 3px) 100%);
+  clip-path: polygon(calc(var(--cut-top) + 4px) 0, 100% 0, 100% 100%, calc(var(--cut-bot) + 4px) 100%);
 }
 .split__panel--a > .frame::after {
-  background: linear-gradient(to bottom, rgb(9 13 34 / 0.9), rgb(9 13 34 / 0.4) 40%, transparent 65%);
+  background: linear-gradient(to bottom, rgb(var(--shade) / 0.85), rgb(var(--shade) / 0.35) 40%, transparent 65%);
 }
 /* Keep placeholder labels inside the visible side of the diagonal */
 .split__panel--a .frame__ph { right: 45%; }
@@ -525,33 +550,64 @@ html.lite .site-head__logo {
 }
 
 /* =========================================================
-   People and alumni
+   Mentors and alumni
    ========================================================= */
-.people {
+.mentors {
   display: grid;
-  gap: clamp(2.5rem, 6vh, 4rem);
-  padding: 18vh var(--gutter) 10vh;
+  gap: 1.25rem;
+  padding: 20vh var(--gutter) 10vh;
 }
-.people__grid {
+.mentors__note {
+  max-width: 46ch;
+  margin: 0 auto clamp(2rem, 5vh, 3.5rem);
+  color: var(--muted);
+  font-size: var(--step-lead);
+  text-align: center;
+}
+.mentors__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(1rem, 2vw, 2rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 2.5rem);
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
-.people__grid .frame {
+.mentor .frame {
   aspect-ratio: 4 / 5;
   border-radius: var(--radius);
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
 }
-.people__name {
-  font-weight: 700;
-  font-size: 1.15rem;
+.mentor .frame > img {
+  transition: scale 0.6s var(--ease-out);
 }
-.people__role {
+.mentor:hover .frame > img {
+  scale: 1.04;
+}
+.mentor__name {
+  font-size: 1.3rem;
+  font-weight: 720;
+  letter-spacing: -0.01em;
+}
+.mentor__role {
   color: var(--muted);
 }
+.mentor__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+.mentor__tags li {
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: var(--step-small);
+  font-weight: 600;
+}
+.mentor__tags li:nth-child(4n + 1) { border-color: var(--h); }
+.mentor__tags li:nth-child(4n + 2) { border-color: var(--o); }
+.mentor__tags li:nth-child(4n + 3) { border-color: var(--p); }
+.mentor__tags li:nth-child(4n + 4) { border-color: var(--e); }
 
 .alumni {
   display: grid;
@@ -586,7 +642,7 @@ html.lite .site-head__logo {
   place-items: center;
   width: 170px;
   height: 68px;
-  border: 1.5px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+  border: 1.5px dashed color-mix(in srgb, var(--muted) 50%, transparent);
   border-radius: 10px;
   color: var(--muted);
   font-size: var(--step-small);
@@ -657,6 +713,12 @@ html.lite .warp,
 html.lite .paths__pin .glyph--float {
   display: none;
 }
+html.lite .glyph__bob {
+  animation: none;
+}
+html.lite .statement {
+  min-height: 100svh;
+}
 html.lite .tracks__pin {
   height: auto;
   padding: 14vh 0 10vh;
@@ -673,17 +735,12 @@ html.lite .venue__h--a {
 html.lite .venue__img--color {
   clip-path: none;
 }
-html.lite .statement__glyphs .glyph {
-  rotate: calc(var(--r) * 1deg);
-}
-@media (prefers-reduced-motion: no-preference) {
-  html.lite {
-    scroll-behavior: smooth;
-  }
-}
 html.lite .venue__shade,
 html.lite .venue__info {
   opacity: 1;
+}
+html.lite .statement__glyphs .glyph {
+  rotate: calc(var(--r) * 1deg);
 }
 html.lite .paths__pin {
   height: auto;
@@ -698,6 +755,11 @@ html.lite .paths__heading {
 html.lite .marquee__list {
   animation: none;
 }
+@media (prefers-reduced-motion: no-preference) {
+  html.lite {
+    scroll-behavior: smooth;
+  }
+}
 
 /* =========================================================
    Small screens
@@ -705,7 +767,7 @@ html.lite .marquee__list {
 @media (max-width: 720px) {
   .tracks__strip {
     --w: 78vw;
-    --cut: 0.1;
+    --cut: 0.08;
   }
   .tracks__title {
     white-space: normal;
@@ -729,7 +791,7 @@ html.lite .marquee__list {
     left: var(--gutter) !important;
     right: var(--gutter) !important;
   }
-  .people__grid {
+  .mentors__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .progress {
@@ -740,5 +802,11 @@ html.lite .marquee__list {
   }
   .hero__down {
     bottom: 28px;
+  }
+}
+@media (max-width: 460px) {
+  .mentors__grid {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 340px;
   }
 }

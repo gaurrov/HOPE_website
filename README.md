@@ -35,15 +35,20 @@ its slot name printed on it, so you can see which slot is which.
 | `gallery-01` … `gallery-12` | Intro letters, photo tunnel, hero ring | Wide event shots and close-ups of people coding. Landscape. |
 | `track-*` | Cards in "What you'll learn" | Keep the subject in the left half, since text sits bottom-left |
 | `venue` | "The lab" section | One wide photo of the lab. The line-drawing version is generated automatically. |
-| `path-learn`, `path-mentor` | Learn / Mentor split | Learn has text at the top left; Mentor has text at the bottom right |
-| `person-1` … `person-4` | People grid | Portrait, 4:5 |
+| `path-learn`, `path-mentors` | Learn / Mentors split | Learn has text at the top left; Mentors has text at the bottom right |
+
+## Editing mentors
+
+Mentors are assigned by the college, so the site only lists them. Edit `src/mentors.js`: each entry
+has a `name`, `role`, `department`, `teaches` (shown as tags) and `photo` (a file name in `public/photos/`,
+4:5 portrait). Add or remove entries and the grid updates.
 
 Use JPG or WebP, at least 1600px on the long edge and under 400 KB each.
 
 ## Placeholder text to replace
 
 Search for these in `index.html`: `Your College`, `hope@yourcollege.edu`, the batch dates and
-room in the "Next batch" section, the people names, the `Company logo` slots, and the social
+room in the "Next batch" section, the `Company logo` slots, and the social
 links (`href="#"`).
 
 ## Structure
@@ -52,10 +57,11 @@ links (`href="#"`).
 index.html              all sections, in page order
 src/main.js             boot: lite or full mode, Lenis + GSAP setup
 src/photos.js           photo slot manifest
+src/mentors.js          mentor list (name, role, topics, photo)
 src/frames.js           fills [data-photo] slots
-src/modules/intro.js    gate, logo mask, zoom through the O, photo tunnel
-src/modules/hero.js     curved photo ring
-src/modules/scenes.js   statement, tracks, lab, paths scroll scenes
+src/modules/intro.js    glitch loader, zoom through the O, photo tunnel
+src/modules/hero.js     curved photo ring, 3D tilt and letter scatter on scroll
+src/modules/scenes.js   statement, tracks, lab, join and mentors scroll scenes
 src/modules/warp.js     glyph starfield canvas
 src/modules/chrome.js   menu, progress bar, prev/next, anchors, lite toggle
 src/styles/             tokens.css, base.css, components.css, sections.css
