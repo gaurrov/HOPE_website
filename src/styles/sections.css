@@ -26,9 +26,29 @@ html.full .intro {
   padding: var(--gutter);
   text-align: center;
 }
+/* Nothing shows until the fonts are in and the glitch starts */
+.intro:not(.is-live) .intro__stage {
+  visibility: hidden;
+}
 .intro__mark {
+  position: relative;
   font-size: clamp(4.5rem, 21vw, 15rem);
   will-change: transform;
+}
+/* Colour-split copies of the wordmark, sliced and shifted by the glitch */
+.glitch-layer {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(50% 0 50% 0);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.glitch-layer--h { color: var(--h); }
+.glitch-layer--e { color: var(--e); }
+/* The tear band hides the letters under it so the shifted copy reads as a break */
+.glitch-layer--tear {
+  background: var(--paper);
+  mix-blend-mode: normal;
 }
 .intro__mark .l {
   -webkit-text-stroke: 0.035em var(--ink);
@@ -47,22 +67,20 @@ html.full .intro {
   font-weight: 800;
   -webkit-text-stroke: 0.6px var(--ink);
 }
-.intro__actions {
-  display: grid;
-  justify-items: center;
-  gap: 1rem;
+.intro__load {
+  width: min(220px, 50vw);
+  height: 3px;
   margin-top: 0.5rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  overflow: hidden;
 }
-.intro__lite {
-  background: none;
-  border: 0;
-  padding: 0.4rem 0.6rem;
-  color: var(--ink);
-  font-size: var(--step-small);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  cursor: pointer;
+.intro__load span {
+  display: block;
+  height: 100%;
+  background: var(--hope-gradient);
+  transform-origin: left;
+  transform: scaleX(0);
 }
 
 /* Photo tunnel the camera flies through */

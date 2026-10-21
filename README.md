@@ -62,5 +62,7 @@ src/styles/             tokens.css, base.css, components.css, sections.css
 reference/screenshots/  captures of the reference site
 ```
 
-**Lite mode** (no intro, no pinned scenes) turns on for visitors who choose "Skip the animations",
-use the footer toggle, or have reduced motion set in their OS.
+**Lite mode** (no intro, no pinned scenes) turns on for visitors who use the footer toggle or have
+reduced motion set in their OS.
+
+**Intro timing** is set at the top of `src/modules/intro.js`: `GLITCH_MIN` and `GLITCH_MAX` (milliseconds).

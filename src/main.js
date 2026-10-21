@@ -9,11 +9,11 @@ import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
 import { fillAllFrames } from './frames.js';
-import { waitForGate, runIntro, removeIntro } from './modules/intro.js';
+import { runIntro, removeIntro } from './modules/intro.js';
 import { buildRing, setupHero } from './modules/hero.js';
 import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths } from './modules/scenes.js';
 import { setupWarp } from './modules/warp.js';
-import { setupChrome, setLitePref } from './modules/chrome.js';
+import { setupChrome } from './modules/chrome.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -58,11 +58,6 @@ function startFull() {
 async function boot() {
   await document.fonts.ready;
   if (root.classList.contains('lite')) return startLite();
-  const choice = await waitForGate();
-  if (choice === 'lite') {
-    setLitePref(true);
-    return startLite();
-  }
   startFull();
 }
 

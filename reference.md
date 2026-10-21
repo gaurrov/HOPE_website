@@ -168,7 +168,7 @@ Type scale, fluid with `clamp()`:
 
 | Reference beat | HOPE version | Module |
 |---|---|---|
-| Boot gate | Paper screen, four-colour **HOPE** wordmark, "House of Programming Expertise", **Enter HOPE**, "Skip the animations" | `intro.js` |
+| Boot gate | **Glitch loader**, no buttons. The four-colour **HOPE** wordmark glitches (colour-split ghosts, a band that tears sideways, letters flickering into code characters) while the page loads: at least 3 s, until the `load` event, at most 5 s. Then it locks clean and the zoom starts. | `intro.js` |
 | Logo mask → tunnel | Letters fill with gallery photos, the page goes dark, the camera **zooms through the counter of the O**, and photos fly past in CSS 3D | `intro.js` |
 | Hero ring | Curved cylinder of gallery photos rotating behind an extruded HOPE wordmark; scroll speeds it up | `ring.js` |
 | Statement + physics | "Learn to code the way engineers do…" lines rise from a mask while code glyphs drop and bounce onto them | `statement.js` |
@@ -181,15 +181,15 @@ Type scale, fluid with `clamp()`:
 
 ### 2.6 Motion rules
 
-1. **The intro is the only timed animation.** It runs after the visitor presses Enter, lasts under
-   4 seconds, and scroll stays locked (`lenis.stop()`) until it finishes.
+1. **The intro is the only timed animation.** It starts by itself on page load: 3–5 s of glitch while
+   the page loads, then about 4 s of zoom. Scroll stays locked (`lenis.stop()`) until it finishes.
 2. Everything else is **scrubbed** (`scrub: true` or a number) to scroll. No fade-in-on-enter for every
    block. If something moves, it is a pinned stage or a mask reveal.
 3. Headings reveal with SplitText `mask: "lines"` (or `"chars"` for one-word headings), `yPercent: 100 → 0`.
 4. Easing: `power3.out` for reveals, `power2.inOut` for camera moves, `none` for anything scrubbed linearly.
 5. Pins use `end: "+=N%"` where N is about 100 per idea: horizontal strips are as long as their
    overflow, and sketch→photo takes 200%.
-6. **Lite mode** (`html.lite`) is set by the intro link, the footer toggle (stored in `localStorage`)
+6. **Lite mode** (`html.lite`) is set by the footer toggle (stored in `localStorage`)
    or `prefers-reduced-motion: reduce`. In lite mode there is no intro, no Lenis and no pins; tracks
    become a swipeable row and the warp section is hidden. Every page must stay fully readable in lite mode.
 
