@@ -170,3 +170,12 @@ export function setupMentors() {
     scrollTrigger: { trigger: '.mentors__grid', start: 'top 92%', end: 'top 30%', scrub: 1 },
   });
 }
+
+// Events: title letters rise, the deck slides in from the right as the section arrives.
+export function setupEvents() {
+  const title = SplitText.create('.events__title', { type: 'chars', mask: 'chars' });
+  const enter = { trigger: '.events', start: 'top 85%', end: 'top 25%', scrub: 1 };
+  gsap.from(title.chars, { yPercent: 100, rotation: 10, stagger: 0.04, ease: 'power3.out', scrollTrigger: enter });
+  gsap.from('.events__tabs, .events__next', { y: 30, autoAlpha: 0, stagger: 0.1, ease: 'power2.out', scrollTrigger: enter });
+  gsap.from('.deck__track', { x: () => innerWidth * 0.5, rotationY: -20, ease: 'power3.out', scrollTrigger: enter });
+}

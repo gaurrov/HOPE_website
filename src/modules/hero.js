@@ -9,6 +9,7 @@ const spin = document.querySelector('.ring__spin');
 const COUNT = 12;
 let radius = 0;
 let angle = 0;
+let spinVel = 0; // extra spin from dragging, decays each frame
 
 // Curved wall of photos wrapped around the camera.
 export function buildRing() {
@@ -53,6 +54,8 @@ export function setupHero(lenis) {
 
   const tick = (_t, dt) => {
     angle -= dt * 0.006 + Math.abs(lenis.velocity) * 0.04;
+    angle += spinVel;
+    spinVel *= 0.94;
     paint();
   };
   let running = false;
@@ -86,6 +89,8 @@ export function setupHero(lenis) {
     );
   });
 
+  setupHeroInteraction(letters);
+
   return function heroIn() {
     gsap.timeline()
       .fromTo(ring, { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 1.6, ease: 'power3.out' })
@@ -98,4 +103,53 @@ export function setupHero(lenis) {
       )
       .fromTo(rest, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' }, 0.6);
   };
+}
+
+// Drag (or swipe sideways) to spin the ring; the letters lean toward the cursor.
+function setupHeroInteraction(letters) {
+  const hero = document.querySelector('.hero');
+
+  // Lean lives on an inner span so it never touches the scroll-scatter transform on each letter
+  const leans = letters.map((l) => {
+    const inner = document.createElement('span');
+    inner.className = 'l__lean';
+    inner.append(...l.childNodes);
+    l.append(inner);
+    return {
+      l,
+      ry: gsap.quickTo(inner, 'rotationY', { duration: 0.6, ease: 'power3.out' }),
+      rx: gsap.quickTo(inner, 'rotationX', { duration: 0.6, ease: 'power3.out' }),
+    };
+  });
+
+  let dragging = false;
+  let lastX = 0;
+  hero.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('a, button')) return;
+    dragging = true;
+    lastX = e.clientX;
+    hero.classList.add('is-grabbing');
+    hero.setPointerCapture(e.pointerId);
+  });
+  hero.addEventListener('pointermove', (e) => {
+    if (dragging) {
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      spinVel = dx * 0.12;
+      angle += dx * 0.18;
+    }
+    if (e.pointerType !== 'mouse') return;
+    for (const { l, ry, rx } of leans) {
+      const r = l.getBoundingClientRect();
+      ry(((e.clientX - (r.left + r.width / 2)) / innerWidth) * 50);
+      rx((-(e.clientY - (r.top + r.height / 2)) / innerHeight) * 40);
+    }
+  });
+  const release = () => {
+    dragging = false;
+    hero.classList.remove('is-grabbing');
+  };
+  hero.addEventListener('pointerup', release);
+  hero.addEventListener('pointercancel', release);
+  hero.addEventListener('pointerleave', () => leans.forEach(({ ry, rx }) => (ry(0), rx(0))));
 }

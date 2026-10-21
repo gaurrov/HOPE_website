@@ -1,5 +1,5 @@
 // Fixed chrome: menu, progress bar, prev/next buttons, anchor scrolling, lite toggle.
-// Works with or without Lenis (lite mode passes null).
+// Works with or without Lenis (lite mode passes null). Every piece is optional, so inner pages can use it too.
 
 const root = document.documentElement;
 
@@ -43,14 +43,14 @@ export function setupChrome(lenis) {
     lenis?.stop();
   }
   function closeMenu() {
-    if (menu.hidden) return;
+    if (!menu || menu.hidden) return;
     menu.classList.remove('is-open');
     menuBtn.setAttribute('aria-expanded', 'false');
     menuBtn.setAttribute('aria-label', 'Open menu');
     menu.addEventListener('transitionend', () => !menu.classList.contains('is-open') && (menu.hidden = true), { once: true });
     lenis?.start();
   }
-  menuBtn.addEventListener('click', () => (menu.hidden ? openMenu() : closeMenu()));
+  menuBtn?.addEventListener('click', () => (menu.hidden ? openMenu() : closeMenu()));
   addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
 
   // Progress bar, header logo, prev/next
@@ -63,11 +63,11 @@ export function setupChrome(lenis) {
   function onScroll() {
     const max = root.scrollHeight - innerHeight;
     const p = max > 0 ? scrollY / max : 0;
-    fill.style.transform = `scaleX(${p})`;
-    logo.classList.toggle('is-visible', scrollY > innerHeight * 0.8);
-    prev.disabled = scrollY < 10;
+    if (fill) fill.style.transform = `scaleX(${p})`;
+    if (logo && !logo.dataset.always) logo.classList.toggle('is-visible', scrollY > innerHeight * 0.8);
+    if (prev) prev.disabled = scrollY < 10;
     // The hero has its own scroll-down button, so "next" only appears after it
-    next.disabled = p > 0.995 || scrollY < innerHeight * 0.5;
+    if (next) next.disabled = p > 0.995 || scrollY < innerHeight * 0.5;
   }
   if (lenis) lenis.on('scroll', onScroll);
   else addEventListener('scroll', onScroll, { passive: true });
@@ -79,11 +79,11 @@ export function setupChrome(lenis) {
     steps.forEach((s, i) => sectionTop(s) <= y && (idx = i));
     return idx;
   };
-  next.addEventListener('click', () => {
+  next?.addEventListener('click', () => {
     const t = steps[currentIndex() + 1];
     t ? go(t) : go(root.scrollHeight);
   });
-  prev.addEventListener('click', () => {
+  prev?.addEventListener('click', () => {
     const i = currentIndex();
     const here = sectionTop(steps[i]);
     // Inside a long pinned section, go back to its start first
@@ -92,13 +92,21 @@ export function setupChrome(lenis) {
 
   // Lite toggle (stored, applied on reload)
   const toggle = document.querySelector('.lite-toggle');
-  const isLite = root.classList.contains('lite');
-  toggle.setAttribute('aria-pressed', String(isLite));
-  toggle.querySelector('.lite-toggle__state').textContent = isLite ? 'on' : 'off';
-  toggle.addEventListener('click', () => {
-    setLitePref(!isLite);
-    location.reload();
-  });
+  if (toggle) {
+    const isLite = root.classList.contains('lite');
+    toggle.setAttribute('aria-pressed', String(isLite));
+    toggle.querySelector('.lite-toggle__state').textContent = isLite ? 'on' : 'off';
+    toggle.addEventListener('click', () => {
+      setLitePref(!isLite);
+      location.reload();
+    });
+  }
+
+  // Scroll to a section by id (used by the terminal)
+  return (id) => {
+    const target = document.getElementById(id);
+    if (target) go(id === 'top' ? 0 : target);
+  };
 }
 
 export function setLitePref(on) {
@@ -107,4 +115,17 @@ export function setLitePref(on) {
   } catch (e) {
     /* storage blocked: the choice lasts for this page view only */
   }
+}
+
+// Secret door to the admin area: click the footer HOPE wordmark five times within three seconds.
+// It only saves typing the address; the admin area itself always asks for an admin login.
+export function setupSecretDoor() {
+  const mark = document.querySelector('.foot__mark');
+  if (!mark) return;
+  let clicks = [];
+  mark.addEventListener('click', () => {
+    const now = Date.now();
+    clicks = clicks.filter((t) => now - t < 3000).concat(now);
+    if (clicks.length >= 5) location.href = '/hope-hq/';
+  });
 }

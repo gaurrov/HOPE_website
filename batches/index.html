@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Batches | HOPE</title>
+    <meta name="description" content="HOPE batches: Elite, Batch 2, Batch 3 and more. See who is training in each batch and where they have been placed." />
+    <meta name="theme-color" content="#FFFFFF" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wdth,wght@112.5,800&display=swap"
+    />
+    <script>
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('hope-lite'); } catch (e) {}
+        var lite = stored === null ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : stored === '1';
+        document.documentElement.classList.add(lite ? 'lite' : 'full');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-head">
+      <a class="site-head__logo wordmark is-visible" data-always="1" href="/" aria-label="HOPE home">
+        <span class="t-h">H</span><span class="t-o">O</span><span class="t-p">P</span><span class="t-e">E</span>
+      </a>
+      <div class="site-head__right">
+        <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Main" hidden>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#events">Events</a></li>
+        <li><a href="/batches/" aria-current="page">Batches</a></li>
+        <li><a href="/alumni/">Alumni</a></li>
+        <li><a href="/#mentors">Mentors</a></li>
+      </ul>
+    </nav>
+
+    <div class="page__glyphs" aria-hidden="true">
+      <span class="glyph glyph--3d t-h" style="right:8%;top:16%;--d:1"><span class="glyph__bob" style="--bob:5.5s">{</span></span>
+      <span class="glyph glyph--3d t-e" style="right:22%;top:38%;--d:1"><span class="glyph__bob" style="--bob:6.5s">}</span></span>
+    </div>
+
+    <main id="main" class="page">
+      <h1 class="page__title split-chars">Batches</h1>
+      <p class="page__lead">Every HOPE batch trains together for a full programme. Pick a batch to see who is in it and where they have been placed.</p>
+
+      <div class="chips" role="group" aria-label="Choose a batch"></div>
+
+      <section class="batch-info" aria-live="polite">
+        <h2 class="batch-info__name"></h2>
+        <p class="batch-info__meta"></p>
+        <p class="batch-info__desc"></p>
+      </section>
+
+      <ul class="people-grid" aria-label="Students in this batch"></ul>
+    </main>
+
+    <footer class="inner-foot">
+      <nav aria-label="Footer">
+        <a href="/">Home</a><a href="/batches/">Batches</a><a href="/alumni/">Alumni</a>
+      </nav>
+      <button class="term-open" type="button" aria-label="Open the HOPE terminal"><span aria-hidden="true">&gt;_</span> Terminal <kbd>`</kbd></button>
+      <p>HOPE, House of Programming Expertise</p>
+    </footer>
+
+    <script type="module" src="/src/pages/batches.js"></script>
+  </body>
+</html>

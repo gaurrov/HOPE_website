@@ -191,7 +191,7 @@ Type scale, fluid with `clamp()`:
 | Statement + 3D shapes | "Learn to code the way engineers do…": words **flip up** out of their lines (rotateX from −80°). Sticker glyphs float at different depths: near ones big, fast and spinning, far ones small, slow and blurred. Each also bobs gently on its own. | `scenes.js` |
 | About horizontal | **Tracks**: pinned horizontal strip. Cards **swing round a curve** (rotateY −38° → 0° → 38°, pushed back in z at the edges) so the strip echoes the hero ring. | `scenes.js` |
 | Location → Save the date | **The lab → Next batch**: an edge-detected sketch of the lab fills with colour, then batch dates and an Apply CTA rise in | `scenes.js` |
-| Warp | A starfield of ink-outlined code glyphs streams outward on white, faster the further you scroll | `warp.js` |
+| Warp | **Events deck**: one section, no title-only screen. Coming up / Past tabs with counts, a live countdown to the next event, and a drag/swipe card deck. Cards tilt toward the cursor, and clicking one opens a side panel with Register and Add to calendar (.ics). A cursor-reactive glyph field sits behind it all. | `events.js`, `glyphfield.js` |
 | Vibe heading + split | "Your first commit starts here" rides across the screen **on a wave** (each letter on a sine curve). Then the **Learn / Mentors** split slides together: Learn has the student apply CTA, Mentors links to the list. | `scenes.js` |
 | Sponsors / partners | **Meet the mentors** (cards dealt in from below, slightly rotated), then a marquee of places alumni went | `scenes.js` + CSS |
 | Footer | "See you in the lab", glow CTAs, sticker wordmark, socials, lite toggle | static |
@@ -216,6 +216,21 @@ Type scale, fluid with `clamp()`:
    or `prefers-reduced-motion: reduce`. In lite mode there is no intro, no Lenis, no pins and no bobbing;
    tracks become a swipeable row and the warp section is hidden. Every page must stay fully readable in lite mode.
 
+### 2.6a Interaction rules (the site must feel touchable)
+
+1. **Symbols react to the pointer.** Every floating code glyph (statement, join, inner-page headers, the events
+   field) is pushed away by the cursor or a dragging finger and springs back. DOM glyphs move on a `.glyph__push`
+   wrapper; canvas glyphs use the spring in `glyphfield.js`.
+2. **Grab things.** The hero ring spins when dragged (horizontal swipes on touch, with `touch-action: pan-y`), and the
+   hero letters lean toward the cursor on a `.l__lean` wrapper. The event deck drags with momentum.
+3. **Cards tilt.** Event, mentor and student cards tilt up to about 10° toward the cursor with a moving glare (`tilt()` in
+   `interact.js`). This only runs on fine pointers with hover. Tilt always targets an inner element, never the element a
+   scroll tween is animating.
+4. **The terminal.** On every public page, the backtick key (or the footer "Terminal" button) opens a console with
+   `help`, `events`, `next`, `batches <name>`, `alumni`, `mentors` and more. New pages should add their own command.
+5. Interactions answer the user, so they may run instantly (no scrub). Everything is keyboard reachable, and none of it
+   runs in lite mode.
+
 ### 2.7 Image rules
 
 - Every photo slot is a `[data-photo="slot-name"]` element. Never hard-code an `<img>` in a section.
@@ -226,7 +241,19 @@ Type scale, fluid with `clamp()`:
 - The lab sketch is generated in the browser by an SVG edge-detection filter (`#sketch` in
   `index.html`), so whatever photo goes in `venue` gets its line-drawing version for free.
 
-### 2.8 Rules for new pages
+### 2.8 Pages and data
+
+- Pages: `/` (home), `/batches/`, `/alumni/`, and the unlisted admin area `/hope-hq/`. Inner pages use the same
+  header, menu and tokens, and get one calm motion moment only: the title rises by character, the header glyphs
+  drift away and cards are dealt in.
+- All content comes from Supabase. Public pages read only published rows and public columns; the database
+  enforces this with RLS, so the UI never has to hide anything.
+- Student cards show name, photo, batch and "Placed at …" or "Works at …". Never put contact details, roll
+  numbers or marks on a public page.
+- Every list has a written empty state that says what will appear and when; never leave an empty grid.
+- Admin UI follows the same tokens but is dense and calm: white panels on `--mist`, ink primary buttons, no scroll animation.
+
+### 2.9 Rules for new pages
 
 - Start from the white `--bg` with the fixed chrome: menu button, progress bar, prev/next.
 - Give each page **one** pinned stage at most, unless it is the home page.

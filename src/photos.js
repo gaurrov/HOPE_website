@@ -33,7 +33,7 @@ export const photos = {
   'path-learn': '',
   'path-mentors': '',
 
-  // Mentor portraits are set in src/mentors.js
+  // Mentor, student and event photos are uploaded in the admin area
 };
 
 export const gallerySlots = Object.keys(photos).filter((k) => k.startsWith('gallery-'));

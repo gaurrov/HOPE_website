@@ -1,21 +1,30 @@
 import { photos } from './photos.js';
+import { mediaUrl } from './lib/supabase.js';
 
 const base = import.meta.env.BASE_URL;
 const tones = ['h', 'o', 'p', 'e'];
 
+// Photos uploaded by admins (Site photos tab) win over files listed in photos.js
+let siteMedia = {};
+export function setSiteMedia(map) {
+  siteMedia = map || {};
+}
+
 export function photoUrl(slot) {
+  if (siteMedia[slot]) return mediaUrl(siteMedia[slot]);
   const file = photos[slot];
   return file ? `${base}photos/${file}` : '';
 }
 
-// Fill one [data-photo] element with its image, or with a labelled placeholder.
+// Fill one [data-photo] or [data-src] element with its image, or with a labelled placeholder.
 export function fillFrame(el) {
   if (el.dataset.filled) return;
   el.dataset.filled = '1';
   el.classList.add('frame');
 
   const slot = el.dataset.photo;
-  const src = photoUrl(slot) || (el.dataset.fallback ? base + el.dataset.fallback : '');
+  const real = el.dataset.src || (slot ? photoUrl(slot) : '');
+  const src = real || (el.dataset.fallback ? base + el.dataset.fallback : '');
 
   if (src) {
     const img = document.createElement('img');
@@ -24,18 +33,27 @@ export function fillFrame(el) {
     img.decoding = 'async';
     if (!el.closest('.hero, .intro')) img.loading = 'lazy';
     el.prepend(img);
-    if (photoUrl(slot)) el.classList.add('has-photo');
+    if (real) el.classList.add('has-photo');
     return;
   }
 
   const ph = document.createElement('span');
   ph.className = 'frame__ph';
-  ph.innerHTML = `<span class="frame__label">${el.dataset.label || 'Photo'}</span><code class="frame__slot">${slot}</code>`;
+  const label = document.createElement('span');
+  label.className = 'frame__label';
+  label.textContent = el.dataset.label || 'Photo';
+  ph.append(label);
+  if (slot) {
+    const code = document.createElement('code');
+    code.className = 'frame__slot';
+    code.textContent = slot;
+    ph.append(code);
+  }
   el.append(ph);
 }
 
 export function fillAllFrames(root = document) {
-  root.querySelectorAll('[data-photo]').forEach(fillFrame);
+  root.querySelectorAll('[data-photo], [data-src]').forEach(fillFrame);
 }
 
 // Build a frame element for generated layouts (tunnel, ring).
@@ -45,6 +63,19 @@ export function makeFrame(slot, i, className) {
   el.dataset.photo = slot;
   el.dataset.label = 'Gallery photo';
   el.dataset.tone = tones[i % 4];
+  fillFrame(el);
+  return el;
+}
+
+// Frame for a database record's photo (student, mentor, event poster)
+export function recordFrame({ path, label, alt, i = 0, className = '' }) {
+  const el = document.createElement('div');
+  el.className = className;
+  el.dataset.tone = tones[i % 4];
+  el.dataset.label = label;
+  el.dataset.alt = alt || '';
+  const src = mediaUrl(path);
+  if (src) el.dataset.src = src;
   fillFrame(el);
   return el;
 }

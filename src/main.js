@@ -2,64 +2,75 @@ import './styles/tokens.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/sections.css';
+import './styles/pages.css';
 
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
-import { fillAllFrames } from './frames.js';
-import { photos } from './photos.js';
-import { mentors } from './mentors.js';
+import { fillAllFrames, setSiteMedia } from './frames.js';
+import { getSiteMedia, getMentors, getEvents, getCompanies } from './lib/data.js';
+import { el, emptyState, mentorCard } from './lib/render.js';
 import { runIntro, removeIntro } from './modules/intro.js';
 import { buildRing, setupHero } from './modules/hero.js';
-import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths, setupMentors } from './modules/scenes.js';
-import { setupWarp } from './modules/warp.js';
-import { setupChrome } from './modules/chrome.js';
+import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths, setupMentors, setupEvents } from './modules/scenes.js';
+import { setupEventDeck } from './modules/events.js';
+import { glyphField } from './modules/glyphfield.js';
+import { cursorGlyphs, tiltAll } from './modules/interact.js';
+import { setupTerminal } from './modules/terminal.js';
+import { setupChrome, setupSecretDoor } from './modules/chrome.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const root = document.documentElement;
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
-renderMentors();
-fillAllFrames();
-buildRing();
+// Never let a slow network hold the page: render with whatever has arrived after 2.5 s
+const withTimeout = (promise, fallback) => Promise.race([promise, new Promise((r) => setTimeout(() => r(fallback), 2500))]);
 
-// Mentor cards come from src/mentors.js; their photos join the manifest as mentor-1, mentor-2, ...
-function renderMentors() {
+function renderMentors(mentors) {
   const grid = document.querySelector('.mentors__grid');
-  const tones = ['h', 'o', 'p', 'e'];
-  mentors.forEach((m, i) => {
-    const slot = `mentor-${i + 1}`;
-    photos[slot] = m.photo;
-    const li = document.createElement('li');
-    li.className = 'mentor';
-    const frame = document.createElement('div');
-    Object.assign(frame.dataset, { photo: slot, label: 'Portrait', tone: tones[i % 4], alt: m.name });
-    const name = document.createElement('p');
-    name.className = 'mentor__name';
-    name.textContent = m.name;
-    const role = document.createElement('p');
-    role.className = 'mentor__role';
-    role.textContent = `${m.role}, ${m.department}`;
-    const tags = document.createElement('ul');
-    tags.className = 'mentor__tags';
-    tags.setAttribute('aria-label', 'Teaches');
-    m.teaches.forEach((t) => {
-      const tag = document.createElement('li');
-      tag.textContent = t;
-      tags.append(tag);
-    });
-    li.append(frame, name, role, tags);
-    grid.append(li);
-  });
+  if (!mentors.length) {
+    grid.replaceWith(emptyState('The mentors for the next batch will be listed here once the college assigns them.'));
+    return;
+  }
+  mentors.forEach((m, i) => grid.append(mentorCard(m, i)));
 }
 
-function startLite() {
+function renderCompanies(companies) {
+  if (!companies.length) return;
+  const section = document.querySelector('.alumni');
+  section.querySelectorAll('.marquee__list').forEach((list) => {
+    // Repeat short lists so the strip always fills the screen
+    const names = companies.length < 6 ? [...companies, ...companies, ...companies] : companies;
+    names.forEach((name) => list.append(el('li', 'company', name)));
+  });
+  section.hidden = false;
+}
+
+// Fetch the content, then build everything that depends on it
+async function buildPage() {
+  const [media, mentors, events, companies] = await Promise.all([
+    withTimeout(getSiteMedia(), {}),
+    withTimeout(getMentors(), []),
+    withTimeout(getEvents(), []),
+    withTimeout(getCompanies(), []),
+  ]);
+  setSiteMedia(media);
+  renderMentors(mentors);
+  setupEventDeck(events);
+  renderCompanies(companies);
+  fillAllFrames();
+  buildRing();
+  setupSecretDoor();
+}
+
+async function startLite() {
   root.classList.replace('full', 'lite');
   removeIntro();
-  setupChrome(null);
+  await buildPage();
+  setupTerminal({ go: setupChrome(null) });
 }
 
 function startFull() {
@@ -71,18 +82,26 @@ function startFull() {
   gsap.ticker.lagSmoothing(0);
   lenis.stop();
 
-  const heroIn = setupHero(lenis);
-  setupReveals();
-  setupStatement();
-  setupTracks();
-  setupVenue();
-  setupWarp();
-  setupPaths();
-  setupMentors();
-  setupChrome(lenis);
+  // The glitch loader runs while this builds; scroll scenes are measured after content is in place
+  const ready = buildPage().then(() => {
+    const heroIn = setupHero(lenis);
+    setupReveals();
+    setupStatement();
+    setupTracks();
+    setupVenue();
+    setupEvents();
+    setupPaths();
+    setupMentors();
+    // Interactive layer: glyph field behind events, glyphs dodge the cursor, cards tilt, terminal
+    glyphField(document.querySelector('.events__field'), { getVelocity: () => lenis.velocity });
+    cursorGlyphs('.statement__glyphs .glyph, .paths .glyph--float');
+    tiltAll('.mentor');
+    setupTerminal({ go: setupChrome(lenis) });
+    return heroIn;
+  });
 
   runIntro({
-    onReveal: heroIn,
+    ready,
     onDone() {
       lenis.start();
       ScrollTrigger.refresh();

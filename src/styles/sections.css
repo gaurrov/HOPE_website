@@ -449,25 +449,6 @@ html.lite .site-head__logo {
 }
 
 /* =========================================================
-   Warp: glyph starfield (canvas)
-   ========================================================= */
-.warp {
-  position: relative;
-  height: 220svh;
-  background: var(--bg);
-}
-.warp__pin {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-}
-.warp__canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/* =========================================================
    Join: heading rides across on a wave, then Learn / Mentors split
    ========================================================= */
 .paths__pin {
@@ -505,6 +486,7 @@ html.lite .site-head__logo {
 .split__panel {
   position: absolute;
   inset: 0;
+  overflow: hidden; /* photos slide in from the sides; keep them inside the panel */
 }
 .split__panel > .frame {
   position: absolute;
@@ -709,7 +691,6 @@ html.lite .site-head__logo {
 /* =========================================================
    Lite mode: no intro, no pins, nothing scroll-driven
    ========================================================= */
-html.lite .warp,
 html.lite .paths__pin .glyph--float {
   display: none;
 }

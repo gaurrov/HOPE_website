@@ -54,8 +54,8 @@ function aimAtO(mark) {
   return (reach * 1.15) / (ro.width * 0.2);
 }
 
-// Glitch the wordmark until the page is ready: colour-split slices, jitter and letter scrambles.
-function glitch(mark) {
+// Glitch the wordmark until the page and its data are ready: colour-split slices, jitter and letter scrambles.
+function glitch(mark, ready) {
   const r = gsap.utils.random;
   const letters = [...mark.querySelectorAll('.l')];
   // A full-colour copy whose sliced band tears sideways, then two colour-split ghosts
@@ -72,7 +72,7 @@ function glitch(mark) {
   mark.append(...layers);
 
   let loaded = false;
-  pageLoaded.then(() => (loaded = true));
+  Promise.all([pageLoaded, ready]).then(() => (loaded = true));
 
   return new Promise((resolve) => {
     const start = performance.now();
@@ -122,7 +122,8 @@ function glitch(mark) {
   });
 }
 
-export async function runIntro({ onReveal, onDone }) {
+// ready: resolves with the hero entrance function once the page content is built
+export async function runIntro({ ready, onDone }) {
   const mark = intro.querySelector('.intro__mark');
   const letters = mark.querySelectorAll('.l');
   const paper = intro.querySelector('.intro__paper');
@@ -131,8 +132,9 @@ export async function runIntro({ onReveal, onDone }) {
 
   intro.classList.add('is-live');
   const loading = gsap.to(bar, { scaleX: 0.85, duration: GLITCH_MIN / 1000, ease: 'power1.out' });
-  await glitch(mark);
+  await glitch(mark, ready.catch(() => null));
   loading.kill();
+  const onReveal = await ready;
 
   const { track, depth } = buildTunnel();
   letters.forEach((l, i) => {
