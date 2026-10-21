@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Batches | HOPE</title>
-    <meta name="description" content="HOPE batches: Elite, Batch 2, Batch 3 and more. See who is training in each batch and where they have been placed." />
+    <meta name="description" content="HOPE Elite and HOPE Batch 2: the students in each batch, the projects they built and where they were placed." />
     <meta name="theme-color" content="#FFFFFF" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wdth,wght@112.5,800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..800;1,400..700&display=swap"
     />
     <script>
       (function () {
@@ -53,17 +53,33 @@
 
     <main id="main" class="page">
       <h1 class="page__title split-chars">Batches</h1>
-      <p class="page__lead">Every HOPE batch trains together for a full programme. Pick a batch to see who is in it and where they have been placed.</p>
+      <p class="page__lead">Each HOPE batch is selected by the college and trains together for a full programme. Pick a batch to see its students, what they built and where they were placed.</p>
 
       <div class="chips" role="group" aria-label="Choose a batch"></div>
 
-      <section class="batch-info" aria-live="polite">
-        <h2 class="batch-info__name"></h2>
-        <p class="batch-info__meta"></p>
-        <p class="batch-info__desc"></p>
+      <section class="bhero" aria-live="polite">
+        <div class="bhero__text">
+          <h2 class="bhero__name"></h2>
+          <p class="bhero__dates"></p>
+          <p class="bhero__desc"></p>
+        </div>
+        <dl class="stats stats--batch">
+          <div class="stat"><dt>Students</dt><dd data-stat="students">0</dd></div>
+          <div class="stat"><dt>Placed or working</dt><dd data-stat="placed">0</dd></div>
+          <div class="stat"><dt>Top package</dt><dd data-stat="top" data-suffix=" LPA">0</dd></div>
+          <div class="stat"><dt>Projects</dt><dd data-stat="projects">0</dd></div>
+        </dl>
       </section>
 
-      <ul class="people-grid" aria-label="Students in this batch"></ul>
+      <div class="ptabs" role="tablist" aria-label="Batch details">
+        <button class="ptab" role="tab" id="ptab-students" aria-controls="panel-students" aria-selected="true" data-tab="students" type="button">Students</button>
+        <button class="ptab" role="tab" id="ptab-projects" aria-controls="panel-projects" aria-selected="false" data-tab="projects" type="button">Projects</button>
+        <button class="ptab" role="tab" id="ptab-placements" aria-controls="panel-placements" aria-selected="false" data-tab="placements" type="button">Placements</button>
+      </div>
+
+      <section class="ppanel" id="panel-students" role="tabpanel" aria-labelledby="ptab-students"></section>
+      <section class="ppanel ppanel--projects" id="panel-projects" role="tabpanel" aria-labelledby="ptab-projects" hidden></section>
+      <section class="ppanel" id="panel-placements" role="tabpanel" aria-labelledby="ptab-placements" hidden></section>
     </main>
 
     <footer class="inner-foot">

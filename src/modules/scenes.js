@@ -205,3 +205,43 @@ export function setupPlacements() {
     scrollTrigger: { trigger: '.placements__wall', start: 'top 95%', end: 'top 30%', scrub: 1 },
   });
 }
+
+// HOPE in numbers: each tile counts up from zero once it scrolls into view.
+export function setupNumbers() {
+  document.querySelectorAll('[data-num]').forEach((dd) => {
+    const target = Number(dd.dataset.value);
+    if (!dd.dataset.value || !target) return;
+    const suffix = dd.dataset.suffix || '';
+    const decimals = Number.isInteger(target) ? 0 : 1;
+    const obj = { v: 0 };
+    dd.textContent = `0${suffix}`;
+    gsap.to(obj, {
+      v: target,
+      duration: 1.4,
+      ease: 'power3.out',
+      onUpdate: () => (dd.textContent = `${obj.v.toFixed(decimals)}${suffix}`),
+      scrollTrigger: { trigger: dd, start: 'top 85%', once: true },
+    });
+  });
+  gsap.from('.stats--home .stat', {
+    y: 40,
+    autoAlpha: 0,
+    stagger: 0.06,
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.stats--home', start: 'top 90%', end: 'top 50%', scrub: 1 },
+  });
+}
+
+// FAQ: one answer open at a time; opening one eases it in.
+export function setupFaq() {
+  const items = [...document.querySelectorAll('.faq__item')];
+  items.forEach((d) => {
+    d.addEventListener('toggle', () => {
+      if (!d.open) return;
+      items.forEach((other) => other !== d && (other.open = false));
+      if (!document.documentElement.classList.contains('lite')) {
+        gsap.from(d.querySelector('p'), { y: -8, autoAlpha: 0, duration: 0.35, ease: 'power2.out' });
+      }
+    });
+  });
+}

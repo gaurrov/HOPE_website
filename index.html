@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wdth,wght@112.5,800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..800;1,400..700&display=swap"
     />
     <script>
       // Decide lite mode before first paint so nothing flashes.
@@ -76,12 +76,13 @@
         <li><a href="#tracks">Tracks</a></li>
         <li><a href="#lab">The lab</a></li>
         <li><a href="#events">Events</a></li>
+        <li><a href="#numbers">Numbers</a></li>
         <li><a href="#placements">Top placements</a></li>
         <li><a href="#mentors">Mentors</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="/batches/">Batches</a></li>
         <li><a href="/alumni/">Alumni</a></li>
-        <li><a href="#contact">Contact</a></li>
+        <li><a href="#faq">Questions</a></li>
       </ul>
     </nav>
 
@@ -123,6 +124,22 @@
           <span class="glyph glyph--3d glyph--far t-p" style="left:42%;top:6%;--d:0.55;--r:30;--bob:6.8s"><span class="glyph__bob">( )</span></span>
           <span class="glyph glyph--3d glyph--far t-e" style="left:90%;top:30%;--d:0.6;--r:-10;--bob:5.8s"><span class="glyph__bob">[ ]</span></span>
         </div>
+      </section>
+
+      <!-- ============ HOPE in numbers (live from the database) ============ -->
+      <section class="numbers" id="numbers" data-step aria-labelledby="numbers-title">
+        <h2 class="section-title split-lines" id="numbers-title">HOPE in numbers</h2>
+        <p class="mentors__note">Counted live from the batches, every time the page loads.</p>
+        <dl class="stats stats--home">
+          <div class="stat"><dt>Students trained</dt><dd data-num="students">0</dd></div>
+          <div class="stat"><dt>Placed or working</dt><dd data-num="placed">0</dd></div>
+          <div class="stat"><dt>Top package</dt><dd data-num="top_package" data-suffix=" LPA">0</dd></div>
+          <div class="stat"><dt>Average package</dt><dd data-num="avg_package" data-suffix=" LPA">0</dd></div>
+          <div class="stat"><dt>Companies hiring</dt><dd data-num="companies">0</dd></div>
+          <div class="stat"><dt>Projects built</dt><dd data-num="projects">0</dd></div>
+          <div class="stat"><dt>Events held</dt><dd data-num="events_held">0</dd></div>
+          <div class="stat"><dt>Certifications earned</dt><dd data-num="certifications">0</dd></div>
+        </dl>
       </section>
 
       <!-- ============ Tracks (horizontal) ============ -->
@@ -267,6 +284,36 @@
           <ul class="marquee__list" aria-hidden="true"></ul>
         </div>
         <a class="btn alumni__more" href="/alumni/"><span>Meet the alumni</span></a>
+      </section>
+      <!-- ============ FAQ ============ -->
+      <section class="faq" id="faq" data-step aria-labelledby="faq-title">
+        <h2 class="section-title split-lines" id="faq-title">Questions</h2>
+        <div class="faq__list">
+          <details class="faq__item">
+            <summary>What is HOPE?</summary>
+            <p>HOPE, the House of Programming Expertise, is the programming training house of Your College. Selected students train together in batches, with weekly sessions in the lab covering programming foundations, data structures and algorithms, web development, competitive programming and placement preparation.</p>
+          </details>
+          <details class="faq__item">
+            <summary>How are students selected for a batch?</summary>
+            <p>The college selects each batch. There is no application on this website: HOPE Elite and HOPE Batch 2 were chosen through the college selection process, and the coordinators announce new batches in class.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Who teaches the sessions?</summary>
+            <p>Mentors assigned by the college: faculty from the department, joined by HOPE alumni who come back to run system design and interview sessions. You can meet them in the Mentors section above.</p>
+          </details>
+          <details class="faq__item">
+            <summary>How does HOPE help with placements?</summary>
+            <p>Every batch ends with placement preparation: mock interviews with alumni, aptitude practice and resume reviews. Each batch page lists its students' projects and certifications, and the Top placements wall shows where HOPE students have been hired.</p>
+          </details>
+          <details class="faq__item">
+            <summary>Where can I see each batch's students and projects?</summary>
+            <p>On the Batches page. Pick HOPE Elite or HOPE Batch 2 to search the students, see the projects they built and the placement board. Alumni have their own page.</p>
+          </details>
+          <details class="faq__item">
+            <summary>How do I contact the coordinators?</summary>
+            <p>Email hope@yourcollege.edu. The coordinators reply within a few working days.</p>
+          </details>
+        </div>
       </section>
     </main>
 

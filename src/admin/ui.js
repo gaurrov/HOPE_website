@@ -90,6 +90,12 @@ export function formDialog({ title, fields, values = {}, submitLabel = 'Save', o
       } else if (f.type === 'select') {
         control = h('select', { id, name: f.name }, ...f.options.map((o) => h('option', { value: o.value, text: o.label })));
         control.value = v ?? f.options[0]?.value ?? '';
+      } else if (f.type === 'multiselect') {
+        // Pick several (e.g. project members); hold Ctrl or Cmd to select more than one
+        control = h('select', { id, name: f.name, multiple: true, size: Math.min(10, Math.max(4, f.options.length)) },
+          ...f.options.map((o) => h('option', { value: o.value, text: o.label })));
+        const chosen = new Set(v || []);
+        [...control.options].forEach((o) => (o.selected = chosen.has(o.value)));
       } else if (f.type === 'checkbox') {
         control = h('input', { id, name: f.name, type: 'checkbox' });
         control.checked = v ?? f.default ?? false;
@@ -114,7 +120,7 @@ export function formDialog({ title, fields, values = {}, submitLabel = 'Save', o
         control._remove = remove;
       } else {
         const type = { datetime: 'datetime-local', tags: 'text' }[f.type] || f.type || 'text';
-        control = h('input', { id, name: f.name, type, placeholder: f.placeholder, step: f.type === 'datetime' ? 60 : null });
+        control = h('input', { id, name: f.name, type, placeholder: f.placeholder, step: f.type === 'datetime' ? 60 : f.step ?? null, min: f.min ?? null });
         control.value =
           f.type === 'datetime' ? toLocalInput(v) : f.type === 'tags' ? (v || []).join(', ') : v ?? (f.default ?? '');
       }
@@ -149,6 +155,7 @@ export function formDialog({ title, fields, values = {}, submitLabel = 'Save', o
         if (f.type === 'checkbox') out[f.name] = c.checked;
         else if (f.type === 'image') out[f.name] = { previous: values[f.name] || null, file: c._file.files[0] || null, remove: c._remove.checked };
         else if (f.type === 'tags') out[f.name] = c.value.split(',').map((t) => t.trim()).filter(Boolean);
+        else if (f.type === 'multiselect') out[f.name] = [...c.selectedOptions].map((o) => o.value);
         else if (f.type === 'number') out[f.name] = c.value === '' ? null : Number(c.value);
         else if (f.type === 'datetime') out[f.name] = c.value ? new Date(c.value).toISOString() : null;
         else out[f.name] = blankToNull(c.value);

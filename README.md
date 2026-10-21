@@ -19,8 +19,8 @@ npm run build    # outputs to dist/
 | Address | What it is |
 |---|---|
 | `/` | Home page (scroll story, events, mentors, company strip) |
-| `/batches/` | One tab per batch; `/batches/?b=elite` opens a batch directly |
-| `/alumni/` | Alumni with where they work, filterable by batch |
+| `/batches/` | Pick a batch: live stats, then Students (search, filter, sort, grid or list, profiles), Projects and Placements tabs. `?b=elite&tab=projects&student=<id>` links straight to any view |
+| `/alumni/` | Alumni with the same search, filters and profiles, narrowed by batch |
 | `/hope-hq/` | **Admin area.** Not linked anywhere. Also opens by clicking the footer HOPE logo 5 times. Needs an admin login. |
 
 ## Data and the admin area (Supabase)
@@ -31,14 +31,19 @@ All content (events, batches, students, alumni, mentors, admins, photos) lives i
 - **Events**: upcoming and past (decided by the date), with poster, venue and registration link.
 - **Students**: public fields (name, photo, batch, company) plus admin-only fields (roll number, email, phone,
   department, year, job role, LinkedIn, notes). Import and export as CSV. Tick "Alumni" to list someone on the Alumni page.
+- **Projects**: title, batch, tech, links, screenshot and team members (with a lead).
 - **Batches**, **Mentors**, **Site photos** (the design photo slots) and **Admins** (invite by email, remove).
+- **Sample data**: the mock HOPE Elite and HOPE Batch 2 content is flagged as sample. Delete all of it in one click from
+  this tab once real data is in; anything an admin adds is never touched.
+
+The home page "HOPE in numbers" is counted live by `public.get_hope_stats()` from whatever the public can see.
 
 Who can see what is enforced by the database (Row Level Security), not by the website code:
 
 | Data | Public website | Admins |
 |---|---|---|
 | Events, batches, mentors, site photos | Published rows | Everything, can edit |
-| Students | Name, photo, batch, company | Everything, can edit |
+| Students | Name, photo, batch, company, package, skills, certifications, projects | Everything, can edit |
 | Student private details, admin list | Never | Everything, can edit |
 
 Schema: `supabase/migrations/`. Invite/remove admins: `supabase/functions/manage-admins/` (Edge Function).

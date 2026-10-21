@@ -50,8 +50,8 @@ html.full .intro {
   mix-blend-mode: multiply;
   pointer-events: none;
 }
-.glitch-layer--h { color: var(--h); }
-.glitch-layer--e { color: var(--e); }
+.glitch-layer--h { color: var(--ink); opacity: 0.55; }
+.glitch-layer--e { color: var(--grey); }
 /* The tear band hides the letters under it so the shifted copy reads as a break */
 .glitch-layer--tear {
   background: var(--bg);
@@ -130,6 +130,9 @@ html.full .intro {
   translate: 0 -8px;
   transition: opacity 0.4s, translate 0.4s var(--ease-out);
 }
+.site-head__logo span {
+  color: var(--ink);
+}
 .site-head__logo.is-visible,
 html.lite .site-head__logo {
   opacity: 1;
@@ -174,10 +177,9 @@ html.lite .site-head__logo {
   text-decoration-thickness: 0.08em;
   text-underline-offset: 0.12em;
 }
-.menu li:nth-child(4n + 1) a:hover { text-decoration-color: var(--h); }
-.menu li:nth-child(4n + 2) a:hover { text-decoration-color: var(--o); }
-.menu li:nth-child(4n + 3) a:hover { text-decoration-color: var(--p); }
-.menu li:nth-child(4n + 4) a:hover { text-decoration-color: var(--e); }
+.menu a:hover::before {
+  content: '> ';
+}
 
 .progress {
   position: fixed;
@@ -586,10 +588,9 @@ html.lite .site-head__logo {
   font-size: var(--step-small);
   font-weight: 600;
 }
-.mentor__tags li:nth-child(4n + 1) { border-color: var(--h); }
-.mentor__tags li:nth-child(4n + 2) { border-color: var(--o); }
-.mentor__tags li:nth-child(4n + 3) { border-color: var(--p); }
-.mentor__tags li:nth-child(4n + 4) { border-color: var(--e); }
+.mentor__tags li {
+  border-color: var(--ink);
+}
 
 .alumni {
   display: grid;

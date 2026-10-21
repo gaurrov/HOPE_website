@@ -1,6 +1,6 @@
 // Card builders shared by the public pages. Text goes in via textContent, never innerHTML.
 import { recordFrame } from '../frames.js';
-import { employmentLine } from './data.js';
+import { employmentLine, formatPackage } from './data.js';
 
 export function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -56,7 +56,7 @@ export function placementCard(s, i) {
   const info = el('div', 'placement__info');
   info.append(el('p', 'placement__name', s.full_name));
   if (s.company) info.append(el('p', 'placement__company', s.company));
-  const extra = [s.package, s.batch?.name].filter(Boolean).join(', ');
+  const extra = [formatPackage(s.package_lpa), s.batch?.name].filter(Boolean).join(', ');
   if (extra) info.append(el('p', 'placement__extra', extra));
   frame.append(info);
   li.append(frame);

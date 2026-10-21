@@ -11,6 +11,8 @@ import { eventsView, batchesView, mentorsView } from './crud.js';
 import { studentsView } from './students.js';
 import { adminsView } from './admins.js';
 import { sitePhotosView } from './sitephotos.js';
+import { projectsView } from './projects.js';
+import { sampleDataView } from './sample.js';
 
 const app = document.getElementById('app');
 const linkType = window.__authLinkType; // 'invite' or 'recovery' when opened from an email
@@ -111,10 +113,12 @@ function dashboard(user, me) {
   const tabs = [
     { id: 'events', label: 'Events', mount: eventsView },
     { id: 'students', label: 'Students', mount: studentsView },
+    { id: 'projects', label: 'Projects', mount: projectsView },
     { id: 'batches', label: 'Batches', mount: batchesView },
     { id: 'mentors', label: 'Mentors', mount: mentorsView },
     { id: 'photos', label: 'Site photos', mount: sitePhotosView },
     { id: 'admins', label: 'Admins', mount: adminsView(user.id) },
+    { id: 'sample', label: 'Sample data', mount: sampleDataView },
   ];
   const panel = h('section', { class: 'panel', tabindex: '-1' });
   const nav = h(

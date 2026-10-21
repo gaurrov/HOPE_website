@@ -8,15 +8,16 @@ const GLYPHS = ['{', '}', ';', '</>', '=>', '#', '()', '[]', '+', '&&', '//', '!
 export function glyphField(canvas, { getVelocity = () => 0 } = {}) {
   const ctx = canvas.getContext('2d');
   const css = getComputedStyle(document.documentElement);
-  const colors = ['--h', '--o', '--p', '--e'].map((t) => css.getPropertyValue(t).trim());
-  const ink = css.getPropertyValue('--ink').trim();
+  // Monochrome mix: white outlined, solid black and grey glyphs
+  const [paper, ink, grey] = ['--paper', '--ink', '--grey'].map((t) => css.getPropertyValue(t).trim());
+  const colors = [paper, ink, paper, grey];
   const font = css.getPropertyValue('--font-mono').trim();
 
   let w = 0;
   let h = 0;
   const pointer = { x: -9999, y: -9999 };
-  // One glyph per ~20,000 px² of section: about 25 on a phone, capped at 70 on large screens
-  const count = Math.round(Math.min(70, Math.max(18, (canvas.clientWidth * canvas.clientHeight) / 20000)));
+  // One glyph per ~38,000 px² of section: about 14 on a phone, capped at 40 on large screens
+  const count = Math.round(Math.min(40, Math.max(12, (canvas.clientWidth * canvas.clientHeight) / 38000)));
   const parts = Array.from({ length: count }, (_, i) => ({
     glyph: GLYPHS[i % GLYPHS.length],
     color: colors[i % 4],
@@ -81,7 +82,7 @@ export function glyphField(canvas, { getVelocity = () => 0 } = {}) {
       ctx.save();
       ctx.translate(bx + p.ox, by + p.oy);
       ctx.rotate(Math.sin(p.rot) * 0.5);
-      ctx.globalAlpha = 0.35 + 0.55 * Math.min(1, p.d);
+      ctx.globalAlpha = 0.2 + 0.5 * Math.min(1, p.d);
       ctx.font = `800 ${size}px ${font}`;
       ctx.fillStyle = p.color;
       ctx.lineWidth = Math.max(1, size * 0.07);

@@ -10,11 +10,11 @@ import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 
 import { fillAllFrames, setSiteMedia } from './frames.js';
-import { getSiteMedia, getMentors, getEvents, getCompanies, getBatches, getBatchStats, getFeatured, getTeam } from './lib/data.js';
+import { getSiteMedia, getMentors, getEvents, getCompanies, getBatches, getBatchStats, getFeatured, getTeam, getStats } from './lib/data.js';
 import { el, emptyState, mentorCard, placementCard, teamCard } from './lib/render.js';
 import { runIntro, removeIntro } from './modules/intro.js';
 import { buildRing, setupHero } from './modules/hero.js';
-import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths, setupMentors, setupEvents, setupPlacements } from './modules/scenes.js';
+import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths, setupMentors, setupEvents, setupPlacements, setupNumbers, setupFaq } from './modules/scenes.js';
 import { setupEventDeck } from './modules/events.js';
 import { glyphField } from './modules/glyphfield.js';
 import { cursorGlyphs, tiltAll } from './modules/interact.js';
@@ -80,6 +80,16 @@ function renderTeam(team) {
   team.forEach((a, i) => grid.append(teamCard(a, i)));
 }
 
+// HOPE in numbers: write the final values; the scroll scene counts up to them
+function renderStats(stats) {
+  document.querySelectorAll('[data-num]').forEach((dd) => {
+    const v = stats?.[dd.dataset.num];
+    const n = v == null ? null : Number(v);
+    dd.dataset.value = n ?? '';
+    dd.textContent = n == null || (n === 0 && dd.dataset.suffix) ? '-' : `${n}${dd.dataset.suffix || ''}`;
+  });
+}
+
 function renderCompanies(companies) {
   if (!companies.length) return;
   const section = document.querySelector('.alumni');
@@ -93,7 +103,7 @@ function renderCompanies(companies) {
 
 // Fetch the content, then build everything that depends on it
 async function buildPage() {
-  const [media, mentors, events, companies, batches, stats, featured, team] = await Promise.all([
+  const [media, mentors, events, companies, batches, stats, featured, team, numbers] = await Promise.all([
     withTimeout(getSiteMedia(), {}),
     withTimeout(getMentors(), []),
     withTimeout(getEvents(), []),
@@ -102,11 +112,13 @@ async function buildPage() {
     withTimeout(getBatchStats(), {}),
     withTimeout(getFeatured(), []),
     withTimeout(getTeam(), []),
+    withTimeout(getStats(), null),
   ]);
   setSiteMedia(media);
   renderBatches(batches, stats);
   renderPlacements(featured);
   renderTeam(team);
+  renderStats(numbers);
   renderMentors(mentors);
   setupEventDeck(events);
   renderCompanies(companies);
@@ -120,6 +132,7 @@ async function startLite() {
   removeIntro();
   await buildPage();
   setupTerminal({ go: setupChrome(null) });
+  setupFaq();
 }
 
 function startFull() {
@@ -142,12 +155,14 @@ function startFull() {
     setupPaths();
     setupMentors();
     setupPlacements();
+    setupNumbers();
     // Interactive layer: glyph field behind events, glyphs dodge the cursor, cards tilt, terminal
     glyphField(document.querySelector('.events__field'), { getVelocity: () => lenis.velocity });
     cursorGlyphs('.statement__glyphs .glyph, .paths .glyph--float');
     tiltAll('.mentor, .member');
     tiltAll('.placement', { max: 12, lift: 50 });
     setupTerminal({ go: setupChrome(lenis) });
+    setupFaq();
     return heroIn;
   });
 

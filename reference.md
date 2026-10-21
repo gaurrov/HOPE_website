@@ -115,64 +115,59 @@ it's a reasonable reading of the evidence that I didn't confirm in source.
 
 ### 2.1 Concept
 
-HOPE is a programming training house, so the visual language comes from **a code editor's syntax
-highlighting**. The reference builds on Google's four brand colours; HOPE builds on four syntax token
-colours, one per letter of **H‑O‑P‑E**. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
+HOPE is a programming training house, so the site looks like **a code editor in black and white**: one coding
+typeface, pure white pages, black ink. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
 
-The page is **white and clean**. Colour comes from the four tokens and from photos, never from tinted
-backgrounds. Brand shapes (the wordmark and glyphs) use a **sticker** treatment: token-colour fill, an
-ink outline and a hard ink extrusion. That gives them the solid 3D presence the reference gets from WebGL.
+There is no colour in the interface. Photos are shown in black and white and come into colour when pointed at,
+so they are the only colour on the page and only while someone engages with them. Brand shapes (the wordmark,
+glyphs, event dates) use an **outline sticker**: white fill, black outline, hard black extrusion.
 
 ### 2.2 Colour tokens (`src/styles/tokens.css`)
 
 | Token | Value | Role |
 |---|---|---|
 | `--paper` / `--bg` | `#FFFFFF` | Page background, everywhere |
-| `--ink` / `--fg` | `#0D1330` | Text, outlines, sticker extrusions |
-| `--mist` | `#F3F5FA` | Placeholder frames, quiet surfaces |
-| `--muted` | `#5B6488` | Secondary text (5.9:1 on white) |
-| `--line` | ink at 12% | Hairlines, tracks, tag borders |
-| `--on-photo` | `#FFFFFF` | Text sitting on a photo, always over a `.frame--shade` gradient |
-| `--h` | `#4FC3F7` | H, cyan (function names) |
-| `--o` | `#FFB547` | O, amber (numbers) |
-| `--p` | `#7EE081` | P, green (strings) |
-| `--e` | `#FF6FA3` | E, pink (keywords) |
+| `--ink` / `--fg` | `#000000` | Text, outlines, extrusions, buttons, progress bar |
+| `--mist` | `#F3F3F3` | Placeholder frames, quiet surfaces |
+| `--grey` | `#8C8C8C` | Secondary glyphs, glitch ghost |
+| `--muted` | `#5E5E5E` | Secondary text (6.4:1 on white) |
+| `--line` | black at 14% | Hairlines, tracks, tag borders |
+| `--on-photo` | `#FFFFFF` | Text on a photo, always over a `.frame--shade` gradient |
+| `--h` `--o` `--p` `--e` | `#FFFFFF` | Fills for outlined shapes only (kept as separate tokens so a letter can be re-tinted later) |
 
 Rules:
-- Each of H, O, P, E keeps its own colour wherever the wordmark appears.
-- The four token colours appear **together** (as a gradient, a border or a glyph field) or as one
-  colour per item in a list. Never pick one token as a site-wide accent.
-- Token colours are too light for body text on white. Use them only as fills with an ink outline,
-  borders or decoration. Text is always `--fg` on `--bg`, or `--on-photo` over a shaded photo.
+- Black and white only. Do not introduce an accent colour; use weight, size, outline, underline or inversion
+  (black background, white text) for emphasis.
+- Buttons are black-outlined pills that invert to black on hover.
+- Photos: `filter: grayscale(1)` by default, full colour on hover or focus of their card.
 
 ### 2.3 Typography
 
-| Family | Use |
-|---|---|
-| **Martian Mono** (wdth 112.5, wght 800) | The HOPE wordmark and code glyphs only |
-| **Bricolage Grotesque** (variable, opsz 12–96, wght 400–800) | Headlines and body |
+**JetBrains Mono** (variable, 400–800, with italics) for everything: wordmark, headings, body, UI and the terminal.
+Its programming ligatures render `=>`, `!=`, `&&` and `//` as single shapes, the way a code editor does.
 
 Type scale, fluid with `clamp()`:
 
 | Step | Size | Weight | Use |
 |---|---|---|---|
-| `--step-hero` | clamp(5rem, 22vw, 18rem) | 800 mono | Wordmark |
-| `--step-display` | clamp(3rem, 9vw, 8.5rem) | 720 | Section statements and pinned headings |
-| `--step-h2` | clamp(2.25rem, 5vw, 4.5rem) | 720 | Card and panel titles |
-| `--step-lead` | clamp(1.15rem, 1.6vw, 1.5rem) | 500–600 | Lead paragraphs |
-| `--step-body` | 1.0625rem | 400 | Body |
+| `--step-hero` | clamp(5rem, 22vw, 18rem) | 800 | Wordmark |
+| `--step-display` | clamp(2.6rem, 7.5vw, 7rem) | 720 | Section statements and pinned headings |
+| `--step-h2` | clamp(2rem, 4.2vw, 3.75rem) | 720 | Card and panel titles |
+| `--step-lead` | clamp(1.05rem, 1.4vw, 1.3rem) | 500–600 | Lead paragraphs |
+| `--step-body` | 1rem | 400 | Body (monospace runs wide, so it is a step smaller than a sans body) |
 | `--step-small` | 0.875rem | 500 | Meta, footer |
 
 - Sentence case everywhere. No all-caps labels, no letter-spaced eyebrows.
-- Display line-height 0.98 with tracking −0.015em (tighter makes Bricolage letters collide); body line-height 1.55.
-- Keep line length under 70 characters (`max-width: 34ch` for leads).
+- Monospace is wide: keep leads to about 50ch and statements to about 17ch.
+- To try another coding face, change `--font-mono` in `tokens.css` and the Google Fonts link in the four HTML files
+  (good alternatives: IBM Plex Mono, Space Mono, Geist Mono, Fira Code).
 
 ### 2.4 Components
 
 | Component | Spec |
 |---|---|
-| **Sticker wordmark / glyph** (`.wordmark--3d`, `.glyph--3d`) | Token fill, `-webkit-text-stroke: 0.03em` ink, five stacked ink `text-shadow`s for the extrusion, plus one soft shadow. Same look as the loader. |
-| **Glow button** (`.btn`) | Pill. White fill, 1.5px border made from a conic gradient of the four tokens, and a blurred copy behind it as a glow. On hover the gradient rotates (`@property --angle`). The label names the action, such as "See HOPE Elite". |
+| **Outline sticker** (`.wordmark--3d`, `.glyph--3d`) | White fill, `-webkit-text-stroke: 0.03em` black, five stacked black `text-shadow`s for the extrusion, plus one soft shadow. Same look as the loader. |
+| **Button** (`.btn`) | Pill. White fill, 1.5px black border, faint shadow. Inverts to black with white text on hover. The label names the action, such as "See HOPE Elite". |
 | **Icon button** (`.icon-btn`) | 44×44 rounded square (menu) or 52px circle (prev/next, socials) with the same border and glow. |
 | **Photo frame** (`[data-photo]`) | Every image slot on the site. With no photo, it renders a light tinted placeholder that shows the slot name; with a photo, it renders an `<img>`. See "Adding photos" in `README.md`. |
 | **Parallelogram card** (`.track`) | Full-bleed photo cut with `clip-path` to a 12% skew, 2.5vw apart. Bottom shade; white title and copy bottom-left. Swings in 3D as it crosses the screen. |
@@ -251,8 +246,11 @@ Type scale, fluid with `clamp()`:
   drift away and cards are dealt in.
 - All content comes from Supabase. Public pages read only published rows and public columns; the database
   enforces this with RLS, so the UI never has to hide anything.
-- Student cards show name, photo, batch and "Placed at …" or "Works at …". Never put contact details, roll
-  numbers or marks on a public page.
+- Student cards show name, photo (or initials), batch, "Placed at …" or "Works at …", package, skills and
+  certifications. Never put contact details, roll numbers, marks or profile links on a public page.
+- Data pages follow one pattern (`src/lib/people.js`): live stat tiles, tabs, a toolbar (search, filter chips, sort,
+  grid/list), results that can be dealt in, and a side panel for details. Every view is reachable by URL
+  (`?b=`, `?tab=`, `?student=`). While data loads, stats show "..." and stale responses are ignored.
 - Every list has a written empty state that says what will appear and when; never leave an empty grid.
 - Admin UI follows the same tokens but is dense and calm: white panels on `--mist`, ink primary buttons, no scroll animation.
 

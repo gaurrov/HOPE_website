@@ -19,6 +19,9 @@
   color: var(--muted);
   text-align: center;
 }
+.admin-mark span {
+  color: var(--ink);
+}
 .admin-mark {
   font-size: 1.35rem;
   text-decoration: none;
@@ -55,7 +58,7 @@
   color: var(--paper);
 }
 .abtn--primary:hover {
-  background: #1d2a5c;
+  background: #262626;
 }
 .abtn--danger {
   color: #b3261e;
@@ -145,7 +148,7 @@
 .field textarea:focus-visible,
 .asearch:focus-visible,
 .aselect:focus-visible {
-  outline: 2px solid var(--h);
+  outline: 2px solid var(--ink);
   outline-offset: 1px;
   border-color: var(--ink);
 }
@@ -532,4 +535,24 @@
   .atable__actions {
     text-align: left;
   }
+}
+
+/* ---------- Multi-select and sample data ---------- */
+.field select[multiple] {
+  min-height: 9rem;
+  padding: 0.35rem;
+}
+.field select[multiple] option {
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+}
+.sample-list {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.sample-list strong {
+  display: inline-block;
+  min-width: 2.5rem;
+  font-size: 1.25rem;
 }

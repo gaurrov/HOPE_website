@@ -39,6 +39,15 @@ export function fillFrame(el) {
 
   const ph = document.createElement('span');
   ph.className = 'frame__ph';
+  if (el.dataset.initials) {
+    const initials = document.createElement('span');
+    initials.className = 'frame__initials';
+    initials.textContent = el.dataset.initials;
+    ph.append(initials);
+    el.classList.add('frame--person');
+    el.append(ph);
+    return;
+  }
   const label = document.createElement('span');
   label.className = 'frame__label';
   label.textContent = el.dataset.label || 'Photo';
@@ -68,16 +77,23 @@ export function makeFrame(slot, i, className) {
 }
 
 // Frame for a database record's photo (student, mentor, event poster)
-export function recordFrame({ path, label, alt, i = 0, className = '' }) {
+export function recordFrame({ path, label, alt, i = 0, className = '', initialsOf = '' }) {
   const el = document.createElement('div');
   el.className = className;
   el.dataset.tone = tones[i % 4];
   el.dataset.label = label;
   el.dataset.alt = alt || '';
+  if (initialsOf) el.dataset.initials = initials(initialsOf);
   const src = mediaUrl(path);
   if (src) el.dataset.src = src;
   fillFrame(el);
   return el;
+}
+
+// "Priya Lakshmi" → "PL"; titles like "Dr." are skipped
+export function initials(name) {
+  const parts = String(name).replace(/^(dr|mr|ms|mrs|prof)\.?\s+/i, '').split(/\s+/).filter((p) => /^[A-Za-z]/.test(p));
+  return ((parts[0]?.[0] || '') + (parts.length > 1 ? parts.at(-1)[0] : '')).toUpperCase();
 }
 
 // CSS background for a letter of the intro wordmark: a photo, or a tinted stripe pattern.

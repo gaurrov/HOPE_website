@@ -11,7 +11,8 @@ async function run(query, fallback = []) {
   return data ?? fallback;
 }
 
-const STUDENT_COLUMNS = 'id, full_name, photo_path, employment, company, is_alumni, batch:batches(id, slug, name)';
+const STUDENT_COLUMNS =
+  'id, full_name, photo_path, employment, company, package_lpa, skills, certifications, is_alumni, is_featured, batch:batches(id, slug, name)';
 
 export const getBatches = () =>
   run(supabase?.from('batches').select('id, slug, name, description, starts_on, ends_on').order('sort_order').order('name'));
@@ -27,9 +28,9 @@ export const getFeatured = () =>
   run(
     supabase
       ?.from('students')
-      .select('id, full_name, photo_path, employment, company, package, batch:batches(slug, name)')
+      .select('id, full_name, photo_path, employment, company, package_lpa, batch:batches(slug, name)')
       .eq('is_featured', true)
-      .order('full_name'),
+      .order('package_lpa', { ascending: false, nullsFirst: false }),
   );
 
 // Admins who chose to appear on the site: name, designation and photo only (see public.get_team)
@@ -47,6 +48,23 @@ export async function getBatchStats() {
   });
   return stats;
 }
+
+// Projects with their team members; pass a batch id to limit to one batch
+export function getProjects(batchId) {
+  let q = supabase
+    ?.from('projects')
+    .select('id, title, summary, tech, kind, image_path, repo_url, demo_url, is_featured, batch:batches(slug, name), members:project_members(role, student:students(id, full_name, photo_path))')
+    .order('is_featured', { ascending: false })
+    .order('title');
+  if (q && batchId) q = q.eq('batch_id', batchId);
+  return run(q);
+}
+
+// Live numbers for "HOPE in numbers" (counts only what the public can see)
+export const getStats = () => run(supabase?.rpc('get_hope_stats'), null);
+
+// 24 → "24 LPA", 9.5 → "9.5 LPA"
+export const formatPackage = (lpa) => (lpa == null ? '' : `${Number(lpa)} LPA`);
 
 export const getMentors = () =>
   run(supabase?.from('mentors').select('id, full_name, role, department, teaches, photo_path').order('sort_order').order('full_name'));

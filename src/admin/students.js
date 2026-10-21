@@ -1,17 +1,18 @@
 // Students: public row in `students`, private details in `student_private` (admin-only). CSV import/export.
 import { supabase } from '../lib/supabase.js';
-import { employmentLine } from '../lib/data.js';
+import { employmentLine, formatPackage } from '../lib/data.js';
 import { h, table, thumb, toast, formDialog, confirmAction, resolveImage, removeImage, errorMessage } from './ui.js';
 import { parseCsv, toCsv, download } from './csv.js';
 
 const PRIVATE_KEYS = ['roll_no', 'email', 'phone', 'department', 'year_of_study', 'job_role', 'linkedin_url', 'notes'];
-const CSV_HEADERS = ['full_name', 'batch', 'roll_no', 'email', 'phone', 'department', 'year_of_study', 'employment', 'company', 'package', 'is_featured', 'job_role', 'linkedin_url', 'is_alumni', 'notes'];
+const CSV_HEADERS = ['full_name', 'batch', 'roll_no', 'email', 'phone', 'department', 'year_of_study', 'employment', 'company', 'package_lpa', 'is_featured', 'skills', 'certifications', 'job_role', 'linkedin_url', 'is_alumni', 'notes'];
+const list = (v) => String(v || '').split(/[;,]/).map((x) => x.trim()).filter(Boolean);
 const truthy = (v) => /^(y|yes|true|1)$/i.test(String(v || '').trim());
 const one = (v) => (Array.isArray(v) ? v[0] : v) || {};
 
 function studentFields(batches) {
   return [
-    { type: 'heading', label: 'Shown on the website', hint: 'Name, photo, batch, company, and package for top placements' },
+    { type: 'heading', label: 'Shown on the website', hint: 'Name, photo, batch, placement, skills and certifications' },
     { name: 'full_name', label: 'Full name', required: true },
     { name: 'batch_id', label: 'Batch', type: 'select', options: [{ value: '', label: 'No batch' }, ...batches.map((b) => ({ value: b.id, label: b.name }))] },
     {
@@ -27,7 +28,9 @@ function studentFields(batches) {
     { name: 'company', label: 'Company', placeholder: 'Shown as "Placed at …" or "Works at …"' },
     { name: 'photo_path', label: 'Photo', type: 'image', wide: true },
     { name: 'is_featured', label: 'Top placement (shows on the home page wall)', type: 'checkbox' },
-    { name: 'package', label: 'Package (optional)', placeholder: '12 LPA', hint: 'Shown only on the Top placements wall, and only if filled in.' },
+    { name: 'package_lpa', label: 'Package in LPA (optional)', type: 'number', step: 0.01, min: 0, placeholder: '12', hint: 'Lakhs per annum, e.g. 9.5. Shown only if filled in.' },
+    { name: 'skills', label: 'Skills', type: 'tags', placeholder: 'Java, DSA, React', hint: 'Separate with commas.', wide: true },
+    { name: 'certifications', label: 'Certifications', type: 'tags', placeholder: 'AWS Cloud Practitioner, NPTEL DSA', hint: 'Separate with commas.', wide: true },
     { name: 'is_alumni', label: 'Alumni (shows on the Alumni page)', type: 'checkbox' },
     { name: 'is_published', label: 'Show on the website', type: 'checkbox', default: true },
     { type: 'heading', label: 'Admin only', hint: 'Never shown on the website' },
@@ -51,7 +54,9 @@ async function saveStudent(existingId, values) {
     photo_path: values.photo_path,
     is_alumni: values.is_alumni,
     is_featured: values.is_featured,
-    package: values.package,
+    package_lpa: values.package_lpa,
+    skills: values.skills || [],
+    certifications: values.certifications || [],
     is_published: values.is_published,
   };
   let id = existingId;
@@ -148,7 +153,7 @@ export async function studentsView(panel) {
           { label: 'Email', render: (r) => r.private.email || '' },
           { label: 'Phone', render: (r) => r.private.phone || '' },
           { label: 'Status', render: (r) => (r.is_alumni ? 'Alumni' : 'Student') },
-          { label: 'Placement', render: (r) => [employmentLine(r), r.package].filter(Boolean).join(', ') },
+          { label: 'Placement', render: (r) => [employmentLine(r), formatPackage(r.package_lpa)].filter(Boolean).join(', ') },
           { label: 'Top', render: (r) => (r.is_featured ? 'Yes' : '') },
           { label: 'On site', render: (r) => (r.is_published ? 'Yes' : 'No') },
         ],
@@ -226,7 +231,9 @@ export async function studentsView(panel) {
             photo_path: null,
             is_alumni: truthy(r.is_alumni || r.alumni),
             is_featured: truthy(r.is_featured),
-            package: r.package || null,
+            package_lpa: r.package_lpa ? Number(String(r.package_lpa).replace(/[^0-9.]/g, '')) || null : null,
+            skills: list(r.skills),
+            certifications: list(r.certifications),
             is_published: true,
             roll_no: r.roll_no || null,
             email: r.email || null,
@@ -253,7 +260,7 @@ export async function studentsView(panel) {
       h('h2', { class: 'modal__title', text: 'Import students from CSV' }),
       h('p', {
         class: 'modal__message',
-        text: 'Use one row per student. Only full_name is required. The batch column takes the batch name or its short name (for example HOPE Elite or elite). Use "placed" or "working" in the employment column, and "yes" in is_alumni or is_featured where it applies.',
+        text: 'Use one row per student. Only full_name is required. The batch column takes the batch name or its short name (for example HOPE Elite or elite). Use "placed" or "working" in the employment column, a number like 9.5 in package_lpa, semicolons between skills or certifications, and "yes" in is_alumni or is_featured where it applies.',
       }),
       h('p', {}, h('button', { type: 'button', class: 'abtn abtn--small', text: 'Download a template', onclick: () => download('hope-students-template.csv', toCsv(CSV_HEADERS, [])) })),
       h('div', { class: 'field field--wide' }, h('label', { for: 'csv-file', text: 'CSV file' }), file),

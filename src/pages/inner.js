@@ -10,8 +10,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 import { setupChrome } from '../modules/chrome.js';
-import { fillAllFrames } from '../frames.js';
-import { cursorGlyphs, tilt } from '../modules/interact.js';
+import { cursorGlyphs } from '../modules/interact.js';
 import { setupTerminal } from '../modules/terminal.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -38,23 +37,6 @@ export async function initInner() {
   setupTerminal({ go: setupChrome(lenis) });
   cursorGlyphs('.page__glyphs .glyph');
   return lenis;
-}
-
-// Put cards into a grid; in full mode they are dealt in like the mentor cards on the home page
-export function showCards(grid, cards) {
-  grid.replaceChildren(...cards);
-  fillAllFrames(grid);
-  grid.querySelectorAll('.person').forEach((card) => tilt(card));
-  if (isLite() || !cards.length) return;
-  gsap.from(cards, {
-    y: 80,
-    rotation: (i) => [-4, 0, 4][i % 3],
-    autoAlpha: 0,
-    duration: 0.8,
-    stagger: 0.06,
-    ease: 'power3.out',
-  });
-  ScrollTrigger.refresh();
 }
 
 // Chip row; returns a function to mark the active chip

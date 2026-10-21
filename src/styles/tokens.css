@@ -1,31 +1,34 @@
 /* HOPE design tokens. See reference.md §2.2 and §2.3 */
 :root {
   /* Base palette */
-  --ink: #0d1330;
+  --ink: #000000;
   --paper: #ffffff;
-  --mist: #f3f5fa;
-  --h: #4fc3f7;
-  --o: #ffb547;
-  --p: #7ee081;
-  --e: #ff6fa3;
+  --mist: #f3f3f3;
+  --grey: #8c8c8c;
+  /* The four letter tokens are fills for outlined shapes (wordmark, glyphs, dates): white with ink outlines */
+  --h: #ffffff;
+  --o: #ffffff;
+  --p: #ffffff;
+  --e: #ffffff;
 
   /* Roles */
   --bg: var(--paper);
   --fg: var(--ink);
-  --muted: #5b6488;
-  --line: rgb(13 19 48 / 0.12);
+  --muted: #5e5e5e;
+  --line: rgb(0 0 0 / 0.14);
   --on-photo: #ffffff;
-  --shade: 9 13 34; /* rgb triplet for photo gradients */
-  --hope-gradient: linear-gradient(90deg, var(--h), var(--o), var(--p), var(--e));
+  --shade: 0 0 0; /* rgb triplet for photo gradients */
+  --hope-gradient: linear-gradient(90deg, var(--ink), var(--ink));
 
   /* Type */
-  --font-mono: 'Martian Mono', ui-monospace, monospace;
-  --font-sans: 'Bricolage Grotesque', system-ui, sans-serif;
+  /* One coding typeface for everything; its ligatures render => != // like a code editor */
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --font-sans: var(--font-mono);
   --step-hero: clamp(5rem, 22vw, 18rem);
-  --step-display: clamp(3rem, 9vw, 8.5rem);
-  --step-h2: clamp(2.25rem, 5vw, 4.5rem);
-  --step-lead: clamp(1.15rem, 1.6vw, 1.5rem);
-  --step-body: 1.0625rem;
+  --step-display: clamp(2.6rem, 7.5vw, 7rem);
+  --step-h2: clamp(2rem, 4.2vw, 3.75rem);
+  --step-lead: clamp(1.05rem, 1.4vw, 1.3rem);
+  --step-body: 1rem;
   --step-small: 0.875rem;
 
   /* Layout */
