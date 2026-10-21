@@ -1,0 +1,34 @@
+/* HOPE design tokens. See reference.md §2.2 and §2.3 */
+:root {
+  /* Colour */
+  --ink: #0d1330;
+  --ink-2: #161e45;
+  --paper: #eef1f8;
+  --muted: #8a93b8;
+  --h: #4fc3f7;
+  --o: #ffb547;
+  --p: #7ee081;
+  --e: #ff6fa3;
+  --hope-gradient: linear-gradient(90deg, var(--h), var(--o), var(--p), var(--e));
+
+  /* Type */
+  --font-mono: 'Martian Mono', ui-monospace, monospace;
+  --font-sans: 'Bricolage Grotesque', system-ui, sans-serif;
+  --step-hero: clamp(5rem, 20vw, 18rem);
+  --step-display: clamp(3rem, 9vw, 8.5rem);
+  --step-h2: clamp(2.25rem, 5vw, 4.5rem);
+  --step-lead: clamp(1.15rem, 1.6vw, 1.5rem);
+  --step-body: 1.0625rem;
+  --step-small: 0.875rem;
+
+  /* Layout */
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --radius: 14px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}

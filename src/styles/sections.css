@@ -1,0 +1,726 @@
+/* =========================================================
+   Intro gate (full mode only)
+   Layers, bottom to top: tunnel → paper → stage
+   ========================================================= */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+}
+html.full .intro {
+  display: block;
+}
+.intro__paper {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+}
+.intro__stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: clamp(1rem, 3vh, 2rem);
+  padding: var(--gutter);
+  text-align: center;
+}
+.intro__mark {
+  font-size: clamp(4.5rem, 21vw, 15rem);
+  will-change: transform;
+}
+.intro__mark .l {
+  -webkit-text-stroke: 0.035em var(--ink);
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.intro__expand {
+  color: var(--ink);
+  font-size: var(--step-lead);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.intro__expand b {
+  font-weight: 800;
+  -webkit-text-stroke: 0.6px var(--ink);
+}
+.intro__actions {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+.intro__lite {
+  background: none;
+  border: 0;
+  padding: 0.4rem 0.6rem;
+  color: var(--ink);
+  font-size: var(--step-small);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+/* Photo tunnel the camera flies through */
+.tunnel {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ink);
+  perspective: 900px;
+}
+.tunnel__track {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+.tunnel__item {
+  position: absolute;
+  width: var(--tw, 30vw);
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  translate: -50% -50%;
+}
+
+/* =========================================================
+   Fixed chrome
+   ========================================================= */
+.site-head {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px var(--gutter);
+  pointer-events: none;
+}
+.site-head > * {
+  pointer-events: auto;
+}
+.site-head__logo {
+  font-size: 1.25rem;
+  text-decoration: none;
+  opacity: 0;
+  translate: 0 -8px;
+  transition: opacity 0.4s, translate 0.4s var(--ease-out);
+}
+.site-head__logo.is-visible,
+html.lite .site-head__logo {
+  opacity: 1;
+  translate: 0 0;
+}
+.site-head__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--ink) 96%, transparent);
+  clip-path: circle(0 at var(--mx, 100%) var(--my, 0%));
+  transition: clip-path 0.7s var(--ease-out);
+}
+.menu.is-open {
+  clip-path: circle(150vmax at var(--mx, 100%) var(--my, 0%));
+}
+.menu ul {
+  display: grid;
+  gap: 0.4rem;
+  text-align: center;
+}
+.menu a {
+  display: inline-block;
+  font-size: clamp(2.2rem, 6vw, 4.5rem);
+  font-weight: 720;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  text-decoration: none;
+}
+.menu li:nth-child(4n + 1) a:hover { color: var(--h); }
+.menu li:nth-child(4n + 2) a:hover { color: var(--o); }
+.menu li:nth-child(4n + 3) a:hover { color: var(--p); }
+.menu li:nth-child(4n + 4) a:hover { color: var(--e); }
+
+.progress {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  z-index: 40;
+  width: min(40vw, 560px);
+  height: 3px;
+  translate: -50% 0;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--paper) 16%, transparent);
+  overflow: hidden;
+}
+.progress__fill {
+  height: 100%;
+  background: var(--hope-gradient);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.step-btn {
+  position: fixed;
+  bottom: 22px;
+  z-index: 40;
+  transition: opacity 0.3s, transform 0.25s var(--ease-out);
+}
+.step-btn--prev { left: var(--gutter); }
+.step-btn--next { right: var(--gutter); }
+.step-btn[disabled] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Hero: curved photo ring behind an extruded wordmark
+   ========================================================= */
+.hero {
+  position: relative;
+  height: 100svh;
+  min-height: 560px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+}
+.ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 45% at 50% 50%, rgb(13 19 48 / 0.55), transparent 70%),
+    linear-gradient(to bottom, var(--ink), transparent 18%, transparent 82%, var(--ink));
+}
+.ring__spin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+.ring__item {
+  position: absolute;
+  width: var(--rw);
+  height: var(--rh);
+  margin: calc(var(--rh) / -2) 0 0 calc(var(--rw) / -2);
+  border-radius: 8px;
+  backface-visibility: hidden;
+}
+.hero__content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 1.5rem;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+.hero__mark {
+  font-size: var(--step-hero);
+}
+.hero__sub {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 0.6);
+}
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 1.5rem;
+  margin-top: 1rem;
+}
+.hero__down {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  translate: -50% 0;
+  z-index: 2;
+}
+
+/* =========================================================
+   Statement with dropping glyphs
+   ========================================================= */
+.statement {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 16vh var(--gutter) 30vh;
+  overflow: hidden;
+}
+.statement__text {
+  position: relative;
+  z-index: 1;
+  max-width: 17ch;
+  font-size: clamp(2.6rem, 7vw, 7rem);
+  text-align: center;
+}
+.statement__glyphs .glyph {
+  position: absolute;
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  z-index: 2;
+}
+
+/* =========================================================
+   Tracks: pinned horizontal strip of parallelogram cards
+   ========================================================= */
+.tracks__pin {
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.tracks__strip {
+  --w: min(46vw, 640px);
+  --cut: 0.14;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--gutter);
+  will-change: transform;
+}
+.tracks__title {
+  flex: 0 0 auto;
+  padding-right: 6vw;
+  font-size: var(--step-display);
+  white-space: nowrap;
+}
+.track {
+  position: relative;
+  flex: 0 0 auto;
+  width: var(--w);
+  height: min(72svh, 680px);
+  margin-left: calc(var(--w) * var(--cut) * -1 + 10px);
+  clip-path: polygon(calc(var(--cut) * 100%) 0, 100% 0, calc(100% - var(--cut) * 100%) 100%, 0 100%);
+}
+.tracks__title + .track {
+  margin-left: 0;
+}
+.track > .frame {
+  position: absolute;
+  inset: 0 -8%;
+}
+.track__body {
+  position: absolute;
+  left: 7%;
+  bottom: 8%;
+  z-index: 1;
+  max-width: 68%;
+}
+.track__body h3 {
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  margin-bottom: 0.6rem;
+}
+.track__body p {
+  color: color-mix(in srgb, var(--paper) 85%, transparent);
+  max-width: 34ch;
+}
+
+/* =========================================================
+   Lab → Next batch (the one light section)
+   ========================================================= */
+.venue__pin {
+  position: relative;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+}
+.venue__media,
+.venue__img {
+  position: absolute;
+  inset: 0;
+}
+.venue__img.frame {
+  background: var(--paper);
+}
+.venue__img--sketch > img {
+  filter: url(#sketch);
+  mix-blend-mode: multiply;
+}
+.venue__img--color {
+  clip-path: inset(0 100% 0 0);
+}
+.venue__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(9 13 34 / 0.88), rgb(9 13 34 / 0.35) 45%, transparent 70%);
+  opacity: 0;
+}
+.venue__heads {
+  position: absolute;
+  top: 7vh;
+  inset-inline: 0;
+  height: 1.05em;
+  overflow: hidden;
+  font-size: var(--step-display);
+  text-align: center;
+}
+.venue__h {
+  position: absolute;
+  inset-inline: 0;
+  font-size: inherit;
+  text-shadow: 0 0 40px var(--paper), 0 0 12px var(--paper);
+}
+.venue__info {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 12vh;
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 0 var(--gutter);
+  color: var(--paper);
+  text-align: center;
+  opacity: 0;
+}
+.venue__date {
+  font-size: var(--step-h2);
+  font-weight: 720;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.venue__where {
+  font-size: var(--step-lead);
+  font-weight: 600;
+  max-width: 40ch;
+}
+.venue__note {
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  font-size: var(--step-small);
+  margin-bottom: 0.75rem;
+}
+
+/* =========================================================
+   Warp: glyph starfield (canvas)
+   ========================================================= */
+.warp {
+  position: relative;
+  height: 220svh;
+  background: var(--ink);
+}
+.warp__pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+}
+.warp__canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =========================================================
+   Paths: heading crosses the screen, then a diagonal split
+   ========================================================= */
+.paths__pin {
+  position: relative;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.paths__heading {
+  flex: 0 0 auto;
+  font-size: clamp(4rem, 13vw, 13rem);
+  white-space: nowrap;
+  will-change: transform;
+}
+.glyph--float {
+  position: absolute;
+  font-size: clamp(4rem, 9vw, 9rem);
+  opacity: 0.9;
+}
+.paths__pin .glyph--float:nth-of-type(1) { left: 16%; top: 14%; rotate: -18deg; }
+.paths__pin .glyph--float:nth-of-type(2) { right: 14%; bottom: 12%; rotate: 22deg; }
+.paths__pin .glyph--float:nth-of-type(3) { left: 58%; top: 10%; rotate: 8deg; }
+
+.split {
+  --cut-top: 60%;
+  --cut-bot: 40%;
+  position: relative;
+  height: 100svh;
+  min-height: 640px;
+}
+.split__panel {
+  position: absolute;
+  inset: 0;
+}
+.split__panel > .frame {
+  position: absolute;
+  inset: 0;
+}
+.split__panel--a {
+  clip-path: polygon(0 0, calc(var(--cut-top) - 3px) 0, calc(var(--cut-bot) - 3px) 100%, 0 100%);
+}
+.split__panel--b {
+  clip-path: polygon(calc(var(--cut-top) + 3px) 0, 100% 0, 100% 100%, calc(var(--cut-bot) + 3px) 100%);
+}
+.split__panel--a > .frame::after {
+  background: linear-gradient(to bottom, rgb(9 13 34 / 0.9), rgb(9 13 34 / 0.4) 40%, transparent 65%);
+}
+/* Keep placeholder labels inside the visible side of the diagonal */
+.split__panel--a .frame__ph { right: 45%; }
+.split__panel--b .frame__ph { left: 45%; }
+.split__body {
+  position: absolute;
+  z-index: 1;
+  display: grid;
+  gap: 1rem;
+  width: min(36%, 520px);
+}
+.split__panel--a .split__body {
+  left: var(--gutter);
+  top: 12vh;
+  justify-items: start;
+}
+.split__panel--b .split__body {
+  right: var(--gutter);
+  bottom: 12vh;
+  justify-items: end;
+  text-align: right;
+}
+.split__body h3 {
+  font-size: var(--step-display);
+}
+.split__body p {
+  font-size: var(--step-lead);
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+}
+
+/* =========================================================
+   People and alumni
+   ========================================================= */
+.people {
+  display: grid;
+  gap: clamp(2.5rem, 6vh, 4rem);
+  padding: 18vh var(--gutter) 10vh;
+}
+.people__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+.people__grid .frame {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius);
+  margin-bottom: 0.9rem;
+}
+.people__name {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.people__role {
+  color: var(--muted);
+}
+
+.alumni {
+  display: grid;
+  gap: 2.5rem;
+  padding: 8vh 0 12vh;
+}
+.alumni__title {
+  font-size: var(--step-h2);
+  text-align: center;
+  padding: 0 var(--gutter);
+}
+.marquee {
+  display: flex;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee__list {
+  flex-shrink: 0;
+  display: flex;
+  gap: 2.5rem;
+  padding-right: 2.5rem;
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee__list {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translateX(-100%); }
+}
+.logo-slot {
+  display: grid;
+  place-items: center;
+  width: 170px;
+  height: 68px;
+  border: 1.5px dashed color-mix(in srgb, var(--muted) 60%, transparent);
+  border-radius: 10px;
+  color: var(--muted);
+  font-size: var(--step-small);
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.foot {
+  display: grid;
+  justify-items: center;
+  gap: 2.5rem;
+  padding: 14vh var(--gutter) 10vh;
+  text-align: center;
+}
+.foot__title {
+  font-size: var(--step-display);
+}
+.foot__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem 1.5rem;
+}
+.foot__mark {
+  font-size: clamp(4rem, 15vw, 12rem);
+  margin-top: 2rem;
+}
+.foot__social {
+  display: flex;
+  gap: 14px;
+}
+.foot__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+  font-size: var(--step-small);
+}
+.foot__links a {
+  text-decoration: none;
+}
+.foot__links a:hover {
+  text-decoration: underline;
+}
+.lite-toggle {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+}
+.lite-toggle__state {
+  color: var(--muted);
+  margin-left: 0.3rem;
+}
+.foot__note {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: var(--step-small);
+}
+
+/* =========================================================
+   Lite mode: no intro, no pins, nothing scroll-driven
+   ========================================================= */
+html.lite .warp,
+html.lite .paths__pin .glyph--float {
+  display: none;
+}
+html.lite .tracks__pin {
+  height: auto;
+  padding: 14vh 0 10vh;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+html.lite .track {
+  scroll-snap-align: start;
+}
+html.lite .venue__img--sketch,
+html.lite .venue__h--a {
+  display: none;
+}
+html.lite .venue__img--color {
+  clip-path: none;
+}
+html.lite .statement__glyphs .glyph {
+  rotate: calc(var(--r) * 1deg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.lite {
+    scroll-behavior: smooth;
+  }
+}
+html.lite .venue__shade,
+html.lite .venue__info {
+  opacity: 1;
+}
+html.lite .paths__pin {
+  height: auto;
+  padding: 16vh var(--gutter) 10vh;
+  justify-content: center;
+}
+html.lite .paths__heading {
+  white-space: normal;
+  text-align: center;
+  font-size: var(--step-display);
+}
+html.lite .marquee__list {
+  animation: none;
+}
+
+/* =========================================================
+   Small screens
+   ========================================================= */
+@media (max-width: 720px) {
+  .tracks__strip {
+    --w: 78vw;
+    --cut: 0.1;
+  }
+  .tracks__title {
+    white-space: normal;
+    width: 80vw;
+    padding-right: 8vw;
+  }
+  .split {
+    height: auto;
+    min-height: 0;
+  }
+  .split__panel {
+    position: relative;
+    height: 88svh;
+    clip-path: none;
+  }
+  .split__panel + .split__panel {
+    margin-top: 6px;
+  }
+  .split__body {
+    width: auto;
+    left: var(--gutter) !important;
+    right: var(--gutter) !important;
+  }
+  .people__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .progress {
+    width: 50vw;
+  }
+  .step-btn {
+    display: none;
+  }
+  .hero__down {
+    bottom: 28px;
+  }
+}

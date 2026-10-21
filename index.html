@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HOPE | House of Programming Expertise</title>
+    <meta name="description" content="HOPE, the House of Programming Expertise, is the programming training house of Your College. Tracks in foundations, DSA, web development, competitive programming and placement prep." />
+    <meta name="theme-color" content="#0D1330" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Martian+Mono:wdth,wght@112.5,800&display=swap"
+    />
+    <script>
+      // Decide lite mode before first paint so nothing flashes.
+      (function () {
+        // A stored choice wins; otherwise follow the OS reduced-motion setting
+        var stored = null;
+        try { stored = localStorage.getItem('hope-lite'); } catch (e) {}
+        var lite = stored === null ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : stored === '1';
+        document.documentElement.classList.add(lite ? 'lite' : 'full');
+      })();
+    </script>
+    <noscript><style>.intro { display: none !important; }</style></noscript>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Line-drawing filter used by the lab section (edge detection on whatever photo is there) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <filter id="sketch" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0" />
+        <feConvolveMatrix order="3" kernelMatrix="-1 -1 -1 -1 8 -1 -1 -1 -1" preserveAlpha="true" />
+        <feComponentTransfer>
+          <feFuncR type="linear" slope="-6" intercept="1" />
+          <feFuncG type="linear" slope="-6" intercept="1" />
+          <feFuncB type="linear" slope="-6" intercept="1" />
+        </feComponentTransfer>
+      </filter>
+    </svg>
+
+    <!-- ============ Intro gate ============ -->
+    <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="HOPE intro">
+      <div class="tunnel" aria-hidden="true"><div class="tunnel__track"></div></div>
+      <div class="intro__paper"></div>
+      <div class="intro__stage">
+        <div class="wordmark intro__mark" aria-hidden="true">
+          <span class="l l-h">H</span><span class="l l-o">O</span><span class="l l-p">P</span><span class="l l-e">E</span>
+        </div>
+        <p class="intro__expand">
+          <span><b class="t-h">H</b>ouse</span> <span><b class="t-o">o</b>f</span>
+          <span><b class="t-p">P</b>rogramming</span> <span><b class="t-e">E</b>xpertise</span>
+        </p>
+        <div class="intro__actions">
+          <button class="btn btn--lg intro__enter" type="button"><span>Enter HOPE</span></button>
+          <button class="intro__lite" type="button">Skip the animations</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Fixed chrome ============ -->
+    <header class="site-head">
+      <a class="site-head__logo wordmark" href="#top" aria-label="HOPE home">
+        <span class="t-h">H</span><span class="t-o">O</span><span class="t-p">P</span><span class="t-e">E</span>
+      </a>
+      <div class="site-head__right">
+        <a class="btn btn--sm" href="#batch"><span>Apply</span></a>
+        <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Main" hidden>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#tracks">Tracks</a></li>
+        <li><a href="#batch">Next batch</a></li>
+        <li><a href="#paths">Learn or mentor</a></li>
+        <li><a href="#people">People</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="progress" aria-hidden="true"><div class="progress__fill"></div></div>
+    <button class="icon-btn icon-btn--round step-btn step-btn--prev" type="button" aria-label="Previous section">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="icon-btn icon-btn--round step-btn step-btn--next" type="button" aria-label="Next section">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+
+    <main id="main">
+      <!-- ============ Hero ============ -->
+      <section class="hero" id="top" data-step>
+        <div class="ring" aria-hidden="true"><div class="ring__spin"></div></div>
+        <div class="hero__content">
+          <h1 class="wordmark wordmark--3d hero__mark" aria-label="HOPE">
+            <span class="l l-h" aria-hidden="true">H</span><span class="l l-o" aria-hidden="true">O</span><span class="l l-p" aria-hidden="true">P</span><span class="l l-e" aria-hidden="true">E</span>
+          </h1>
+          <p class="hero__sub">House of Programming Expertise at Your College</p>
+          <div class="hero__ctas">
+            <a class="btn" href="#batch"><span>Apply for the next batch</span></a>
+            <a class="btn" href="#tracks"><span>See the tracks</span></a>
+          </div>
+        </div>
+        <a class="icon-btn icon-btn--round hero__down" href="#about" aria-label="Scroll to the next section">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </section>
+
+      <!-- ============ Statement ============ -->
+      <section class="statement" id="about" data-step>
+        <h2 class="statement__text split-lines">
+          Learn to code the way engineers do. Every week, in the lab.
+        </h2>
+        <div class="statement__glyphs" aria-hidden="true">
+          <span class="glyph t-h" style="left:6%;bottom:8%;--r:-14">{</span>
+          <span class="glyph t-o" style="left:18%;bottom:3%;--r:22">;</span>
+          <span class="glyph t-p" style="left:30%;bottom:12%;--r:-6">&lt;/&gt;</span>
+          <span class="glyph t-e" style="left:46%;bottom:4%;--r:12">}</span>
+          <span class="glyph t-h" style="left:58%;bottom:11%;--r:-24">=&gt;</span>
+          <span class="glyph t-o" style="left:70%;bottom:3%;--r:8">#</span>
+          <span class="glyph t-p" style="left:80%;bottom:9%;--r:30">( )</span>
+          <span class="glyph t-e" style="left:90%;bottom:4%;--r:-10">[ ]</span>
+        </div>
+      </section>
+
+      <!-- ============ Tracks (horizontal) ============ -->
+      <section class="tracks" id="tracks" data-step>
+        <div class="tracks__pin">
+          <div class="tracks__strip">
+            <h2 class="tracks__title split-chars">What you'll learn</h2>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-foundations" data-label="Foundations class" data-tone="h"></div>
+              <div class="track__body"><h3>Programming foundations</h3><p>C and Python, from your first printf to pointers, files and debugging.</p></div>
+            </article>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-dsa" data-label="DSA session" data-tone="o"></div>
+              <div class="track__body"><h3>Data structures and algorithms</h3><p>Arrays to graphs, solved the way interviewers ask them.</p></div>
+            </article>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-web" data-label="Web dev workshop" data-tone="p"></div>
+              <div class="track__body"><h3>Web development</h3><p>HTML to full-stack apps that you deploy yourself.</p></div>
+            </article>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-cp" data-label="Contest night" data-tone="e"></div>
+              <div class="track__body"><h3>Competitive programming</h3><p>Weekly contests, editorials and a leaderboard that resets every semester.</p></div>
+            </article>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-projects" data-label="Hackathon demo" data-tone="h"></div>
+              <div class="track__body"><h3>Projects and hackathons</h3><p>Build in teams, ship something real, and present it to a panel.</p></div>
+            </article>
+            <article class="track">
+              <div class="frame frame--shade" data-photo="track-placement" data-label="Mock interview" data-tone="o"></div>
+              <div class="track__body"><h3>Placement prep</h3><p>Mock interviews, aptitude practice and resume reviews before campus season.</p></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Lab → Next batch ============ -->
+      <section class="venue" id="batch" data-step data-anchor="end">
+        <div class="venue__pin">
+          <div class="venue__media">
+            <div class="venue__img venue__img--sketch" data-photo="venue" data-label="Lab photo" data-fallback="placeholders/lab.svg"></div>
+            <div class="venue__img venue__img--color" data-photo="venue" data-label="Lab photo" data-fallback="placeholders/lab.svg"></div>
+            <div class="venue__shade"></div>
+          </div>
+          <div class="venue__heads">
+            <h2 class="venue__h venue__h--a">The lab</h2>
+            <h2 class="venue__h venue__h--b">Next batch</h2>
+          </div>
+          <div class="venue__info">
+            <p class="venue__date">Starts 5 January 2027</p>
+            <p class="venue__where">Programming Lab 3, Block B. Tuesdays and Thursdays, 4:30 to 6:30 pm.</p>
+            <p class="venue__note">Applications close on 15 December 2026. Open to all departments and years.</p>
+            <a class="btn" href="#paths"><span>Apply for the next batch</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Warp ============ -->
+      <section class="warp" aria-hidden="true">
+        <div class="warp__pin"><canvas class="warp__canvas"></canvas></div>
+      </section>
+
+      <!-- ============ Paths ============ -->
+      <section class="paths" id="paths" data-step>
+        <div class="paths__pin">
+          <h2 class="paths__heading">Pick your side of the keyboard</h2>
+          <span class="glyph glyph--float t-o" aria-hidden="true">{</span>
+          <span class="glyph glyph--float t-e" aria-hidden="true">}</span>
+          <span class="glyph glyph--float t-p" aria-hidden="true">;</span>
+        </div>
+      </section>
+
+      <section class="split" data-step aria-label="Ways to join HOPE">
+        <div class="split__panel split__panel--a">
+          <div class="frame frame--shade" data-photo="path-learn" data-label="Students in class" data-tone="h"></div>
+          <div class="split__body">
+            <h3>Learn</h3>
+            <p>New to code or ready for contests, there's a batch for your level. Classes run twice a week after college hours, and every session ends with a problem to take home.</p>
+            <a class="btn" href="#contact"><span>Apply as a student</span></a>
+          </div>
+        </div>
+        <div class="split__panel split__panel--b">
+          <div class="frame frame--shade" data-photo="path-mentor" data-label="Mentor teaching" data-tone="e"></div>
+          <div class="split__body">
+            <h3>Mentor</h3>
+            <p>Cleared placements, ran a contest or shipped a project? Teach a session, review code and run mock interviews for juniors.</p>
+            <a class="btn" href="#contact"><span>Apply to mentor</span></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ People ============ -->
+      <section class="people" id="people" data-step>
+        <h2 class="section-title split-lines">The people who run HOPE</h2>
+        <ul class="people__grid">
+          <li><div class="frame" data-photo="person-1" data-label="Portrait" data-tone="h"></div><p class="people__name">Faculty name</p><p class="people__role">Faculty coordinator</p></li>
+          <li><div class="frame" data-photo="person-2" data-label="Portrait" data-tone="o"></div><p class="people__name">Faculty name</p><p class="people__role">Faculty coordinator</p></li>
+          <li><div class="frame" data-photo="person-3" data-label="Portrait" data-tone="p"></div><p class="people__name">Student name</p><p class="people__role">Student lead</p></li>
+          <li><div class="frame" data-photo="person-4" data-label="Portrait" data-tone="e"></div><p class="people__name">Student name</p><p class="people__role">Training lead</p></li>
+        </ul>
+      </section>
+
+      <section class="alumni" aria-labelledby="alumni-title">
+        <h2 class="alumni__title" id="alumni-title">Where HOPE alumni work now</h2>
+        <div class="marquee">
+          <ul class="marquee__list">
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+          </ul>
+          <ul class="marquee__list" aria-hidden="true">
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+            <li class="logo-slot">Company logo</li><li class="logo-slot">Company logo</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ Footer ============ -->
+    <footer class="foot" id="contact" data-step>
+      <h2 class="foot__title split-lines">See you in the lab</h2>
+      <div class="foot__ctas">
+        <a class="btn" href="#"><span>Join the WhatsApp group</span></a>
+        <a class="btn" href="mailto:hope@yourcollege.edu"><span>Email the coordinators</span></a>
+      </div>
+      <div class="wordmark wordmark--3d foot__mark" aria-hidden="true">
+        <span class="l l-h">H</span><span class="l l-o">O</span><span class="l l-p">P</span><span class="l l-e">E</span>
+      </div>
+      <ul class="foot__social">
+        <li><a class="icon-btn icon-btn--round" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></a></li>
+        <li><a class="icon-btn icon-btn--round" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.5 9.5v8M6.5 6.2v.1M10.5 17.5v-5a3 3 0 0 1 6 0v5M10.5 9.5v8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></a></li>
+        <li><a class="icon-btn icon-btn--round" href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 19c-4 1.3-4-2-6-2.5m12 4.5v-3.5a3 3 0 0 0-.8-2.3c2.7-.3 5.6-1.3 5.6-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6 0C6.6 1.7 5.6 2 5.6 2a4.3 4.3 0 0 0-.1 3.2 4.6 4.6 0 0 0-1.3 3.2c0 4.6 2.9 5.7 5.6 6a3 3 0 0 0-.8 2.3V21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+        <li><a class="icon-btn icon-btn--round" href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9.3v5.4l4.6-2.7z" fill="currentColor"/></svg></a></li>
+      </ul>
+      <div class="foot__links">
+        <a href="#">Code of conduct</a>
+        <a href="mailto:hope@yourcollege.edu">hope@yourcollege.edu</a>
+        <button class="lite-toggle" type="button" aria-pressed="false">Lite version <span class="lite-toggle__state">off</span></button>
+      </div>
+      <p class="foot__note">HOPE is the programming training house of Your College, run by faculty and students of the Department of Computer Science.</p>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

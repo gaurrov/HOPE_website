@@ -1,0 +1,181 @@
+/* ---------- Wordmark ---------- */
+.wordmark {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-stretch: 112.5%;
+  font-variation-settings: 'wdth' 112.5;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+.wordmark .l-h { color: var(--h); }
+.wordmark .l-o { color: var(--o); }
+.wordmark .l-p { color: var(--p); }
+.wordmark .l-e { color: var(--e); }
+.wordmark .l {
+  display: inline-block;
+}
+
+/* Extruded look: stacked shadows in a darker shade of each letter's colour */
+.wordmark--3d .l {
+  --depth: color-mix(in srgb, currentColor 45%, #000);
+  text-shadow:
+    0 1px 0 var(--depth), 0 2px 0 var(--depth), 0 3px 0 var(--depth),
+    0 4px 0 var(--depth), 0 5px 0 var(--depth), 0 6px 0 var(--depth),
+    0 7px 0 var(--depth), 0 8px 0 var(--depth),
+    0 18px 30px rgb(0 0 0 / 0.55);
+}
+
+/* ---------- Glow button ---------- */
+.btn {
+  --angle: 0deg;
+  --ring: conic-gradient(from var(--angle), var(--h), var(--o), var(--p), var(--e), var(--h));
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 1.4rem;
+  border: 1.5px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) padding-box,
+    var(--ring) border-box;
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: 0.975rem;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: --angle 1.2s var(--ease-out), transform 0.25s var(--ease-out);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--ring);
+  filter: blur(14px);
+  opacity: 0.45;
+  transition: opacity 0.3s;
+}
+.btn:hover {
+  --angle: 360deg;
+}
+.btn:hover::before {
+  opacity: 0.8;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn--sm {
+  min-height: 40px;
+  padding: 0 1.1rem;
+  font-size: 0.9rem;
+}
+.btn--lg {
+  min-height: 56px;
+  padding: 0 2rem;
+  font-size: 1.15rem;
+}
+
+/* ---------- Icon button ---------- */
+.icon-btn {
+  --ring: conic-gradient(var(--h), var(--o), var(--p), var(--e), var(--h));
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  background:
+    linear-gradient(var(--ink), var(--ink)) padding-box,
+    var(--ring) border-box;
+  color: var(--paper);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out);
+}
+.icon-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--ring);
+  filter: blur(12px);
+  opacity: 0.35;
+}
+.icon-btn:hover {
+  transform: translateY(-2px);
+}
+.icon-btn--round {
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+}
+
+/* ---------- Photo frame ---------- */
+.frame {
+  --tone: var(--h);
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--tone) 9%, transparent) 14px 15px),
+    radial-gradient(120% 90% at 20% 10%, color-mix(in srgb, var(--tone) 38%, var(--ink-2)), var(--ink-2) 70%);
+}
+.frame[data-tone='o'] { --tone: var(--o); }
+.frame[data-tone='p'] { --tone: var(--p); }
+.frame[data-tone='e'] { --tone: var(--e); }
+
+.frame > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.frame__ph {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 1rem;
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
+}
+.frame__label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.frame__slot {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-variation-settings: 'wdth' 100;
+  color: var(--tone);
+}
+.frame--shade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(9 13 34 / 0.92) 0%, rgb(9 13 34 / 0.45) 38%, transparent 65%);
+  pointer-events: none;
+}
+
+/* ---------- Glyph ---------- */
+.glyph {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* ---------- Section title ---------- */
+.section-title {
+  font-size: var(--step-display);
+  text-align: center;
+}
