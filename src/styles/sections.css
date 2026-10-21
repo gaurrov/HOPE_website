@@ -501,9 +501,9 @@ html.lite .site-head__logo {
 .split__panel--a > .frame::after {
   background: linear-gradient(to bottom, rgb(var(--shade) / 0.85), rgb(var(--shade) / 0.35) 40%, transparent 65%);
 }
-/* Keep placeholder labels inside the visible side of the diagonal */
-.split__panel--a .frame__ph { right: 45%; }
-.split__panel--b .frame__ph { left: 45%; }
+/* Keep placeholder labels on the visible side of the diagonal, away from the text */
+.split__panel--a .frame__ph { right: 50%; top: 55%; }
+.split__panel--b .frame__ph { left: 50%; bottom: 55%; }
 .split__body {
   position: absolute;
   z-index: 1;

@@ -7,7 +7,7 @@ const GROUPS = [
   { title: 'Gallery', hint: 'Intro letters, photo tunnel and the rotating hero ring. Wide event photos work best.', test: (s) => s.startsWith('gallery-') },
   { title: 'Track cards', hint: 'Keep the subject in the left half; text sits bottom-left.', test: (s) => s.startsWith('track-') },
   { title: 'The lab', hint: 'One wide photo of the lab. The line drawing is made from it automatically.', test: (s) => s === 'venue' },
-  { title: 'Learn and Mentors panels', hint: 'Learn has text top-left; Mentors has text bottom-right.', test: (s) => s.startsWith('path-') },
+  { title: 'Batch panels', hint: 'The diagonal split on the home page. Left is the first batch (text top-left), right is the second (text bottom-right).', test: (s) => s.startsWith('split-') },
 ];
 
 export async function sitePhotosView(panel) {

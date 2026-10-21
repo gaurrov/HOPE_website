@@ -29,9 +29,9 @@ export const photos = {
   // The lab. A wide photo of the room; the line-drawing version is generated automatically
   venue: '',
 
-  // Learn / Mentors split
-  'path-learn': '',
-  'path-mentors': '',
+  // The two batch panels in the diagonal split (left: first batch, right: second batch)
+  'split-left': '',
+  'split-right': '',
 
   // Mentor, student and event photos are uploaded in the admin area
 };

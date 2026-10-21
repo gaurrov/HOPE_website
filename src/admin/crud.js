@@ -50,7 +50,11 @@ export function crudView(cfg) {
         values: row || {},
         onSubmit: async (values) => {
           const payload = { ...values };
-          for (const f of fields) if (f.type === 'image') payload[f.name] = await resolveImage(values[f.name], cfg.folder);
+          for (const f of fields) {
+            if (f.type === 'image') payload[f.name] = await resolveImage(values[f.name], cfg.folder);
+            // A blank number falls back to its default (columns like sort_order can't be empty)
+            if (f.type === 'number' && payload[f.name] == null && f.default != null) payload[f.name] = f.default;
+          }
           const query = row ? supabase.from(cfg.table).update(payload).eq('id', row.id) : supabase.from(cfg.table).insert(payload);
           const { error } = await query;
           if (error) throw new Error(errorMessage(error));

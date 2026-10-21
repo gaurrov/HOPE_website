@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+/* Section styles set display; the hidden attribute must still win */
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--bg);
   color: var(--fg);

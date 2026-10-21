@@ -5,13 +5,13 @@ import { h, table, thumb, toast, formDialog, confirmAction, resolveImage, remove
 import { parseCsv, toCsv, download } from './csv.js';
 
 const PRIVATE_KEYS = ['roll_no', 'email', 'phone', 'department', 'year_of_study', 'job_role', 'linkedin_url', 'notes'];
-const CSV_HEADERS = ['full_name', 'batch', 'roll_no', 'email', 'phone', 'department', 'year_of_study', 'employment', 'company', 'job_role', 'linkedin_url', 'is_alumni', 'notes'];
+const CSV_HEADERS = ['full_name', 'batch', 'roll_no', 'email', 'phone', 'department', 'year_of_study', 'employment', 'company', 'package', 'is_featured', 'job_role', 'linkedin_url', 'is_alumni', 'notes'];
 const truthy = (v) => /^(y|yes|true|1)$/i.test(String(v || '').trim());
 const one = (v) => (Array.isArray(v) ? v[0] : v) || {};
 
 function studentFields(batches) {
   return [
-    { type: 'heading', label: 'Shown on the website', hint: 'Name, photo, batch and company' },
+    { type: 'heading', label: 'Shown on the website', hint: 'Name, photo, batch, company, and package for top placements' },
     { name: 'full_name', label: 'Full name', required: true },
     { name: 'batch_id', label: 'Batch', type: 'select', options: [{ value: '', label: 'No batch' }, ...batches.map((b) => ({ value: b.id, label: b.name }))] },
     {
@@ -26,6 +26,8 @@ function studentFields(batches) {
     },
     { name: 'company', label: 'Company', placeholder: 'Shown as "Placed at …" or "Works at …"' },
     { name: 'photo_path', label: 'Photo', type: 'image', wide: true },
+    { name: 'is_featured', label: 'Top placement (shows on the home page wall)', type: 'checkbox' },
+    { name: 'package', label: 'Package (optional)', placeholder: '12 LPA', hint: 'Shown only on the Top placements wall, and only if filled in.' },
     { name: 'is_alumni', label: 'Alumni (shows on the Alumni page)', type: 'checkbox' },
     { name: 'is_published', label: 'Show on the website', type: 'checkbox', default: true },
     { type: 'heading', label: 'Admin only', hint: 'Never shown on the website' },
@@ -48,6 +50,8 @@ async function saveStudent(existingId, values) {
     company: values.company,
     photo_path: values.photo_path,
     is_alumni: values.is_alumni,
+    is_featured: values.is_featured,
+    package: values.package,
     is_published: values.is_published,
   };
   let id = existingId;
@@ -77,6 +81,7 @@ export async function studentsView(panel) {
     h('option', { value: 'current', text: 'Current students' }),
     h('option', { value: 'alumni', text: 'Alumni' }),
     h('option', { value: 'placed', text: 'Placed or working' }),
+    h('option', { value: 'featured', text: 'Top placements' }),
   );
   const search = h('input', { type: 'search', class: 'asearch', placeholder: 'Search name, roll number, email', 'aria-label': 'Search students' });
   const count = h('p', { class: 'toolbar__count' });
@@ -124,6 +129,7 @@ export async function studentsView(panel) {
       if (statusFilter.value === 'current' && r.is_alumni) return false;
       if (statusFilter.value === 'alumni' && !r.is_alumni) return false;
       if (statusFilter.value === 'placed' && !r.company) return false;
+      if (statusFilter.value === 'featured' && !r.is_featured) return false;
       if (!term) return true;
       return [r.full_name, r.private.roll_no, r.private.email, r.company].some((v) => (v || '').toLowerCase().includes(term));
     });
@@ -142,7 +148,8 @@ export async function studentsView(panel) {
           { label: 'Email', render: (r) => r.private.email || '' },
           { label: 'Phone', render: (r) => r.private.phone || '' },
           { label: 'Status', render: (r) => (r.is_alumni ? 'Alumni' : 'Student') },
-          { label: 'Placement', render: (r) => employmentLine(r) },
+          { label: 'Placement', render: (r) => [employmentLine(r), r.package].filter(Boolean).join(', ') },
+          { label: 'Top', render: (r) => (r.is_featured ? 'Yes' : '') },
           { label: 'On site', render: (r) => (r.is_published ? 'Yes' : 'No') },
         ],
         shown,
@@ -183,7 +190,7 @@ export async function studentsView(panel) {
   }
 
   function exportCsv() {
-    const out = filtered().map((r) => ({ ...r.private, ...r, batch: r.batch?.slug || '', is_alumni: r.is_alumni ? 'yes' : 'no' }));
+    const out = filtered().map((r) => ({ ...r.private, ...r, batch: r.batch?.slug || '', is_alumni: r.is_alumni ? 'yes' : 'no', is_featured: r.is_featured ? 'yes' : 'no' }));
     download(`hope-students-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(CSV_HEADERS, out));
   }
 
@@ -218,6 +225,8 @@ export async function studentsView(panel) {
             company: r.company || null,
             photo_path: null,
             is_alumni: truthy(r.is_alumni || r.alumni),
+            is_featured: truthy(r.is_featured),
+            package: r.package || null,
             is_published: true,
             roll_no: r.roll_no || null,
             email: r.email || null,
@@ -244,7 +253,7 @@ export async function studentsView(panel) {
       h('h2', { class: 'modal__title', text: 'Import students from CSV' }),
       h('p', {
         class: 'modal__message',
-        text: 'Use one row per student. Only full_name is required. The batch column takes the batch name or its short name (for example Elite or elite). Use "placed" or "working" in the employment column, and "yes" in is_alumni for alumni.',
+        text: 'Use one row per student. Only full_name is required. The batch column takes the batch name or its short name (for example HOPE Elite or elite). Use "placed" or "working" in the employment column, and "yes" in is_alumni or is_featured where it applies.',
       }),
       h('p', {}, h('button', { type: 'button', class: 'abtn abtn--small', text: 'Download a template', onclick: () => download('hope-students-template.csv', toCsv(CSV_HEADERS, [])) })),
       h('div', { class: 'field field--wide' }, h('label', { for: 'csv-file', text: 'CSV file' }), file),

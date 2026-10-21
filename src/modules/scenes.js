@@ -159,8 +159,18 @@ export function setupPaths() {
   });
 }
 
-// Mentor cards are dealt in as the grid arrives.
+// Mentor and team cards are dealt in as each grid arrives.
 export function setupMentors() {
+  gsap.utils.toArray('.team__grid').forEach((grid) => {
+    gsap.from(grid.children, {
+      y: 120,
+      rotation: (i) => [-5, 0, 5][i % 3],
+      autoAlpha: 0,
+      stagger: 0.1,
+      ease: 'power3.out',
+      scrollTrigger: { trigger: grid, start: 'top 92%', end: 'top 40%', scrub: 1 },
+    });
+  });
   gsap.from('.mentor', {
     y: 140,
     rotation: (i) => [-6, 0, 6][i % 3],
@@ -178,4 +188,20 @@ export function setupEvents() {
   gsap.from(title.chars, { yPercent: 100, rotation: 10, stagger: 0.04, ease: 'power3.out', scrollTrigger: enter });
   gsap.from('.events__tabs, .events__next', { y: 30, autoAlpha: 0, stagger: 0.1, ease: 'power2.out', scrollTrigger: enter });
   gsap.from('.deck__track', { x: () => innerWidth * 0.5, rotationY: -20, ease: 'power3.out', scrollTrigger: enter });
+}
+
+// Top placements: portraits are dealt onto the wall from different depths, the centre ones first.
+export function setupPlacements() {
+  const cards = gsap.utils.toArray('.placement');
+  if (!cards.length) return;
+  gsap.from(cards, {
+    y: 160,
+    z: -300,
+    rotationX: -25,
+    rotation: (i) => [-8, 4, -3, 7][i % 4],
+    autoAlpha: 0,
+    stagger: { each: 0.08, from: 'center' },
+    ease: 'power3.out',
+    scrollTrigger: { trigger: '.placements__wall', start: 'top 95%', end: 'top 30%', scrub: 1 },
+  });
 }

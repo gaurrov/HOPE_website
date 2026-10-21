@@ -22,6 +22,32 @@ export const getStudents = (batchId) =>
 export const getAlumni = () =>
   run(supabase?.from('students').select(STUDENT_COLUMNS).eq('is_alumni', true).order('full_name'));
 
+// Highly placed students marked by admins for the Top placements wall
+export const getFeatured = () =>
+  run(
+    supabase
+      ?.from('students')
+      .select('id, full_name, photo_path, employment, company, package, batch:batches(slug, name)')
+      .eq('is_featured', true)
+      .order('full_name'),
+  );
+
+// Admins who chose to appear on the site: name, designation and photo only (see public.get_team)
+export const getTeam = () => run(supabase?.rpc('get_team'));
+
+// { batchId: { students, placed } } from public student rows
+export async function getBatchStats() {
+  const rows = await run(supabase?.from('students').select('batch_id, company'));
+  const stats = {};
+  rows.forEach((r) => {
+    if (!r.batch_id) return;
+    stats[r.batch_id] ??= { students: 0, placed: 0 };
+    stats[r.batch_id].students++;
+    if (r.company) stats[r.batch_id].placed++;
+  });
+  return stats;
+}
+
 export const getMentors = () =>
   run(supabase?.from('mentors').select('id, full_name, role, department, teaches, photo_path').order('sort_order').order('full_name'));
 

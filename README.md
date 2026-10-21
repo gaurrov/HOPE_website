@@ -1,5 +1,9 @@
 # HOPE website
 
+The public website of HOPE, the House of Programming Expertise. Anyone can browse it; nobody signs up or applies.
+The college selects each batch (HOPE Elite, HOPE Batch 2, …) and assigns the mentors. Admins keep the site's data up
+to date from the admin area: events, students per batch, alumni, top placements, mentors, the team and photos.
+
 Website for HOPE, the House of Programming Expertise. The design rules live in [`reference.md`](reference.md).
 
 ## Run it
@@ -77,7 +81,7 @@ its slot name printed on it, so you can see which slot is which.
 | `gallery-01` … `gallery-12` | Intro letters, photo tunnel, hero ring | Wide event shots and close-ups of people coding. Landscape. |
 | `track-*` | Cards in "What you'll learn" | Keep the subject in the left half, since text sits bottom-left |
 | `venue` | "The lab" section | One wide photo of the lab. The line-drawing version is generated automatically. |
-| `path-learn`, `path-mentors` | Learn / Mentors split | Learn has text at the top left; Mentors has text at the bottom right |
+| `split-left`, `split-right` | The two batch panels (HOPE Elite, HOPE Batch 2) | Left has text at the top left; right has text at the bottom right |
 
 The easiest way is **Admin → Site photos**: upload a photo per slot, no code change needed. Files listed in
 `src/photos.js` are a fallback. Student, mentor and event photos are uploaded on their own admin screens.
@@ -87,7 +91,7 @@ Use JPG or WebP, at least 1600px on the long edge and under 400 KB each.
 ## Placeholder text to replace
 
 Search for these in `index.html`: `Your College`, `hope@yourcollege.edu`, the batch dates and
-room in the "Next batch" section, the `Company logo` slots, and the social
+room and timings in "Where HOPE trains", and the social
 links (`href="#"`).
 
 ## Structure

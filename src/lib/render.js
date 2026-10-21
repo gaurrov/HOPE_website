@@ -48,3 +48,28 @@ export function personCard(s, i, { showBatch = false } = {}) {
   if (job) li.append(el('p', 'person__job', job));
   return li;
 }
+
+// Top placements: big portrait, details revealed on hover (always visible on touch screens)
+export function placementCard(s, i) {
+  const li = el('li', 'placement');
+  const frame = recordFrame({ path: s.photo_path, label: 'Photo', alt: s.full_name, i, className: 'placement__photo' });
+  const info = el('div', 'placement__info');
+  info.append(el('p', 'placement__name', s.full_name));
+  if (s.company) info.append(el('p', 'placement__company', s.company));
+  const extra = [s.package, s.batch?.name].filter(Boolean).join(', ');
+  if (extra) info.append(el('p', 'placement__extra', extra));
+  frame.append(info);
+  li.append(frame);
+  return li;
+}
+
+// HOPE team member (admin shown on the site)
+export function teamCard(a, i) {
+  const li = el('li', 'member');
+  li.append(
+    recordFrame({ path: a.photo_path, label: 'Portrait', alt: a.full_name, i }),
+    el('p', 'member__name', a.full_name),
+    el('p', 'member__role', a.designation || 'HOPE coordinator'),
+  );
+  return li;
+}

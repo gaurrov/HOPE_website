@@ -24,14 +24,14 @@ export function adminsView(currentUserId) {
       h(
         'div',
         { class: 'panel__head' },
-        h('div', {}, h('h1', { class: 'panel__title', text: 'Admins' }), h('p', { class: 'panel__intro', text: 'Admins can see and change everything. New admins get an email invite to set their own password.' })),
+        h('div', {}, h('h1', { class: 'panel__title', text: 'Admins' }), h('p', { class: 'panel__intro', text: 'Admins can see and change everything. New admins get an email invite to set their own password. Admins marked "On site" appear in The HOPE team on the home page with their photo, name and designation (never email or phone).' })),
         h('button', { type: 'button', class: 'abtn abtn--primary', text: 'Invite admin', onclick: invite }),
       ),
       listBox,
     );
 
     async function load() {
-      const { data, error } = await supabase.from('admins').select('*').order('full_name');
+      const { data, error } = await supabase.from('admins').select('*').order('sort_order').order('full_name');
       if (error) return toast(errorMessage(error), 'error');
       listBox.replaceChildren(
         table(
@@ -41,6 +41,7 @@ export function adminsView(currentUserId) {
             { label: 'Email', key: 'email' },
             { label: 'Designation', key: 'designation' },
             { label: 'Phone', key: 'phone' },
+            { label: 'On site', render: (r) => (r.show_on_site ? 'Yes' : 'No') },
           ],
           data,
           (row) => [
@@ -76,11 +77,14 @@ export function adminsView(currentUserId) {
         fields: [
           { name: 'full_name', label: 'Name', required: true },
           { name: 'designation', label: 'Designation' },
-          { name: 'phone', label: 'Phone', type: 'tel' },
+          { name: 'phone', label: 'Phone', type: 'tel', hint: 'Admin only. Never shown on the site.' },
+          { name: 'sort_order', label: 'Position in The HOPE team', type: 'number' },
           { name: 'photo_path', label: 'Photo', type: 'image', wide: true },
+          { name: 'show_on_site', label: 'Show in The HOPE team on the home page', type: 'checkbox', default: true },
         ],
         onSubmit: async (v) => {
           v.photo_path = await resolveImage(v.photo_path, 'admins');
+          v.sort_order ??= 0;
           const { error } = await supabase.from('admins').update(v).eq('id', row.id);
           if (error) throw new Error(errorMessage(error));
         },

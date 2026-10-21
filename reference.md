@@ -172,12 +172,12 @@ Type scale, fluid with `clamp()`:
 | Component | Spec |
 |---|---|
 | **Sticker wordmark / glyph** (`.wordmark--3d`, `.glyph--3d`) | Token fill, `-webkit-text-stroke: 0.03em` ink, five stacked ink `text-shadow`s for the extrusion, plus one soft shadow. Same look as the loader. |
-| **Glow button** (`.btn`) | Pill. White fill, 1.5px border made from a conic gradient of the four tokens, and a blurred copy behind it as a glow. On hover the gradient rotates (`@property --angle`). The label names the action, such as "Apply for the next batch". |
+| **Glow button** (`.btn`) | Pill. White fill, 1.5px border made from a conic gradient of the four tokens, and a blurred copy behind it as a glow. On hover the gradient rotates (`@property --angle`). The label names the action, such as "See HOPE Elite". |
 | **Icon button** (`.icon-btn`) | 44×44 rounded square (menu) or 52px circle (prev/next, socials) with the same border and glow. |
 | **Photo frame** (`[data-photo]`) | Every image slot on the site. With no photo, it renders a light tinted placeholder that shows the slot name; with a photo, it renders an `<img>`. See "Adding photos" in `README.md`. |
 | **Parallelogram card** (`.track`) | Full-bleed photo cut with `clip-path` to a 12% skew, 2.5vw apart. Bottom shade; white title and copy bottom-left. Swings in 3D as it crosses the screen. |
 | **Diagonal split** (`.split`) | Two photo panels cut at 60%→40% with an 8px gap. Left content top-left; right content bottom-right and right-aligned. |
-| **Mentor card** (`.mentor`) | 4:5 portrait frame, name, "role, department", and topic tags with token-colour borders. Rendered from `src/mentors.js`. Mentors are assigned by the college, so there is never an apply action. |
+| **Mentor card** (`.mentor`) | 4:5 portrait frame, name, "role, department", and topic tags with token-colour borders. Rendered from the `mentors` table. Mentors are assigned by the college, so there is never an apply action. |
 | **Progress bar** | Fixed bottom centre, 40vw wide, 3px tall, with an H→O→P→E gradient fill tied to scroll. |
 | **Menu overlay** | Full-screen white layer revealed with a clip-path circle from the menu button. |
 
@@ -190,10 +190,10 @@ Type scale, fluid with `clamp()`:
 | Hero ring | Clean white hero with no buttons: a curved cylinder of gallery photos rotating behind the sticker wordmark. On scroll the ring **tilts back** (rotateX) and the four letters **scatter in 3D**, each on its own path. | `hero.js` |
 | Statement + 3D shapes | "Learn to code the way engineers do…": words **flip up** out of their lines (rotateX from −80°). Sticker glyphs float at different depths: near ones big, fast and spinning, far ones small, slow and blurred. Each also bobs gently on its own. | `scenes.js` |
 | About horizontal | **Tracks**: pinned horizontal strip. Cards **swing round a curve** (rotateY −38° → 0° → 38°, pushed back in z at the edges) so the strip echoes the hero ring. | `scenes.js` |
-| Location → Save the date | **The lab → Next batch**: an edge-detected sketch of the lab fills with colour, then batch dates and an Apply CTA rise in | `scenes.js` |
+| Location → Save the date | **The lab → Where HOPE trains**: an edge-detected sketch of the lab fills with colour, then the room, timings and the batch names rise in, with a link to the batches | `scenes.js` |
 | Warp | **Events deck**: one section, no title-only screen. Coming up / Past tabs with counts, a live countdown to the next event, and a drag/swipe card deck. Cards tilt toward the cursor, and clicking one opens a side panel with Register and Add to calendar (.ics). A cursor-reactive glyph field sits behind it all. | `events.js`, `glyphfield.js` |
-| Vibe heading + split | "Your first commit starts here" rides across the screen **on a wave** (each letter on a sine curve). Then the **Learn / Mentors** split slides together: Learn has the student apply CTA, Mentors links to the list. | `scenes.js` |
-| Sponsors / partners | **Meet the mentors** (cards dealt in from below, slightly rotated), then a marquee of places alumni went | `scenes.js` + CSS |
+| Vibe heading + split | "Two batches. One lab." rides across the screen **on a wave** (each letter on a sine curve). Then the split slides together: **HOPE Elite** on the left, **HOPE Batch 2** on the right, each with live student and placement counts and a link to its batch page. | `scenes.js` |
+| Sponsors / partners | **Top placements** wall (portraits dealt in from depth; details slide up on hover; the first card leads at double size), **Meet the mentors**, **The HOPE team** (admins who chose to appear), then a strip of companies | `scenes.js` + CSS |
 | Footer | "See you in the lab", glow CTAs, sticker wordmark, socials, lite toggle | static |
 
 ### 2.6 Motion rules
@@ -242,6 +242,9 @@ Type scale, fluid with `clamp()`:
   `index.html`), so whatever photo goes in `venue` gets its line-drawing version for free.
 
 ### 2.8 Pages and data
+
+- **Purpose:** HOPE presents itself; it does not take applications. The college selects batches and assigns mentors.
+  Never add an apply, register-as-student or become-a-mentor action. Event registration links are the only outward CTA.
 
 - Pages: `/` (home), `/batches/`, `/alumni/`, and the unlisted admin area `/hope-hq/`. Inner pages use the same
   header, menu and tokens, and get one calm motion moment only: the title rises by character, the header glyphs
