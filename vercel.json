@@ -13,11 +13,7 @@
   "headers": [
     {
       "source": "/hope-hq/(.*)",
-      "rewrites": [
-    { "source": "/batches/:slug/", "destination": "/batches/view/index.html" },
-    { "source": "/batches/:slug", "destination": "/batches/view/index.html" }
-  ],
-  "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
 }
