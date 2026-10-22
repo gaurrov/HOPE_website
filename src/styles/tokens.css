@@ -1,24 +1,30 @@
 /* HOPE design tokens. See reference.md §2.2 and §2.3 */
 :root {
   /* Base palette */
-  --ink: #000000;
-  --paper: #ffffff;
-  --mist: #f3f3f3;
+  /* Dark theme: "ink" is the white that draws text and outlines, "paper" is the black page */
+  --ink: #ffffff;
+  --paper: #000000;
+  --mist: #161616;
   --grey: #8c8c8c;
-  /* The four letter tokens are fills for outlined shapes (wordmark, glyphs, dates): white with ink outlines */
-  --h: #ffffff;
-  --o: #ffffff;
-  --p: #ffffff;
-  --e: #ffffff;
+  /* The four letter tokens fill outlined shapes (wordmark, glyphs, dates): black with white outlines */
+  --h: #000000;
+  --o: #000000;
+  --p: #000000;
+  --e: #000000;
 
   /* Roles */
   --bg: var(--paper);
   --fg: var(--ink);
-  --muted: #5e5e5e;
-  --line: rgb(0 0 0 / 0.14);
+  --muted: #a6a6a6;
+  --line: rgb(255 255 255 / 0.18);
   --on-photo: #ffffff;
   --shade: 0 0 0; /* rgb triplet for photo gradients */
   --hope-gradient: linear-gradient(90deg, var(--ink), var(--ink));
+
+  /* Metal: black mirror for the hero wordmark, brushed-steel edges for buttons */
+  --chrome: linear-gradient(180deg, #9a9a9a 0%, #3a3a3a 22%, #101010 46%, #6a6a6a 49%, #0c0c0c 53%, #161616 78%, #3c3c3c 100%);
+  --chrome-pill: linear-gradient(180deg, #ffffff 0%, #d4d4d4 46%, #a8a8a8 52%, #e8e8e8 100%);
+  --chrome-stops: #ffffff, #5e5e5e 22%, #e2e2e2 48%, #4a4a4a 74%, #ffffff;
 
   /* Type */
   /* One coding typeface for everything; its ligatures render => != // like a code editor */

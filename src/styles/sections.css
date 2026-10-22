@@ -47,7 +47,7 @@ html.full .intro {
   position: absolute;
   inset: 0;
   clip-path: inset(50% 0 50% 0);
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
   pointer-events: none;
 }
 .glitch-layer--h { color: var(--ink); opacity: 0.55; }
@@ -99,11 +99,22 @@ html.full .intro {
 }
 .tunnel__item {
   position: absolute;
-  width: var(--tw, 30vw);
-  aspect-ratio: 4 / 3;
-  border-radius: 12px;
+  width: var(--tw, 40vw);
+  aspect-ratio: 16 / 10;
   translate: -50% -50%;
-  box-shadow: 0 20px 50px rgb(13 19 48 / 0.15);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+/* Speed lines streak out from the centre while the camera flies */
+.intro__speed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 /* =========================================================
@@ -239,22 +250,60 @@ html.lite .site-head__logo {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(42% 34% at 50% 50%, rgb(255 255 255 / 0.82), transparent 75%),
-    linear-gradient(to bottom, var(--bg), transparent 16%, transparent 84%, var(--bg));
+    radial-gradient(42% 34% at 50% 44%, rgb(0 0 0 / 0.78), transparent 75%),
+    linear-gradient(to bottom, var(--bg), transparent 14%, transparent 80%, var(--bg));
+}
+/* The mirror floor: a faint sheen where the panels stand, fading into black */
+.ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 22% at 50% 70%, rgb(255 255 255 / 0.05), transparent 70%);
 }
 .ring__spin {
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 44%; /* sit a little high so the reflections have room below */
   transform-style: preserve-3d;
 }
 .ring__item {
+  --sheen: 50%;
+  --glint: 0;
   position: absolute;
   width: var(--rw);
   height: var(--rh);
   margin: calc(var(--rh) / -2) 0 0 calc(var(--rw) / -2);
   border-radius: 10px;
   backface-visibility: hidden;
+}
+/* Empty slots look like brushed steel until a photo is uploaded */
+.ring__item:not(.has-photo) {
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 3px),
+    linear-gradient(160deg, #2a2a2a, #121212 45%, #262626);
+}
+.ring__item > img {
+  filter: grayscale(1) contrast(1.12) brightness(0.92);
+}
+/* Steel edge plus the moving band of light (position and strength set in hero.js) */
+.ring__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent 38%, rgb(255 255 255 / var(--glint)) 50%, transparent 62%) var(--sheen) 0 / 250% 100% no-repeat;
+  pointer-events: none;
+}
+/* Reflection: faded, slightly soft, fully gone halfway down */
+.ring__item--mirror {
+  opacity: 0.3;
+  filter: blur(1px);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 55%);
+  mask-image: linear-gradient(to top, #000, transparent 55%);
+}
+.ring__item--mirror .frame__ph {
+  display: none;
 }
 .hero__content {
   position: relative;
@@ -394,8 +443,8 @@ html.lite .site-head__logo {
   background: var(--bg);
 }
 .venue__img--sketch > img {
-  filter: url(#sketch);
-  mix-blend-mode: multiply;
+  filter: url(#sketch) invert(1);
+  mix-blend-mode: screen;
 }
 .venue__img--color {
   clip-path: inset(0 100% 0 0);

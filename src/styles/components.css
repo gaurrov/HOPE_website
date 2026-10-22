@@ -21,13 +21,13 @@
   text-shadow:
     0.01em 0.01em 0 var(--ink), 0.02em 0.02em 0 var(--ink), 0.03em 0.03em 0 var(--ink),
     0.04em 0.04em 0 var(--ink), 0.05em 0.05em 0 var(--ink),
-    0.06em 0.09em 0.12em rgb(13 19 48 / 0.18);
+    0.06em 0.09em 0.16em rgb(255 255 255 / 0.12);
 }
 
 /* ---------- Glow button ---------- */
 .btn {
   --angle: 0deg;
-  --ring: linear-gradient(var(--ink), var(--ink));
+  --ring: conic-gradient(from var(--angle), var(--chrome-stops));
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -59,7 +59,8 @@
   transition: opacity 0.3s;
 }
 .btn:hover {
-  background: var(--ink);
+  --angle: 200deg;
+  background: var(--chrome-pill);
   color: var(--paper);
 }
 .btn:hover::before {
@@ -76,7 +77,8 @@
 
 /* ---------- Icon button ---------- */
 .icon-btn {
-  --ring: linear-gradient(var(--ink), var(--ink));
+  --angle: 0deg;
+  --ring: conic-gradient(from var(--angle), var(--chrome-stops));
   position: relative;
   display: inline-grid;
   place-items: center;
@@ -90,7 +92,7 @@
     var(--ring) border-box;
   color: var(--fg);
   cursor: pointer;
-  transition: transform 0.25s var(--ease-out);
+  transition: --angle 1.2s var(--ease-out), transform 0.25s var(--ease-out);
 }
 .icon-btn::before {
   content: '';
@@ -103,6 +105,7 @@
   opacity: 0.1;
 }
 .icon-btn:hover {
+  --angle: 200deg;
   transform: translateY(-2px);
 }
 .icon-btn--round {
@@ -117,7 +120,7 @@
   position: relative;
   overflow: hidden;
   background:
-    repeating-linear-gradient(135deg, transparent 0 14px, rgb(0 0 0 / 0.06) 14px 15px),
+    repeating-linear-gradient(135deg, transparent 0 14px, rgb(255 255 255 / 0.06) 14px 15px),
     var(--mist);
 }
 .frame[data-tone='o'] { --tone: var(--o); }

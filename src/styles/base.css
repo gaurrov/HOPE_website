@@ -73,9 +73,20 @@ img {
   max-width: 100%;
 }
 
-button {
+button,
+input,
+select,
+textarea {
   font: inherit;
   color: inherit;
+}
+/* Native dropdown lists follow the dark theme */
+option {
+  background: var(--bg);
+  color: var(--fg);
+}
+:root {
+  color-scheme: dark;
 }
 
 :focus-visible {

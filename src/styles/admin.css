@@ -58,13 +58,13 @@
   color: var(--paper);
 }
 .abtn--primary:hover {
-  background: #262626;
+  background: #d9d9d9;
 }
 .abtn--danger {
-  color: #b3261e;
+  color: #ff8a80;
 }
 .abtn--danger:hover {
-  border-color: #b3261e;
+  border-color: #ff8a80;
 }
 .abtn--small {
   min-height: 32px;
@@ -99,7 +99,7 @@
   border: 1px solid var(--line);
   border-radius: 20px;
   background: var(--bg);
-  box-shadow: 0 20px 60px rgb(13 19 48 / 0.08);
+  border-color: var(--ink);
 }
 .auth__title {
   margin: 1.25rem 0 1.5rem;
@@ -213,13 +213,13 @@
   border-radius: 20px;
   background: var(--bg);
   color: var(--fg);
-  box-shadow: 0 30px 80px rgb(13 19 48 / 0.25);
+  border: 1.5px solid var(--ink);
 }
 .modal--small {
   width: min(440px, calc(100% - 2rem));
 }
 .modal::backdrop {
-  background: rgb(13 19 48 / 0.35);
+  background: rgb(0 0 0 / 0.7);
 }
 .modal__title {
   margin-bottom: 1.25rem;
@@ -234,7 +234,7 @@
 }
 .modal__error {
   min-height: 1.2em;
-  color: #b3261e;
+  color: #ff8a80;
   font-weight: 600;
 }
 .modal__actions {
@@ -484,7 +484,8 @@
   box-shadow: 0 10px 30px rgb(13 19 48 / 0.25);
 }
 .toast--error {
-  background: #b3261e;
+  background: #ff8a80;
+  color: #000;
 }
 
 /* ---------- Small screens: sidebar becomes a top tab row, table rows stack ---------- */

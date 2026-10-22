@@ -31,6 +31,12 @@ function field(label, attrs) {
   return h('div', { class: 'field' }, h('label', { for: id, text: label }), h('input', { id, ...attrs }));
 }
 
+// Short usernames like "Admin@sjce" (no domain ending) map to internal accounts ending in .hope.local
+function toLoginEmail(value) {
+  const v = value.trim().toLowerCase();
+  return /^[^@\s]+@[^@\s.]+$/.test(v) ? `${v}.hope.local` : v;
+}
+
 // ---------- Screens ----------
 function signInScreen(message = '') {
   const error = h('p', { class: 'modal__error', role: 'alert', text: message });
@@ -38,7 +44,7 @@ function signInScreen(message = '') {
   const form = h(
     'form',
     { class: 'auth__form' },
-    field('Email', { name: 'email', type: 'email', autocomplete: 'username', required: true }),
+    field('Email or username', { name: 'email', type: 'text', autocomplete: 'username', autocapitalize: 'none', spellcheck: 'false', required: true }),
     field('Password', { name: 'password', type: 'password', autocomplete: 'current-password', required: true }),
     error,
     submit,
@@ -47,9 +53,9 @@ function signInScreen(message = '') {
     e.preventDefault();
     submit.disabled = true;
     error.textContent = '';
-    const { error: err } = await supabase.auth.signInWithPassword({ email: form.email.value.trim(), password: form.password.value });
+    const { error: err } = await supabase.auth.signInWithPassword({ email: toLoginEmail(form.email.value), password: form.password.value });
     submit.disabled = false;
-    if (err) error.textContent = err.message === 'Invalid login credentials' ? 'That email and password don\'t match an account.' : err.message;
+    if (err) error.textContent = err.message === 'Invalid login credentials' ? 'That username and password don\'t match an account.' : err.message;
   });
   const forgot = h('button', { type: 'button', class: 'linkbtn', text: 'Forgot your password?', onclick: () => forgotScreen(form.email.value) });
   app.replaceChildren(card('Admin sign in', form, forgot));

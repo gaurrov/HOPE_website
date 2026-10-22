@@ -96,7 +96,7 @@ export async function studentsView(panel) {
     h(
       'div',
       { class: 'panel__head' },
-      h('div', {}, h('h1', { class: 'panel__title', text: 'Students' }), h('p', { class: 'panel__intro', text: 'The website shows only name, photo, batch and company. Everything else here stays private to admins.' })),
+      h('div', {}, h('h1', { class: 'panel__title', text: 'Students' }), h('p', { class: 'panel__intro', text: 'The website shows name, photo, batch, placement, package, skills and certifications. Roll number, email, phone and notes stay private to admins.' })),
       h(
         'div',
         { class: 'panel__actions' },

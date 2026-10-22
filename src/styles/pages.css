@@ -210,14 +210,14 @@ html.lite .events__field {
   background: var(--bg);
   color: var(--fg);
   overflow-y: auto;
-  box-shadow: -30px 0 80px rgb(13 19 48 / 0.2);
+  border-left: 1.5px solid var(--ink);
 }
 .event-panel[open] {
   animation: panel-in 0.45s var(--ease-out);
 }
 .event-panel::backdrop {
-  background: rgb(13 19 48 / 0.35);
-  backdrop-filter: blur(3px);
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(4px);
 }
 @keyframes panel-in {
   from { transform: translateX(100%); }
@@ -306,6 +306,29 @@ html.lite .events__field {
 .hero__mark .l {
   transform-style: preserve-3d;
 }
+/* Hero letters: a machined steel edge (light to dark greys) instead of the flat white sticker extrusion */
+.hero__mark.wordmark--3d .l {
+  text-shadow:
+    0.01em 0.01em 0 #d6d6d6, 0.02em 0.02em 0 #b8b8b8, 0.03em 0.03em 0 #999,
+    0.04em 0.04em 0 #7a7a7a, 0.05em 0.05em 0 #5c5c5c,
+    0.06em 0.09em 0.18em rgb(255 255 255 / 0.1);
+}
+/* Black mirror face laid over each letter; the white outline shows around it */
+.hero__mark [data-c] {
+  position: relative;
+}
+.hero__mark [data-c]::after {
+  content: attr(data-c);
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--chrome);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
 .l__lean {
   display: inline-block;
 }
@@ -347,6 +370,8 @@ html.lite .events__field {
   border-radius: 0 0 18px 18px;
   background: #000000;
   color: #f2f2f2;
+  border: 1.5px solid #f2f2f2;
+  border-top: 0;
   font-family: var(--font-mono);
   font-variation-settings: 'wdth' 100;
   font-size: 0.875rem;

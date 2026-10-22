@@ -115,30 +115,35 @@ it's a reasonable reading of the evidence that I didn't confirm in source.
 
 ### 2.1 Concept
 
-HOPE is a programming training house, so the site looks like **a code editor in black and white**: one coding
-typeface, pure white pages, black ink. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
+HOPE is a programming training house, so the site looks like **a code editor in dark mode**: one coding
+typeface, pure black pages, white text. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
 
 There is no colour in the interface. Photos are shown in black and white and come into colour when pointed at,
 so they are the only colour on the page and only while someone engages with them. Brand shapes (the wordmark,
-glyphs, event dates) use an **outline sticker**: white fill, black outline, hard black extrusion.
+glyphs, event dates) use an **outline sticker**: black fill, white outline, hard white extrusion.
 
 ### 2.2 Colour tokens (`src/styles/tokens.css`)
 
 | Token | Value | Role |
 |---|---|---|
-| `--paper` / `--bg` | `#FFFFFF` | Page background, everywhere |
-| `--ink` / `--fg` | `#000000` | Text, outlines, extrusions, buttons, progress bar |
-| `--mist` | `#F3F3F3` | Placeholder frames, quiet surfaces |
+| `--paper` / `--bg` | `#000000` | Page background, everywhere |
+| `--ink` / `--fg` | `#FFFFFF` | Text, outlines, extrusions, buttons, progress bar |
+| `--mist` | `#161616` | Placeholder frames, quiet surfaces |
 | `--grey` | `#8C8C8C` | Secondary glyphs, glitch ghost |
-| `--muted` | `#5E5E5E` | Secondary text (6.4:1 on white) |
-| `--line` | black at 14% | Hairlines, tracks, tag borders |
+| `--muted` | `#A6A6A6` | Secondary text (8.3:1 on black) |
+| `--line` | white at 18% | Hairlines, tracks, tag borders |
 | `--on-photo` | `#FFFFFF` | Text on a photo, always over a `.frame--shade` gradient |
-| `--h` `--o` `--p` `--e` | `#FFFFFF` | Fills for outlined shapes only (kept as separate tokens so a letter can be re-tinted later) |
+| `--h` `--o` `--p` `--e` | `#000000` | Fills for outlined shapes only (kept as separate tokens so a letter can be re-tinted later) |
+
+The names describe roles, not colours: `--ink` is whatever draws text and outlines (white here) and `--paper`
+is the page (black). Swapping their values is how the site switched from light to dark; keep using the roles.
 
 Rules:
 - Black and white only. Do not introduce an accent colour; use weight, size, outline, underline or inversion
   (black background, white text) for emphasis.
-- Buttons are black-outlined pills that invert to black on hover.
+- Buttons are white-outlined pills that invert to white with black text on hover.
+- Slide-in panels and dialogs separate from the page with a white edge, not a shadow (shadows disappear on black).
+- Blend modes that add light (`screen`) replace ones that darken (`multiply`), e.g. the glitch ghosts and the lab sketch.
 - Photos: `filter: grayscale(1)` by default, full colour on hover or focus of their card.
 
 ### 2.3 Typography
@@ -181,8 +186,8 @@ Type scale, fluid with `clamp()`:
 | Reference beat | HOPE version | Module |
 |---|---|---|
 | Boot gate | **Glitch loader**, no buttons. The four-colour **HOPE** wordmark glitches (colour-split ghosts, a band that tears sideways, letters flickering into code characters) while the page loads: at least 3 s, until the `load` event, at most 5 s. Then it locks clean and the zoom starts. | `intro.js` |
-| Logo mask → tunnel | Letters fill with gallery photos, the camera **zooms through the counter of the O**, and photos fly past in CSS 3D on white | `intro.js` |
-| Hero ring | Clean white hero with no buttons: a curved cylinder of gallery photos rotating behind the sticker wordmark. On scroll the ring **tilts back** (rotateX) and the four letters **scatter in 3D**, each on its own path. | `hero.js` |
+| Logo mask → tunnel | Letters fill with gallery photos and the camera **zooms through the counter of the O** into a **photo corridor**, the same flow as the reference: 10 gallery photos line the left and right walls (alternating sides, turned 18° to face the centre line). The camera flies forward at a steady pace, so each photo **pops up** as a small thumbnail near the vanishing point (fading and growing in), gets bigger as it approaches and slides off to its own side as it passes. Photos never sit on the centre line, so they never stack. White **speed lines** streak out from the centre behind them. Tune `TUNNEL_PHOTOS`, `SPACING`, `FLIGHT` and the fade distances at the top of `intro.js` | `intro.js` |
+| Hero ring | Black hero with no buttons: a curved cylinder of gallery photos rotating behind the sticker wordmark, standing on a **dark mirror floor**. Each panel has a flipped twin beneath it (30% opacity, 1px blur, masked out halfway down), a steel edge, and a **band of light** that slides across it as it turns past the front. The wordmark letters have a **chrome face** (`--chrome`) over their white outline and extrusion. On scroll the ring **tilts back** (rotateX) and the four letters **scatter in 3D**, each on its own path. Keep the metal subtle: grey steel, never shiny colour. Buttons share it through brushed-steel edges (`--chrome-stops`) and a steel fill on hover (`--chrome-pill`). | `hero.js` |
 | Statement + 3D shapes | "Learn to code the way engineers do…": words **flip up** out of their lines (rotateX from −80°). Sticker glyphs float at different depths: near ones big, fast and spinning, far ones small, slow and blurred. Each also bobs gently on its own. | `scenes.js` |
 | About horizontal | **Tracks**: pinned horizontal strip. Cards **swing round a curve** (rotateY −38° → 0° → 38°, pushed back in z at the edges) so the strip echoes the hero ring. | `scenes.js` |
 | Location → Save the date | **The lab → Where HOPE trains**: an edge-detected sketch of the lab fills with colour, then the room, timings and the batch names rise in, with a link to the batches | `scenes.js` |

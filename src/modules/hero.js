@@ -7,14 +7,20 @@ const ring = document.querySelector('.ring');
 const tilt = document.querySelector('.ring__tilt');
 const spin = document.querySelector('.ring__spin');
 const COUNT = 12;
+const items = []; // { el, mirror, base }: base is the panel's own angle on the ring
 let radius = 0;
 let angle = 0;
 let spinVel = 0; // extra spin from dragging, decays each frame
 
-// Curved wall of photos wrapped around the camera.
+// Curved wall of photos wrapped around the camera, standing on a dark mirror floor:
+// every panel has a faded, flipped twin underneath it that turns with the ring.
 export function buildRing() {
   for (let i = 0; i < COUNT; i++) {
-    spin.append(makeFrame(gallerySlots[i % gallerySlots.length], i, 'ring__item'));
+    const slot = gallerySlots[i % gallerySlots.length];
+    const el = makeFrame(slot, i, 'ring__item');
+    const mirror = makeFrame(slot, i, 'ring__item ring__item--mirror');
+    spin.append(el, mirror);
+    items.push({ el, mirror, base: (i * 360) / COUNT });
   }
   layoutRing();
   addEventListener('resize', layoutRing);
@@ -26,15 +32,31 @@ function layoutRing() {
   radius = (COUNT * w * 1.08) / (2 * Math.PI);
   ring.style.setProperty('--rw', `${w}px`);
   ring.style.setProperty('--rh', `${h}px`);
-  spin.querySelectorAll('.ring__item').forEach((el, i) => {
-    el.style.transform = `rotateY(${(i * 360) / COUNT}deg) translateZ(${-radius}px)`;
-  });
+  const gap = h * 0.04; // thin dark seam between a panel and its reflection
+  for (const { el, mirror, base } of items) {
+    const place = `rotateY(${base}deg) translateZ(${-radius}px)`;
+    el.style.transform = place;
+    // flip about the panel's bottom edge
+    mirror.style.transform = `${place} translateY(${h + gap}px) scaleY(-1)`;
+  }
   paint();
 }
 
 function paint() {
   // Push the ring towards the camera so the front panels read large and the sides curve past the edges
   spin.style.transform = `translateZ(${radius * 0.55}px) rotateY(${angle}deg)`;
+  // Metal sheen: a band of light that stays roughly fixed in front of the viewer, so it slides
+  // across each panel as the panel turns past the front and is brightest when facing you.
+  for (const { el, mirror, base } of items) {
+    const a = ((((base + angle) % 360) + 540) % 360) - 180; // 0 = facing the viewer
+    if (Math.abs(a) > 100) continue;
+    const sheen = `${50 - (a / 120) * 100}%`;
+    const glint = (Math.max(0, Math.cos((a * Math.PI) / 180)) ** 3 * 0.2).toFixed(3);
+    for (const node of [el, mirror]) {
+      node.style.setProperty('--sheen', sheen);
+      node.style.setProperty('--glint', glint);
+    }
+  }
 }
 
 // Where each letter flies when the hero scrolls away: [x vw, y vh, z px, rotateX, rotateY, rotateZ]
@@ -113,6 +135,8 @@ function setupHeroInteraction(letters) {
   const leans = letters.map((l) => {
     const inner = document.createElement('span');
     inner.className = 'l__lean';
+    inner.dataset.c = l.dataset.c; // the chrome face moves with the lean
+    delete l.dataset.c;
     inner.append(...l.childNodes);
     l.append(inner);
     return {
