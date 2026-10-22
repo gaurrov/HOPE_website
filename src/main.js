@@ -52,7 +52,7 @@ function renderBatches(batches, stats) {
       ? `${st.students} ${st.students === 1 ? 'student' : 'students'}${st.placed ? `, ${st.placed} placed or working` : ''}`
       : 'Students will be listed soon.';
     panel.querySelector('.split__go').textContent = st.students ? `See all ${st.students} students` : 'See the batch';
-    panel.href = `/batches/?b=${b.slug}`;
+    panel.href = `/batches/${b.slug}/`;
   });
   // The lab note names whichever batches exist
   const note = document.querySelector('.venue__note');

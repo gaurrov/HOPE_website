@@ -19,7 +19,8 @@ npm run build    # outputs to dist/
 | Address | What it is |
 |---|---|
 | `/` | Home page (scroll story, events, mentors, company strip) |
-| `/batches/` | Pick a batch: live stats, then Students (search, filter, sort, grid or list, profiles), Projects and Placements tabs. `?b=elite&tab=projects&student=<id>` links straight to any view |
+| `/batches/` | One large card per batch, each opening that batch's own page |
+| `/batches/<slug>/` | One batch's own page, e.g. `/batches/elite/` and `/batches/batch-2/`: live stats, then Students (search, filter, sort, grid or list, profiles), Projects and Placements tabs, and links to the other batches. `?tab=projects&student=<id>` links straight to any view. Every slug is served by `batches/view/index.html` (rewrite in `vercel.json`, and a small plugin in `vite.config.js` for local dev). Old `/batches/?b=<slug>` links forward here |
 | `/alumni/` | Alumni with the same search, filters and profiles, narrowed by batch |
 | `/hope-hq/` | **Admin area.** Not linked anywhere. Also opens by clicking the footer HOPE logo 5 times. Needs an admin login. |
 
@@ -108,7 +109,7 @@ src/photos.js           photo slot manifest
 src/lib/                Supabase client, public data queries, card builders
 src/pages/              batches and alumni page scripts
 src/admin/              admin area (sign-in, events, students + CSV, batches, mentors, site photos, admins)
-batches/ alumni/ hope-hq/  page HTML for the inner pages and the admin area
+batches/ alumni/ hope-hq/  page HTML for the inner pages and the admin area (batches/view/ is the per-batch page)
 supabase/               database migration and Edge Function source
 src/frames.js           fills [data-photo] slots
 src/modules/intro.js    glitch loader, zoom through the O, photo tunnel

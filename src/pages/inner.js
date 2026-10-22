@@ -12,6 +12,7 @@ import Lenis from 'lenis';
 import { setupChrome } from '../modules/chrome.js';
 import { cursorGlyphs } from '../modules/interact.js';
 import { setupTerminal } from '../modules/terminal.js';
+import { formatDate } from '../lib/data.js';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -52,4 +53,34 @@ export function renderChips(box, items, onPick) {
   });
   box.replaceChildren(...buttons);
   return (value) => buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(items[i].value === value)));
+}
+
+// Large link card for one batch: name, dates, description, counts, and a giant outlined word behind them.
+// Used on /batches/ and in "Other batches" on each batch page.
+export function batchCard(batch, stats = { students: 0, placed: 0 }, i = 0) {
+  const a = document.createElement('a');
+  a.className = 'bcard';
+  a.href = `/batches/${batch.slug}/`;
+  const add = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    n.className = cls;
+    if (text) n.textContent = text;
+    a.append(n);
+    return n;
+  };
+  add('span', 'bcard__word', batch.name.replace(/^HOPE\s+/i, '')).setAttribute('aria-hidden', 'true');
+  add('h2', 'bcard__name', batch.name);
+  const when = [formatDate(batch.starts_on), formatDate(batch.ends_on)].filter(Boolean).join(' to ');
+  if (when) add('p', 'bcard__dates', when);
+  if (batch.description) add('p', 'bcard__desc', batch.description);
+  add(
+    'p',
+    'bcard__meta',
+    stats?.students
+      ? `${stats.students} ${stats.students === 1 ? 'student' : 'students'}${stats.placed ? `, ${stats.placed} placed or working` : ''}`
+      : 'Students will be listed soon.',
+  );
+  add('span', 'bcard__go', `Open ${batch.name}`);
+  a.style.setProperty('--i', i);
+  return a;
 }

@@ -246,7 +246,7 @@ Type scale, fluid with `clamp()`:
 - **Purpose:** HOPE presents itself; it does not take applications. The college selects batches and assigns mentors.
   Never add an apply, register-as-student or become-a-mentor action. Event registration links are the only outward CTA.
 
-- Pages: `/` (home), `/batches/`, `/alumni/`, and the unlisted admin area `/hope-hq/`. Inner pages use the same
+- Pages: `/` (home), `/batches/` (overview), `/batches/<slug>/` (one page per batch, e.g. `/batches/elite/`), `/alumni/`, and the unlisted admin area `/hope-hq/`. Inner pages use the same
   header, menu and tokens, and get one calm motion moment only: the title rises by character, the header glyphs
   drift away and cards are dealt in.
 - All content comes from Supabase. Public pages read only published rows and public columns; the database

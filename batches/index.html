@@ -20,6 +20,15 @@
         var lite = stored === null ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : stored === '1';
         document.documentElement.classList.add(lite ? 'lite' : 'full');
       })();
+      // Old links like /batches/?b=elite now live at /batches/elite/
+      (function () {
+        var q = new URLSearchParams(location.search);
+        var b = q.get('b');
+        if (!b) return;
+        q.delete('b');
+        var rest = q.toString();
+        location.replace('/batches/' + encodeURIComponent(b) + '/' + (rest ? '?' + rest : '') + location.hash);
+      })();
     </script>
   </head>
   <body>
@@ -53,33 +62,9 @@
 
     <main id="main" class="page">
       <h1 class="page__title split-chars">Batches</h1>
-      <p class="page__lead">Each HOPE batch is selected by the college and trains together for a full programme. Pick a batch to see its students, what they built and where they were placed.</p>
+      <p class="page__lead">Each HOPE batch is selected by the college and trains together for a full programme. Open a batch to see its students, what they built and where they were placed.</p>
 
-      <div class="chips" role="group" aria-label="Choose a batch"></div>
-
-      <section class="bhero" aria-live="polite">
-        <div class="bhero__text">
-          <h2 class="bhero__name"></h2>
-          <p class="bhero__dates"></p>
-          <p class="bhero__desc"></p>
-        </div>
-        <dl class="stats stats--batch">
-          <div class="stat"><dt>Students</dt><dd data-stat="students">0</dd></div>
-          <div class="stat"><dt>Placed or working</dt><dd data-stat="placed">0</dd></div>
-          <div class="stat"><dt>Top package</dt><dd data-stat="top" data-suffix=" LPA">0</dd></div>
-          <div class="stat"><dt>Projects</dt><dd data-stat="projects">0</dd></div>
-        </dl>
-      </section>
-
-      <div class="ptabs" role="tablist" aria-label="Batch details">
-        <button class="ptab" role="tab" id="ptab-students" aria-controls="panel-students" aria-selected="true" data-tab="students" type="button">Students</button>
-        <button class="ptab" role="tab" id="ptab-projects" aria-controls="panel-projects" aria-selected="false" data-tab="projects" type="button">Projects</button>
-        <button class="ptab" role="tab" id="ptab-placements" aria-controls="panel-placements" aria-selected="false" data-tab="placements" type="button">Placements</button>
-      </div>
-
-      <section class="ppanel" id="panel-students" role="tabpanel" aria-labelledby="ptab-students"></section>
-      <section class="ppanel ppanel--projects" id="panel-projects" role="tabpanel" aria-labelledby="ptab-projects" hidden></section>
-      <section class="ppanel" id="panel-placements" role="tabpanel" aria-labelledby="ptab-placements" hidden></section>
+      <div class="bcards bcards--all"></div>
     </main>
 
     <footer class="inner-foot">

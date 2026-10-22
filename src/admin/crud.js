@@ -116,11 +116,11 @@ export const batchesView = crudView({
   noun: 'batch',
   table: 'batches',
   labelKey: 'name',
-  intro: 'Batches appear as chips on the Batches page in the order given by "Position".',
+  intro: 'Each batch gets its own page at the web address shown, and appears on the Batches page in the order given by "Position".',
   order: [['sort_order', { ascending: true }], ['name', { ascending: true }]],
   columns: [
     { label: 'Name', key: 'name' },
-    { label: 'Web address', render: (r) => `/batches/?b=${r.slug}` },
+    { label: 'Web address', render: (r) => `/batches/${r.slug}/` },
     { label: 'Dates', render: (r) => [formatDate(r.starts_on), formatDate(r.ends_on)].filter(Boolean).join(' to ') },
     { label: 'Position', key: 'sort_order' },
     { label: 'Published', render: (r) => yesNo(r.is_published) },

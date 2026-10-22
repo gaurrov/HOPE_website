@@ -6,10 +6,18 @@
   "git": {
     "deploymentEnabled": false
   },
+  "rewrites": [
+    { "source": "/batches/:slug/", "destination": "/batches/view/index.html" },
+    { "source": "/batches/:slug", "destination": "/batches/view/index.html" }
+  ],
   "headers": [
     {
       "source": "/hope-hq/(.*)",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "rewrites": [
+    { "source": "/batches/:slug/", "destination": "/batches/view/index.html" },
+    { "source": "/batches/:slug", "destination": "/batches/view/index.html" }
+  ],
+  "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
 }

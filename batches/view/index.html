@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- One page for every batch: /batches/elite/, /batches/batch-2/ and any batch added later all load this file -->
+    <title>Batch | HOPE</title>
+    <meta name="description" content="A HOPE batch: its students, the projects they built and where they were placed." />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..800;1,400..700&display=swap"
+    />
+    <script>
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('hope-lite'); } catch (e) {}
+        var lite = stored === null ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : stored === '1';
+        document.documentElement.classList.add(lite ? 'lite' : 'full');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-head">
+      <a class="site-head__logo wordmark is-visible" data-always="1" href="/" aria-label="HOPE home">
+        <span class="t-h">H</span><span class="t-o">O</span><span class="t-p">P</span><span class="t-e">E</span>
+      </a>
+      <div class="site-head__right">
+        <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Main" hidden>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#events">Events</a></li>
+        <li><a href="/batches/" aria-current="page">Batches</a></li>
+        <li><a href="/alumni/">Alumni</a></li>
+        <li><a href="/#mentors">Mentors</a></li>
+      </ul>
+    </nav>
+
+    <div class="page__glyphs" aria-hidden="true">
+      <span class="glyph glyph--3d t-h" style="right:8%;top:16%;--d:1"><span class="glyph__bob" style="--bob:5.5s">{</span></span>
+      <span class="glyph glyph--3d t-e" style="right:22%;top:38%;--d:1"><span class="glyph__bob" style="--bob:6.5s">}</span></span>
+    </div>
+
+    <main id="main" class="page">
+      <a class="crumb" href="/batches/">All batches</a>
+      <h1 class="page__title split-chars">&nbsp;</h1>
+      <section class="bhero bhero--page" aria-live="polite">
+        <div class="bhero__text">
+          <p class="bhero__dates"></p>
+          <p class="bhero__desc"></p>
+        </div>
+        <dl class="stats stats--batch">
+          <div class="stat"><dt>Students</dt><dd data-stat="students">0</dd></div>
+          <div class="stat"><dt>Placed or working</dt><dd data-stat="placed">0</dd></div>
+          <div class="stat"><dt>Top package</dt><dd data-stat="top" data-suffix=" LPA">0</dd></div>
+          <div class="stat"><dt>Projects</dt><dd data-stat="projects">0</dd></div>
+        </dl>
+      </section>
+
+      <div class="batch-body">
+        <div class="ptabs" role="tablist" aria-label="Batch details">
+          <button class="ptab" role="tab" id="ptab-students" aria-controls="panel-students" aria-selected="true" data-tab="students" type="button">Students</button>
+          <button class="ptab" role="tab" id="ptab-projects" aria-controls="panel-projects" aria-selected="false" data-tab="projects" type="button">Projects</button>
+          <button class="ptab" role="tab" id="ptab-placements" aria-controls="panel-placements" aria-selected="false" data-tab="placements" type="button">Placements</button>
+        </div>
+
+        <section class="ppanel" id="panel-students" role="tabpanel" aria-labelledby="ptab-students"></section>
+        <section class="ppanel ppanel--projects" id="panel-projects" role="tabpanel" aria-labelledby="ptab-projects" hidden></section>
+        <section class="ppanel" id="panel-placements" role="tabpanel" aria-labelledby="ptab-placements" hidden></section>
+      </div>
+
+      <section class="others" aria-labelledby="others-title" hidden>
+        <h2 class="others__title" id="others-title">Other batches</h2>
+        <div class="bcards"></div>
+      </section>
+    </main>
+
+    <footer class="inner-foot">
+      <nav aria-label="Footer">
+        <a href="/">Home</a><a href="/batches/">Batches</a><a href="/alumni/">Alumni</a>
+      </nav>
+      <button class="term-open" type="button" aria-label="Open the HOPE terminal"><span aria-hidden="true">&gt;_</span> Terminal <kbd>`</kbd></button>
+      <p>HOPE, House of Programming Expertise</p>
+    </footer>
+
+    <script type="module" src="/src/pages/batch.js"></script>
+  </body>
+</html>

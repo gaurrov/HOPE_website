@@ -71,7 +71,7 @@ export function setupTerminal({ go } = {}) {
       const batches = await getBatches();
       const b = batches.find((x) => x.slug === arg.toLowerCase() || x.name.toLowerCase() === arg.toLowerCase());
       if (!b) return print(`No batch called "${arg}". Try: ${batches.map((x) => x.slug).join(', ')}`, 'term__err');
-      location.href = `/batches/?b=${b.slug}`;
+      location.href = `/batches/${b.slug}/`;
     },
     next: async () => {
       const now = Date.now();
