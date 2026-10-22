@@ -50,9 +50,7 @@ function renderBatches(batches, stats) {
     panel.querySelector('.split__meta').textContent = st.students
       ? `${st.students} ${st.students === 1 ? 'student' : 'students'}${st.placed ? `, ${st.placed} placed or working` : ''}`
       : 'Students will be listed soon.';
-    const link = panel.querySelector('.split__link');
-    link.href = `/batches/?b=${b.slug}`;
-    link.querySelector('span').textContent = `See ${b.name}`;
+    panel.href = `/batches/?b=${b.slug}`;
   });
   // The lab note names whichever batches exist
   const note = document.querySelector('.venue__note');

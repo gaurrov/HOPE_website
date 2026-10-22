@@ -526,28 +526,55 @@ html.lite .site-head__logo {
 .paths__pin .glyph--float:nth-of-type(2) { right: 14%; bottom: 12%; rotate: 22deg; }
 .paths__pin .glyph--float:nth-of-type(3) { left: 58%; top: 10%; rotate: 8deg; }
 
+/* Registered so the diagonal can glide when a panel is pointed at */
+@property --shift {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
 .split {
   --cut-top: 60%;
   --cut-bot: 40%;
+  --shift: 0%;
   position: relative;
   height: 100svh;
   min-height: 640px;
   color: var(--on-photo);
+  transition: --shift 0.7s var(--ease-out);
 }
+/* Pointing at a batch pushes the diagonal toward the other one, so the chosen panel grows */
+.split:has(.split__panel--a:hover, .split__panel--a:focus-visible) { --shift: 12%; }
+.split:has(.split__panel--b:hover, .split__panel--b:focus-visible) { --shift: -12%; }
 .split__panel {
   position: absolute;
   inset: 0;
   overflow: hidden; /* photos slide in from the sides; keep them inside the panel */
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
 }
 .split__panel > .frame {
   position: absolute;
   inset: 0;
 }
+.split__panel > .frame > img {
+  transition: scale 0.9s var(--ease-out), filter 0.6s var(--ease-out);
+}
+.split__panel:hover > .frame > img,
+.split__panel:focus-visible > .frame > img {
+  scale: 1.06;
+  filter: none;
+}
+/* The other batch steps back */
+.split:has(.split__panel:hover) .split__panel:not(:hover) > .frame > img {
+  filter: grayscale(1) brightness(0.45);
+}
 .split__panel--a {
-  clip-path: polygon(0 0, calc(var(--cut-top) - 4px) 0, calc(var(--cut-bot) - 4px) 100%, 0 100%);
+  clip-path: polygon(0 0, calc(var(--cut-top) + var(--shift) - 4px) 0, calc(var(--cut-bot) + var(--shift) - 4px) 100%, 0 100%);
 }
 .split__panel--b {
-  clip-path: polygon(calc(var(--cut-top) + 4px) 0, 100% 0, 100% 100%, calc(var(--cut-bot) + 4px) 100%);
+  clip-path: polygon(calc(var(--cut-top) + var(--shift) + 4px) 0, 100% 0, 100% 100%, calc(var(--cut-bot) + var(--shift) + 4px) 100%);
 }
 .split__panel--a > .frame::after {
   background: linear-gradient(to bottom, rgb(var(--shade) / 0.85), rgb(var(--shade) / 0.35) 40%, transparent 65%);
@@ -561,20 +588,43 @@ html.lite .site-head__logo {
   display: grid;
   gap: 1rem;
   width: min(36%, 520px);
+  transition: scale 0.7s var(--ease-out), opacity 0.5s;
 }
 .split__panel--a .split__body {
   left: var(--gutter);
   top: 12vh;
   justify-items: start;
+  transform-origin: left top;
 }
 .split__panel--b .split__body {
   right: var(--gutter);
   bottom: 12vh;
   justify-items: end;
   text-align: right;
+  transform-origin: right bottom;
+}
+.split__panel:hover .split__body,
+.split__panel:focus-visible .split__body {
+  scale: 1.1;
+}
+.split:has(.split__panel:hover) .split__panel:not(:hover) .split__body {
+  opacity: 0.45;
 }
 .split__body h3 {
   font-size: var(--step-display);
+}
+/* The name underlines itself on hover or keyboard focus, so the panel reads as a link */
+.split__name {
+  justify-self: inherit;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0% 3px no-repeat;
+  transition: background-size 0.6s var(--ease-out);
+}
+.split__panel--b .split__name {
+  background-position: right bottom;
+}
+.split__panel:hover .split__name,
+.split__panel:focus-visible .split__name {
+  background-size: 100% 3px;
 }
 .split__body p {
   font-size: var(--step-lead);
