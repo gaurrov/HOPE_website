@@ -548,6 +548,7 @@ html.lite .site-head__logo {
 .split__panel {
   position: absolute;
   inset: 0;
+  display: block; /* it is a link; stay a block when phones switch it to position: relative */
   overflow: hidden; /* photos slide in from the sides; keep them inside the panel */
   color: inherit;
   text-decoration: none;
@@ -579,36 +580,108 @@ html.lite .site-head__logo {
 .split__panel--a > .frame::after {
   background: linear-gradient(to bottom, rgb(var(--shade) / 0.85), rgb(var(--shade) / 0.35) 40%, transparent 65%);
 }
-/* Keep placeholder labels on the visible side of the diagonal, away from the text */
-.split__panel--a .frame__ph { right: 50%; top: 55%; }
-.split__panel--b .frame__ph { left: 50%; bottom: 55%; }
+/* The giant outlined word fills the panel instead of a placeholder label */
+.split__panel .frame__ph {
+  display: none;
+}
+/* Giant outlined batch word. The diagonal slices it, so the enlarged panel shows more of it. */
+.split__word {
+  position: absolute;
+  z-index: 0;
+  font-size: clamp(6rem, 15.5vw, 20rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.3);
+  pointer-events: none;
+  transition: scale 0.8s var(--ease-out), -webkit-text-stroke-color 0.5s, opacity 0.5s;
+}
+.split__panel--a .split__word {
+  left: var(--gutter);
+  bottom: 5vh;
+  transform-origin: left bottom;
+}
+.split__panel--b .split__word {
+  right: var(--gutter);
+  top: 7vh;
+  transform-origin: right top;
+}
+.split__panel:hover .split__word,
+.split__panel:focus-visible .split__word {
+  scale: 1.08;
+  -webkit-text-stroke-color: rgb(255 255 255 / 0.6);
+}
+.split:has(.split__panel:hover) .split__panel:not(:hover) .split__word {
+  opacity: 0.4;
+}
+
+/* .split__body is moved by the scroll reveal (GSAP); hover effects live on .split__inner
+   so CSS transitions never fight the scroll animation. */
 .split__body {
   position: absolute;
   z-index: 1;
-  display: grid;
-  gap: 1rem;
   width: min(36%, 520px);
-  transition: scale 0.7s var(--ease-out), opacity 0.5s;
 }
 .split__panel--a .split__body {
   left: var(--gutter);
   top: 12vh;
-  justify-items: start;
-  transform-origin: left top;
 }
 .split__panel--b .split__body {
   right: var(--gutter);
   bottom: 12vh;
+}
+.split__inner {
+  display: grid;
+  gap: 1rem;
+  transition: scale 0.7s var(--ease-out), opacity 0.5s;
+}
+.split__panel--a .split__inner {
+  justify-items: start;
+  transform-origin: left top;
+}
+.split__panel--b .split__inner {
   justify-items: end;
   text-align: right;
   transform-origin: right bottom;
 }
-.split__panel:hover .split__body,
-.split__panel:focus-visible .split__body {
-  scale: 1.1;
+/* The wording follows the panel: the chosen batch grows, the other shrinks back to its name */
+.split__panel:hover .split__inner,
+.split__panel:focus-visible .split__inner {
+  scale: 1.12;
 }
-.split:has(.split__panel:hover) .split__panel:not(:hover) .split__body {
-  opacity: 0.45;
+.split:has(.split__panel:hover) .split__panel:not(:hover) .split__inner {
+  scale: 0.78;
+  opacity: 0.55;
+}
+/* Folding rows: the description folds away on the smaller panel, the student link unfolds on the bigger one */
+.split__fold {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.6s var(--ease-out), opacity 0.45s;
+}
+.split__fold > * {
+  min-height: 0;
+  overflow: hidden;
+}
+.split__fold--go,
+.split:has(.split__panel:hover) .split__panel:not(:hover) .split__fold--desc {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+.split__panel:hover .split__fold--go,
+.split__panel:focus-visible .split__fold--go {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.split__go {
+  font-size: var(--step-body) !important;
+  font-weight: 700;
+  margin: 0 !important;
+  padding-bottom: 0.2em;
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
 }
 .split__body h3 {
   font-size: var(--step-display);
@@ -871,6 +944,14 @@ html.lite .marquee__list {
     width: auto;
     left: var(--gutter) !important;
     right: var(--gutter) !important;
+  }
+  .split__word {
+    font-size: 30vw;
+  }
+  /* No hover on touch: always show the student link */
+  .split__fold--go {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
   .mentors__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

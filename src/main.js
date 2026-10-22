@@ -46,10 +46,12 @@ function renderBatches(batches, stats) {
     if (!b) return panel.remove();
     const st = stats[b.id] || { students: 0, placed: 0 };
     panel.querySelector('.split__name').textContent = b.name;
+    panel.querySelector('.split__word').textContent = b.name.replace(/^HOPE\s+/i, '');
     panel.querySelector('.split__desc').textContent = b.description || 'Selected by the college and trained together, week after week, in the lab.';
     panel.querySelector('.split__meta').textContent = st.students
       ? `${st.students} ${st.students === 1 ? 'student' : 'students'}${st.placed ? `, ${st.placed} placed or working` : ''}`
       : 'Students will be listed soon.';
+    panel.querySelector('.split__go').textContent = st.students ? `See all ${st.students} students` : 'See the batch';
     panel.href = `/batches/?b=${b.slug}`;
   });
   // The lab note names whichever batches exist
