@@ -10,8 +10,12 @@ if (!supabase) {
   console.warn('Supabase is not configured: set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in .env.local');
 }
 
-// Public URL for a file in the media bucket
+// Public URL for a file in the media bucket, or direct local/web path
 export function mediaUrl(path) {
-  if (!path || !supabase) return '';
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/') || path.startsWith('data:')) {
+    return path;
+  }
+  if (!supabase) return '';
   return supabase.storage.from('media').getPublicUrl(path).data.publicUrl;
 }

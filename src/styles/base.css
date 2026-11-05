@@ -33,7 +33,18 @@ html.full::-webkit-scrollbar {
 
 body {
   margin: 0;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -12%, rgba(56, 189, 248, 0.28), rgba(99, 102, 241, 0.2) 45%, transparent 75%),
+    radial-gradient(circle 800px at 95% 35%, rgba(139, 92, 246, 0.18), transparent 65%),
+    radial-gradient(circle 750px at 5% 65%, rgba(244, 63, 94, 0.14), transparent 65%),
+    radial-gradient(circle 900px at 50% 105%, rgba(52, 211, 153, 0.16), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 56px 56px, 56px 56px;
+  background-attachment: fixed;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat;
+  background-position: top center, top right, bottom left, bottom center, 0 0, 0 0;
   color: var(--fg);
   font-family: var(--font-sans);
   font-size: var(--step-body);
@@ -41,6 +52,9 @@ body {
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   overflow-x: clip;
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
 }
 
 h1,
@@ -90,7 +104,7 @@ option {
 }
 
 :focus-visible {
-  outline: 2px solid var(--ink);
+  outline: 2px solid var(--h);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -110,16 +124,18 @@ option {
   top: 1rem;
 }
 
-/* Token fills as text utilities (white shapes with ink outlines) */
-.t-h { color: var(--h); }
-.t-o { color: var(--o); }
-.t-p { color: var(--p); }
-.t-e { color: var(--e); }
+/* Token fills as text utilities (glowing quad-colors) */
+.t-h { color: var(--h); text-shadow: 0 0 20px rgba(56, 189, 248, 0.45); }
+.t-o { color: var(--o); text-shadow: 0 0 20px rgba(244, 63, 94, 0.45); }
+.t-p { color: var(--p); text-shadow: 0 0 20px rgba(251, 191, 36, 0.45); }
+.t-e { color: var(--e); text-shadow: 0 0 20px rgba(52, 211, 153, 0.45); }
 
-/* SplitText line masks need room for descenders; lines give words a 3D stage */
+/* SplitText line masks need room for ascenders and descenders; lines give words a 3D stage */
 .split-line-mask {
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding-top: 0.22em;
+  margin-top: -0.22em;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
 .split-line {
   perspective: 700px;

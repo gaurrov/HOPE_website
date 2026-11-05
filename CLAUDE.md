@@ -17,11 +17,12 @@ HOPE (House of Programming Expertise) website for St. Joseph's College of Engine
 ## Data and security (Supabase project `lnzpkbazdutogwwhasix`)
 - Access is enforced by RLS, not the UI. Public tables use "read published" + "admins manage via `private.is_admin()`". Private student details (roll no, email, phone, notes) live in `student_private` and must never reach public pages.
 - Mock rows carry `is_sample = true`; new sample data must too, and any new table with sample rows goes in `src/admin/sample.js`.
+- Public pages show only database rows, never hard-coded people or figures. Placeholder photos from `public/photos` are attached in `src/lib/data.js` to `is_sample` rows only, so real records never show a stock image.
 - Schema changes are applied through the Supabase MCP tools and then saved as a timestamped file in `supabase/migrations/`. Use `/db-change`.
 
 ## Design rules
-- Dark theme: black page, white text and outlines, no accent colour. `src/styles/tokens.css` and `reference.md` §2.2 are current; older passages in `reference.md` that describe a white theme or coloured gradients are stale. Use role tokens (`--ink`, `--paper`, `--mist`, `--line`, `--muted`), never raw colours.
-- JetBrains Mono only, sentence case, photos greyscale until hovered.
+- Neon dark theme: midnight navy page, near-white text, cyan/rose/amber/emerald brand colours (`--h`, `--o`, `--p`, `--e`) with gradients and soft glows. `src/styles/tokens.css` and `reference.md` §2.1 and §2.2 are current; older passages in `reference.md` that describe a white theme or a Google-colour palette are stale. Use tokens in new work and don't add new hues.
+- JetBrains Mono only, sentence case, photos in full colour (the hero ring and lab sketch stay greyscale).
 - No "apply", "join" or "become a mentor" actions anywhere: the college selects batches and assigns mentors.
 - Every page must work in lite mode (`html.lite`, set by `prefers-reduced-motion` or the footer toggle) and at 375px wide with no sideways scroll.
 - Don't put CSS transitions on properties that GSAP also animates on the same element (this once left the home batch panels blank); put hover effects on an inner wrapper.

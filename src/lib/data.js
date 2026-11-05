@@ -11,26 +11,38 @@ async function run(query, fallback = []) {
   return data ?? fallback;
 }
 
+// Stand-in photos from public/photos for sample rows, until the college's real photos arrive.
+// Only rows flagged is_sample get one, so a real record never shows a stock image.
+const standIn = (kind, count, n) => `/photos/${kind}-${String((n % count) + 1).padStart(2, '0')}.jpg`;
+const withStandIns = (rows, field, kind, count, pick = (_, i) => i) =>
+  rows.map((r, i) => (r.is_sample && !r[field] ? { ...r, [field]: standIn(kind, count, pick(r, i)) } : r));
+
+// Students are picked by id so one person keeps the same face on every page
+const hash = (text) => [...String(text)].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 0);
+const studentPhotos = (rows) => withStandIns(rows, 'photo_path', 'student', 12, (s) => hash(s.id));
+
 const STUDENT_COLUMNS =
-  'id, full_name, photo_path, employment, company, package_lpa, skills, certifications, is_alumni, is_featured, batch:batches(id, slug, name)';
+  'id, full_name, photo_path, is_sample, employment, company, package_lpa, skills, certifications, is_alumni, is_featured, batch:batches(id, slug, name)';
 
 export const getBatches = () =>
   run(supabase?.from('batches').select('id, slug, name, description, starts_on, ends_on').order('sort_order').order('name'));
 
-export const getStudents = (batchId) =>
-  run(supabase?.from('students').select(STUDENT_COLUMNS).eq('batch_id', batchId).order('full_name'));
+export const getStudents = async (batchId) =>
+  studentPhotos(await run(supabase?.from('students').select(STUDENT_COLUMNS).eq('batch_id', batchId).order('full_name')));
 
-export const getAlumni = () =>
-  run(supabase?.from('students').select(STUDENT_COLUMNS).eq('is_alumni', true).order('full_name'));
+export const getAlumni = async () =>
+  studentPhotos(await run(supabase?.from('students').select(STUDENT_COLUMNS).eq('is_alumni', true).order('full_name')));
 
 // Highly placed students marked by admins for the Top placements wall
-export const getFeatured = () =>
-  run(
-    supabase
-      ?.from('students')
-      .select('id, full_name, photo_path, employment, company, package_lpa, batch:batches(slug, name)')
-      .eq('is_featured', true)
-      .order('package_lpa', { ascending: false, nullsFirst: false }),
+export const getFeatured = async () =>
+  studentPhotos(
+    await run(
+      supabase
+        ?.from('students')
+        .select('id, full_name, photo_path, is_sample, employment, company, package_lpa, batch:batches(slug, name)')
+        .eq('is_featured', true)
+        .order('package_lpa', { ascending: false, nullsFirst: false }),
+    ),
   );
 
 // Admins who chose to appear on the site: name, designation and photo only (see public.get_team)
@@ -50,14 +62,18 @@ export async function getBatchStats() {
 }
 
 // Projects with their team members; pass a batch id to limit to one batch
-export function getProjects(batchId) {
+export async function getProjects(batchId) {
   let q = supabase
     ?.from('projects')
-    .select('id, title, summary, tech, kind, image_path, repo_url, demo_url, is_featured, batch:batches(slug, name), members:project_members(role, student:students(id, full_name, photo_path))')
+    .select('id, title, summary, tech, kind, image_path, is_sample, repo_url, demo_url, is_featured, batch:batches(slug, name), members:project_members(role, student:students(id, full_name, photo_path, is_sample))')
     .order('is_featured', { ascending: false })
     .order('title');
   if (q && batchId) q = q.eq('batch_id', batchId);
-  return run(q);
+  const rows = withStandIns(await run(q), 'image_path', 'project', 4);
+  return rows.map((p) => ({
+    ...p,
+    members: (p.members || []).map((m) => ({ ...m, student: m.student && studentPhotos([m.student])[0] })),
+  }));
 }
 
 // Live numbers for "HOPE in numbers" (counts only what the public can see)
@@ -66,11 +82,21 @@ export const getStats = () => run(supabase?.rpc('get_hope_stats'), null);
 // 24 → "24 LPA", 9.5 → "9.5 LPA"
 export const formatPackage = (lpa) => (lpa == null ? '' : `${Number(lpa)} LPA`);
 
-export const getMentors = () =>
-  run(supabase?.from('mentors').select('id, full_name, role, department, teaches, photo_path').order('sort_order').order('full_name'));
+export const getMentors = async () =>
+  withStandIns(
+    await run(supabase?.from('mentors').select('id, full_name, role, department, teaches, photo_path, is_sample').order('sort_order').order('full_name')),
+    'photo_path',
+    'mentor',
+    3,
+  );
 
-export const getEvents = () =>
-  run(supabase?.from('events').select('id, title, starts_at, ends_at, venue, summary, description, poster_path, register_url').order('starts_at'));
+export const getEvents = async () =>
+  withStandIns(
+    await run(supabase?.from('events').select('id, title, starts_at, ends_at, venue, summary, description, poster_path, register_url, is_sample').order('starts_at')),
+    'poster_path',
+    'event',
+    5,
+  );
 
 // Companies where students and alumni are placed or working, most common first
 export async function getCompanies() {
@@ -89,7 +115,7 @@ export const companyKey = (name) => String(name || '').trim().replace(/\s+/g, ' 
 export async function getCompanyMap() {
   const [companies, students] = await Promise.all([
     run(supabase?.from('companies').select('id, name, city, country, lat, lng, website, logo_path').order('name')),
-    run(supabase?.from('students').select(STUDENT_COLUMNS).not('company', 'is', null).order('full_name')),
+    run(supabase?.from('students').select(STUDENT_COLUMNS).not('company', 'is', null).order('full_name')).then(studentPhotos),
   ]);
   const byKey = new Map(companies.map((c) => [companyKey(c.name), { ...c, students: [] }]));
   const unlisted = new Map(); // student companies with no row (or no location) yet

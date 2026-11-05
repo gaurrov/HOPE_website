@@ -53,8 +53,16 @@
     </div>
 
     <main id="main" class="page">
+      <div class="page__eyebrow">
+        <span class="badge-code">// Alumni network</span>
+        <span class="live-dot" aria-hidden="true"></span>
+        <span class="eyebrow-text">Engineering roster</span>
+      </div>
       <h1 class="page__title split-chars">Alumni</h1>
-      <p class="page__lead">People who came through HOPE and where they work now. Search by name, skill or company, and open anyone to see their projects.</p>
+      <p class="page__lead">Engineers who trained at HOPE and their industry trajectories. Filter by batch, search by skillset, or click any profile to inspect their code and projects.</p>
+
+      <!-- Filled by src/pages/alumni.js from the published alumni rows -->
+      <div class="alumni-stats" role="group" aria-label="Alumni metrics" hidden></div>
 
       <div class="chips" role="group" aria-label="Filter by batch"></div>
 

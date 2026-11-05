@@ -13,7 +13,11 @@ export function setSiteMedia(map) {
 export function photoUrl(slot) {
   if (siteMedia[slot]) return mediaUrl(siteMedia[slot]);
   const file = photos[slot];
-  return file ? `${base}photos/${file}` : '';
+  if (!file) return '';
+  if (file.startsWith('http://') || file.startsWith('https://') || file.startsWith('/') || file.startsWith('data:')) {
+    return file;
+  }
+  return `${base}photos/${file}`;
 }
 
 // Fill one [data-photo] or [data-src] element with its image, or with a labelled placeholder.
@@ -32,6 +36,10 @@ export function fillFrame(el) {
     img.alt = el.dataset.alt || '';
     img.decoding = 'async';
     if (!el.closest('.hero, .intro')) img.loading = 'lazy';
+    img.onerror = () => {
+      img.remove();
+      el.classList.remove('has-photo');
+    };
     el.prepend(img);
     if (real) el.classList.add('has-photo');
     return;

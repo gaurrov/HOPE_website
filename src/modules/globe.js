@@ -15,6 +15,12 @@ const FOV = 40;
 const DEG = Math.PI / 180;
 export const HOME = { name: 'HOPE lab, Chennai', lat: 12.8698, lng: 80.2186 };
 
+// Colours come from tokens.css. The custom shaders write their colour straight to the screen,
+// so they take the raw value; built-in materials convert from linear themselves.
+const tokenValue = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const tokenColor = (name) => new THREE.Color(tokenValue(name));
+const shaderColor = (name) => new THREE.Color().setStyle(tokenValue(name), THREE.LinearSRGBColorSpace);
+
 export function latLngToVec(lat, lng, r = R) {
   const phi = lat * DEG;
   const th = lng * DEG;
@@ -81,7 +87,7 @@ const dotMaterial = (pr) =>
   new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
-    uniforms: { uTime: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 7 }, uPR: { value: pr } },
+    uniforms: { uTime: { value: 0 }, uExpand: { value: 0 }, uSize: { value: 7 }, uPR: { value: pr }, uColor: { value: shaderColor('--h') } },
     vertexShader: /* glsl */ `
       attribute float aRand;
       uniform float uTime, uExpand, uSize, uPR;
@@ -97,29 +103,31 @@ const dotMaterial = (pr) =>
         vAlpha = e * (0.2 + 0.8 * smoothstep(-0.1, 0.7, facing)) * (0.75 + 0.25 * sin(uTime * 1.4 + aRand * 40.0));
       }`,
     fragmentShader: /* glsl */ `
+      uniform vec3 uColor;
       varying float vAlpha;
       void main() {
         float d = length(gl_PointCoord - 0.5);
         if (d > 0.5) discard;
-        gl_FragColor = vec4(vec3(1.0), vAlpha * smoothstep(0.5, 0.15, d));
+        gl_FragColor = vec4(uColor, vAlpha * smoothstep(0.5, 0.15, d));
       }`,
   });
 
-// Soft white rim, the hologram's glow
+// Soft coloured rim, the hologram's glow
 const glowMaterial = () =>
   new THREE.ShaderMaterial({
     transparent: true,
     side: THREE.BackSide,
     blending: THREE.AdditiveBlending,
     depthWrite: false,
-    uniforms: { uOpacity: { value: 0 } },
+    uniforms: { uOpacity: { value: 0 }, uColor: { value: shaderColor('--accent-indigo') } },
     vertexShader: /* glsl */ `
       varying vec3 vN;
       void main() { vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
       uniform float uOpacity;
+      uniform vec3 uColor;
       varying vec3 vN;
-      void main() { float i = pow(max(0.0, 0.62 - dot(vN, vec3(0.0, 0.0, 1.0))), 3.0); gl_FragColor = vec4(vec3(1.0), i * uOpacity); }`,
+      void main() { float i = pow(max(0.0, 0.62 - dot(vN, vec3(0.0, 0.0, 1.0))), 3.0); gl_FragColor = vec4(uColor, i * uOpacity); }`,
   });
 
 // Arc whose light travels from the lab to the city, over and over
@@ -128,19 +136,20 @@ const arcMaterial = (offset) =>
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    uniforms: { uTime: { value: 0 }, uDraw: { value: 0 }, uOff: { value: offset }, uMotion: { value: 1 }, uFade: { value: 1 } },
+    uniforms: { uTime: { value: 0 }, uDraw: { value: 0 }, uOff: { value: offset }, uMotion: { value: 1 }, uFade: { value: 1 }, uColor: { value: shaderColor('--e') } },
     vertexShader: /* glsl */ `
       attribute float aT;
       varying float vT;
       void main() { vT = aT; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */ `
       uniform float uTime, uDraw, uOff, uMotion, uFade;
+      uniform vec3 uColor;
       varying float vT;
       void main() {
         if (vT > uDraw) discard;
         float d = fract(vT - uTime * 0.3 + uOff);
         float head = smoothstep(0.78, 1.0, d) * uMotion;
-        gl_FragColor = vec4(vec3(1.0), (0.16 + 0.84 * head) * uFade);
+        gl_FragColor = vec4(uColor, (0.16 + 0.84 * head) * uFade);
       }`,
   });
 
@@ -243,7 +252,7 @@ export function createGlobe(stage, { cities, lite, onChange, onStudent, label })
   scene.add(globe);
 
   // Core sphere hides the dots on the far side; the glow sits just outside it
-  globe.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 64, 64), new THREE.MeshBasicMaterial({ color: 0x000000 })));
+  globe.add(new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 64, 64), new THREE.MeshBasicMaterial({ color: tokenColor('--paper') })));
   const dots = new THREE.Points(landDots(innerWidth < 720 ? 11000 : 17000), dotMaterial(pr));
   globe.add(dots);
   const gridMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false });
@@ -286,8 +295,8 @@ export function createGlobe(stage, { cities, lite, onChange, onStudent, label })
   addLabel('home', label.home(HOME), latLngToVec(HOME.lat, HOME.lng, R * 1.01), null, -1);
 
   // ---------- City nodes and arcs ----------
-  const nodeMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
-  const spikeMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85 });
+  const nodeMat = new THREE.MeshBasicMaterial({ color: tokenColor('--p'), transparent: true, opacity: 1 });
+  const spikeMat = new THREE.LineBasicMaterial({ color: tokenColor('--p'), transparent: true, opacity: 0.85 });
   const arcs = [];
   const pulses = [];
   const cityNodes = cities.map((city, i) => {
@@ -300,7 +309,7 @@ export function createGlobe(stage, { cities, lite, onChange, onStudent, label })
     node.position.copy(n).multiplyScalar(R + 0.004);
     const pulse = new THREE.Mesh(
       new THREE.RingGeometry(0.014, 0.018, 40),
-      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, side: THREE.DoubleSide, depthWrite: false }),
+      new THREE.MeshBasicMaterial({ color: tokenColor('--p'), transparent: true, side: THREE.DoubleSide, depthWrite: false }),
     );
     pulse.position.copy(n).multiplyScalar(R + 0.003);
     pulse.lookAt(n.clone().multiplyScalar(3));

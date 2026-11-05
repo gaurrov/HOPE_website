@@ -116,35 +116,41 @@ it's a reasonable reading of the evidence that I didn't confirm in source.
 ### 2.1 Concept
 
 HOPE is a programming training house, so the site looks like **a code editor in dark mode**: one coding
-typeface, pure black pages, white text. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
+typeface, a midnight navy page, near-white text. The brand glyphs are programming punctuation: `{ } ; </> => ( ) #`.
 
-There is no colour in the interface. Photos are shown in black and white and come into colour when pointed at,
-so they are the only colour on the page and only while someone engages with them. Brand shapes (the wordmark,
-glyphs, event dates) use an **outline sticker**: black fill, white outline, hard white extrusion.
+The interface uses a **neon multi-colour theme**: four brand colours (cyan, rose, amber, emerald) plus indigo and
+purple accents, a gradient wordmark, soft glows, and a faint grid with coloured light behind the page. Photos are
+in full colour and gain contrast and saturation when pointed at. The hero ring and the lab sketch stay greyscale.
 
 ### 2.2 Colour tokens (`src/styles/tokens.css`)
 
 | Token | Value | Role |
 |---|---|---|
-| `--paper` / `--bg` | `#000000` | Page background, everywhere |
-| `--ink` / `--fg` | `#FFFFFF` | Text, outlines, extrusions, buttons, progress bar |
-| `--mist` | `#161616` | Placeholder frames, quiet surfaces |
-| `--grey` | `#8C8C8C` | Secondary glyphs, glitch ghost |
-| `--muted` | `#A6A6A6` | Secondary text (8.3:1 on black) |
-| `--line` | white at 18% | Hairlines, tracks, tag borders |
+| `--paper` / `--bg` | `#070B16` | Page background, everywhere |
+| `--ink` / `--fg` | `#F8FAFC` | Text and outlines |
+| `--mist` | `#0F172A` | Placeholder frames, quiet surfaces |
+| `--grey` | `#94A3B8` | Secondary glyphs, glitch ghost |
+| `--muted` | `#94A3B8` | Secondary text |
+| `--line` | white at 9% | Hairlines, tracks, tag borders |
 | `--on-photo` | `#FFFFFF` | Text on a photo, always over a `.frame--shade` gradient |
-| `--h` `--o` `--p` `--e` | `#000000` | Fills for outlined shapes only (kept as separate tokens so a letter can be re-tinted later) |
+| `--h` `--o` `--p` `--e` | `#38BDF8` `#F43F5E` `#FBBF24` `#34D399` | Brand colours: cyan, rose, amber, emerald |
+| `--accent-purple` `--accent-blue` `--accent-indigo` | `#A855F7` `#3B82F6` `#6366F1` | Extra glow accents |
+| `--hope-gradient` | cyan to indigo, purple, rose and amber | Wordmark and gradient text |
+| `--chrome` `--chrome-pill` `--chrome-stops` | gradients | Hero letters, button hover, ring borders |
 
-The names describe roles, not colours: `--ink` is whatever draws text and outlines (white here) and `--paper`
-is the page (black). Swapping their values is how the site switched from light to dark; keep using the roles.
+The names describe roles: `--ink` is whatever draws text and outlines and `--paper` is the page. Use the tokens in
+new work. The Three.js globe reads them too, through `tokenColor()` and `shaderColor()` in `src/modules/globe.js`.
 
 Rules:
-- Black and white only. Do not introduce an accent colour; use weight, size, outline, underline or inversion
-  (black background, white text) for emphasis.
-- Buttons are white-outlined pills that invert to white with black text on hover.
-- Slide-in panels and dialogs separate from the page with a white edge, not a shadow (shadows disappear on black).
+- Keep to this palette; don't add new hues. Glows should be soft and sit behind content, not over text.
+- Buttons are ring-outlined pills that fill with `--chrome-pill` and dark text on hover.
+- Panels and cards separate from the page with a light border and shadow.
 - Blend modes that add light (`screen`) replace ones that darken (`multiply`), e.g. the glitch ghosts and the lab sketch.
-- Photos: `filter: grayscale(1)` by default, full colour on hover or focus of their card.
+- Photos: full colour by default, slightly more contrast and saturation on hover or focus of their card.
+
+Placeholder photos live in `public/photos`. Design slots (gallery, tracks, lab, batch panels) are named in
+`src/photos.js` and can be replaced from the admin area. Student, mentor, event and project stand-ins are added in
+`src/lib/data.js` only to rows flagged `is_sample`, so they disappear once real records replace the sample data.
 
 ### 2.3 Typography
 
