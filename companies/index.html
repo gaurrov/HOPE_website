@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Companies | HOPE</title>
+    <meta name="description" content="The companies where HOPE students are placed and work, on a globe you can turn and zoom into." />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400..800;1,400..700&display=swap"
+    />
+    <script>
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('hope-lite'); } catch (e) {}
+        var lite = stored === null ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : stored === '1';
+        document.documentElement.classList.add(lite ? 'lite' : 'full');
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#gpanel">Skip to the company list</a>
+
+    <header class="site-head">
+      <a class="site-head__logo wordmark is-visible" data-always="1" href="/" aria-label="HOPE home">
+        <span class="t-h">H</span><span class="t-o">O</span><span class="t-p">P</span><span class="t-e">E</span>
+      </a>
+      <div class="site-head__right">
+        <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <nav class="menu" id="menu" aria-label="Main" hidden>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/#events">Events</a></li>
+        <li><a href="/batches/">Batches</a></li>
+        <li><a href="/companies/" aria-current="page">Companies</a></li>
+        <li><a href="/alumni/">Alumni</a></li>
+        <li><a href="/#mentors">Mentors</a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="globe-page">
+      <!-- The globe; canvas and floating labels are added by src/modules/globe.js -->
+      <section class="globe" aria-label="Globe of the companies where HOPE students work" data-lenis-prevent>
+        <div class="globe__ui globe__head">
+          <h1 class="globe__title">Where HOPE students work</h1>
+          <p class="globe__lead">Drag to turn the globe. Zoom into a city to open its companies, then pick a company to see who works there.</p>
+        </div>
+        <div class="globe__ui globe__foot">
+          <dl class="globe__readout">
+            <div><dt>Companies</dt><dd data-r="companies">0</dd></div>
+            <div><dt>Cities</dt><dd data-r="cities">0</dd></div>
+            <div><dt>Students</dt><dd data-r="students">0</dd></div>
+            <div class="globe__coords"><dt>Facing</dt><dd data-r="coords">-</dd></div>
+          </dl>
+          <div class="globe__controls">
+            <button class="icon-btn" type="button" data-zoom="in" aria-label="Zoom in">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" type="button" data-zoom="out" aria-label="Zoom out">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+            <button class="icon-btn" type="button" data-zoom="reset" aria-label="Show the whole globe">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 12h16M12 4c2.5 2.2 3.5 5 3.5 8s-1 5.8-3.5 8M12 4c-2.5 2.2-3.5 5-3.5 8s1 5.8 3.5 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </button>
+          </div>
+        </div>
+        <p class="globe__fallback" hidden>This browser can't show the 3D globe. Every company and its students are in the list.</p>
+      </section>
+
+      <aside class="gpanel" id="gpanel" tabindex="-1" aria-label="Companies" data-lenis-prevent>
+        <div class="gpanel__trail"></div>
+        <div class="gpanel__body" aria-live="polite"><p class="gpanel__loading">Loading companies</p></div>
+      </aside>
+    </main>
+
+    <footer class="inner-foot">
+      <nav aria-label="Footer">
+        <a href="/">Home</a><a href="/batches/">Batches</a><a href="/companies/">Companies</a><a href="/alumni/">Alumni</a>
+      </nav>
+      <button class="term-open" type="button" aria-label="Open the HOPE terminal"><span aria-hidden="true">&gt;_</span> Terminal <kbd>`</kbd></button>
+      <p>HOPE, House of Programming Expertise</p>
+    </footer>
+
+    <script type="module" src="/src/pages/companies.js"></script>
+  </body>
+</html>

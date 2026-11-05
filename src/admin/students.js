@@ -10,7 +10,7 @@ const list = (v) => String(v || '').split(/[;,]/).map((x) => x.trim()).filter(Bo
 const truthy = (v) => /^(y|yes|true|1)$/i.test(String(v || '').trim());
 const one = (v) => (Array.isArray(v) ? v[0] : v) || {};
 
-function studentFields(batches) {
+function studentFields(batches, companyNames = []) {
   return [
     { type: 'heading', label: 'Shown on the website', hint: 'Name, photo, batch, placement, skills and certifications' },
     { name: 'full_name', label: 'Full name', required: true },
@@ -25,7 +25,13 @@ function studentFields(batches) {
         { value: 'working', label: 'Working' },
       ],
     },
-    { name: 'company', label: 'Company', placeholder: 'Shown as "Placed at …" or "Works at …"' },
+    {
+      name: 'company',
+      label: 'Company',
+      placeholder: 'Shown as "Placed at …" or "Works at …"',
+      suggest: companyNames,
+      hint: 'Pick a name from the Companies list so the student shows on the company globe.',
+    },
     { name: 'photo_path', label: 'Photo', type: 'image', wide: true },
     { name: 'is_featured', label: 'Top placement (shows on the home page wall)', type: 'checkbox' },
     { name: 'package_lpa', label: 'Package in LPA (optional)', type: 'number', step: 0.01, min: 0, placeholder: '12', hint: 'Lakhs per annum, e.g. 9.5. Shown only if filled in.' },
@@ -170,9 +176,10 @@ export async function studentsView(panel) {
 
   async function edit(row) {
     const values = row ? { ...row, ...row.private, batch_id: row.batch_id || '', employment: row.employment || '' } : { batch_id: batchFilter.value && batchFilter.value !== 'none' ? batchFilter.value : '' };
+    const { data: companies } = await supabase.from('companies').select('name').order('name');
     const saved = await formDialog({
       title: row ? `Edit ${row.full_name}` : 'Add student',
-      fields: studentFields(batches),
+      fields: studentFields(batches, (companies || []).map((c) => c.name)),
       values,
       onSubmit: async (v) => {
         v.photo_path = await resolveImage(v.photo_path, 'students');

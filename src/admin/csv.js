@@ -5,7 +5,7 @@ export function parseCsv(text) {
   let row = [];
   let field = '';
   let quoted = false;
-  const src = text.replace(/^﻿/, '');
+  const src = text.replace(/^\uFEFF/, ''); // drop the byte-order mark Excel adds to CSV exports
   for (let i = 0; i < src.length; i++) {
     const c = src[i];
     if (quoted) {

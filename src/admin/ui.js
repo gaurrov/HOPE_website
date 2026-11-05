@@ -72,7 +72,9 @@ export async function removeImage(path) {
 }
 
 // ---------- Form dialog ----------
-// fields: [{ name, label, type, required, options, hint, folder, placeholder }]
+// fields: [{ name, label, type, required, options, hint, folder, placeholder, suggest, onInput }]
+//   suggest: list of strings offered while typing (a datalist)
+//   onInput(value, controls): runs as the field changes, e.g. to fill in other fields
 // onSubmit(values) may throw; the message is shown in the dialog.
 export function formDialog({ title, fields, values = {}, submitLabel = 'Save', onSubmit }) {
   return new Promise((resolve) => {
@@ -120,18 +122,20 @@ export function formDialog({ title, fields, values = {}, submitLabel = 'Save', o
         control._remove = remove;
       } else {
         const type = { datetime: 'datetime-local', tags: 'text' }[f.type] || f.type || 'text';
-        control = h('input', { id, name: f.name, type, placeholder: f.placeholder, step: f.type === 'datetime' ? 60 : f.step ?? null, min: f.min ?? null });
+        control = h('input', { id, name: f.name, type, placeholder: f.placeholder, step: f.type === 'datetime' ? 60 : f.step ?? null, min: f.min ?? null, max: f.max ?? null, list: f.suggest ? `${id}-list` : null, autocomplete: f.suggest ? 'off' : null });
         control.value =
           f.type === 'datetime' ? toLocalInput(v) : f.type === 'tags' ? (v || []).join(', ') : v ?? (f.default ?? '');
       }
       if (f.required && control.tagName !== 'DIV') control.required = true;
       controls[f.name] = control;
+      if (f.onInput) control.addEventListener('input', () => f.onInput(control.value, controls));
+      const suggestions = f.suggest ? h('datalist', { id: `${id}-list` }, ...f.suggest.map((v) => h('option', { value: v }))) : null;
 
       const label = h('label', { for: f.type === 'image' ? `${id}` : id, text: f.label + (f.required ? ' *' : '') });
       if (f.type === 'checkbox') {
         return h('div', { class: 'field field--check' }, control, label, f.hint ? h('p', { class: 'field__hint', text: f.hint }) : null);
       }
-      return h('div', { class: `field${f.wide ? ' field--wide' : ''}` }, label, control, f.hint ? h('p', { class: 'field__hint', text: f.hint }) : null);
+      return h('div', { class: `field${f.wide ? ' field--wide' : ''}` }, label, control, suggestions, f.hint ? h('p', { class: 'field__hint', text: f.hint }) : null);
     });
 
     const save = h('button', { type: 'submit', class: 'abtn abtn--primary', text: submitLabel });

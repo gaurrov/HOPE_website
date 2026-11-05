@@ -21,6 +21,7 @@ npm run build    # outputs to dist/
 | `/` | Home page (scroll story, events, mentors, company strip) |
 | `/batches/` | One large card per batch, each opening that batch's own page |
 | `/batches/<slug>/` | One batch's own page, e.g. `/batches/elite/` and `/batches/batch-2/`: live stats, then Students (search, filter, sort, grid or list, profiles), Projects and Placements tabs, and links to the other batches. `?tab=projects&student=<id>` links straight to any view. Every slug is served by `batches/view/index.html` (rewrite in `vercel.json`, and a small plugin in `vite.config.js` for local dev). Old `/batches/?b=<slug>` links forward here |
+| `/companies/` | Holographic globe (Three.js) of the companies where students are placed or work. Cities are nodes with data arcs from the lab in Chennai; zooming in or picking a city fans out its companies, and picking a company fans out its students (click one for their profile). The list beside it does the same for keyboard and phone users |
 | `/alumni/` | Alumni with the same search, filters and profiles, narrowed by batch |
 | `/hope-hq/` | **Admin area.** Not linked anywhere. Also opens by clicking the footer HOPE logo 5 times. Needs an admin login. |
 
@@ -33,6 +34,7 @@ All content (events, batches, students, alumni, mentors, admins, photos) lives i
 - **Students**: public fields (name, photo, batch, company) plus admin-only fields (roll number, email, phone,
   department, year, job role, LinkedIn, notes). Import and export as CSV. Tick "Alumni" to list someone on the Alumni page.
 - **Projects**: title, batch, tech, links, screenshot and team members (with a lead).
+- **Companies**: name, city (picking a listed city fills in the map position), website, logo. Students join a company by name, so write their company the same way; the tab lists student companies that aren't added yet.
 - **Batches**, **Mentors**, **Site photos** (the design photo slots) and **Admins** (invite by email, remove).
 - **Sample data**: the mock HOPE Elite and HOPE Batch 2 content is flagged as sample. Delete all of it in one click from
   this tab once real data is in; anything an admin adds is never touched.
@@ -43,7 +45,7 @@ Who can see what is enforced by the database (Row Level Security), not by the we
 
 | Data | Public website | Admins |
 |---|---|---|
-| Events, batches, mentors, site photos | Published rows | Everything, can edit |
+| Events, batches, mentors, companies, site photos | Published rows | Everything, can edit |
 | Students | Name, photo, batch, company, package, skills, certifications, projects | Everything, can edit |
 | Student private details, admin list | Never | Everything, can edit |
 
@@ -119,6 +121,7 @@ src/modules/events.js   event deck: tabs, countdown, drag, details panel, .ics
 src/modules/glyphfield.js  cursor-reactive glyph canvas behind events
 src/modules/interact.js glyphs dodge the cursor, 3D card tilt
 src/modules/terminal.js the backtick terminal
+src/modules/globe.js    the /companies/ globe: dotted continents, city nodes, arcs, company and student fans
 src/modules/chrome.js   menu, progress bar, prev/next, anchors, lite toggle
 src/styles/             tokens.css, base.css, components.css, sections.css
 reference/screenshots/  captures of the reference site

@@ -83,6 +83,48 @@ export async function getCompanies() {
   return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([name]) => name);
 }
 
+// Companies with their placed students, for the /companies/ globe.
+// Students link to a company by name (case and extra spaces ignored).
+export const companyKey = (name) => String(name || '').trim().replace(/\s+/g, ' ').toLowerCase();
+export async function getCompanyMap() {
+  const [companies, students] = await Promise.all([
+    run(supabase?.from('companies').select('id, name, city, country, lat, lng, website, logo_path').order('name')),
+    run(supabase?.from('students').select(STUDENT_COLUMNS).not('company', 'is', null).order('full_name')),
+  ]);
+  const byKey = new Map(companies.map((c) => [companyKey(c.name), { ...c, students: [] }]));
+  const unlisted = new Map(); // student companies with no row (or no location) yet
+  for (const s of students) {
+    const key = companyKey(s.company);
+    if (!key) continue;
+    const c = byKey.get(key);
+    if (c) c.students.push(s);
+    else {
+      if (!unlisted.has(key)) unlisted.set(key, { name: s.company.trim(), students: [] });
+      unlisted.get(key).students.push(s);
+    }
+  }
+  const all = [...byKey.values()];
+  const mapped = all.filter((c) => c.lat != null && c.lng != null);
+  const missing = [...all.filter((c) => c.lat == null || c.lng == null), ...unlisted.values()].filter((c) => c.students.length);
+
+  // Group mapped companies by city; a company without a city gets a place of its own
+  const cities = new Map();
+  for (const c of mapped) {
+    const key = c.city ? `${companyKey(c.city)}|${companyKey(c.country)}` : `at|${c.lat.toFixed(2)},${c.lng.toFixed(2)}`;
+    if (!cities.has(key)) cities.set(key, { key, name: c.city || c.name, country: c.country || '', companies: [] });
+    cities.get(key).companies.push(c);
+  }
+  for (const city of cities.values()) {
+    city.lat = city.companies.reduce((n, c) => n + c.lat, 0) / city.companies.length;
+    city.lng = city.companies.reduce((n, c) => n + c.lng, 0) / city.companies.length;
+    city.companies.sort((a, b) => b.students.length - a.students.length || a.name.localeCompare(b.name));
+  }
+  const list = [...cities.values()].sort(
+    (a, b) => b.companies.reduce((n, c) => n + c.students.length, 0) - a.companies.reduce((n, c) => n + c.students.length, 0),
+  );
+  return { cities: list, missing };
+}
+
 // { slot: path } for the design photo slots (gallery, tracks, lab, ...)
 export async function getSiteMedia() {
   const rows = await run(supabase?.from('site_media').select('slot, path'));

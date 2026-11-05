@@ -8,6 +8,7 @@ const TABLES = [
   { table: 'students', label: 'Students (their private details and project memberships go with them)' },
   { table: 'events', label: 'Events' },
   { table: 'mentors', label: 'Mentors' },
+  { table: 'companies', label: 'Companies (the globe locations for the sample students)' },
 ];
 
 export async function sampleDataView(panel) {

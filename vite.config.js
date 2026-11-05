@@ -24,11 +24,14 @@ function batchPages() {
 export default defineConfig({
   plugins: [batchPages()],
   build: {
+    // The globe chunk (Three.js plus world map data) is about 600 kB and loads only on /companies/
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       input: {
         home: resolve(import.meta.dirname, 'index.html'),
         batches: resolve(import.meta.dirname, 'batches/index.html'),
         batch: resolve(import.meta.dirname, 'batches/view/index.html'),
+        companies: resolve(import.meta.dirname, 'companies/index.html'),
         alumni: resolve(import.meta.dirname, 'alumni/index.html'),
         admin: resolve(import.meta.dirname, 'hope-hq/index.html'),
       },

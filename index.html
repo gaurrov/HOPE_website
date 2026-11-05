@@ -49,11 +49,12 @@
         <div class="wordmark intro__mark" aria-hidden="true">
           <span class="l l-h">H</span><span class="l l-o">O</span><span class="l l-p">P</span><span class="l l-e">E</span>
         </div>
-        <p class="intro__expand">
-          <span><b class="t-h">H</b>ouse</span> <span><b class="t-o">o</b>f</span>
-          <span><b class="t-p">P</b>rogramming</span> <span><b class="t-e">E</b>xpertise</span>
-        </p>
-        <div class="intro__load" aria-hidden="true"><span></span></div>
+        <!-- Boot log: real data requests printed as they finish (src/modules/bootlog.js) -->
+        <div class="boot" aria-hidden="true">
+          <p class="boot__prompt"></p>
+          <ol class="boot__lines"></ol>
+          <p class="boot__bar"></p>
+        </div>
       </div>
     </div>
 
@@ -81,6 +82,7 @@
         <li><a href="#mentors">Mentors</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="/batches/">Batches</a></li>
+        <li><a href="/companies/">Companies</a></li>
         <li><a href="/alumni/">Alumni</a></li>
         <li><a href="#faq">Questions</a></li>
       </ul>
@@ -226,7 +228,7 @@
       <!-- ============ Paths ============ -->
       <section class="paths" id="paths" data-step>
         <div class="paths__pin">
-          <h2 class="paths__heading">Two batches. One lab.</h2>
+          <h2 class="paths__heading">Two batches. One Dream.</h2>
           <span class="glyph glyph--3d glyph--float t-o" aria-hidden="true">{</span>
           <span class="glyph glyph--3d glyph--float t-e" aria-hidden="true">}</span>
           <span class="glyph glyph--3d glyph--float t-p" aria-hidden="true">;</span>
@@ -290,7 +292,10 @@
           <ul class="marquee__list"></ul>
           <ul class="marquee__list" aria-hidden="true"></ul>
         </div>
-        <a class="btn alumni__more" href="/alumni/"><span>Meet the alumni</span></a>
+        <div class="alumni__links">
+          <a class="btn alumni__more" href="/companies/"><span>See them on the globe</span></a>
+          <a class="btn alumni__more" href="/alumni/"><span>Meet the alumni</span></a>
+        </div>
       </section>
       <!-- ============ FAQ ============ -->
       <section class="faq" id="faq" data-step aria-labelledby="faq-title">

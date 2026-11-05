@@ -7,7 +7,7 @@ import '../styles/admin.css';
 
 import { supabase } from '../lib/supabase.js';
 import { h, toast, errorMessage } from './ui.js';
-import { eventsView, batchesView, mentorsView } from './crud.js';
+import { eventsView, batchesView, mentorsView, companiesView } from './crud.js';
 import { studentsView } from './students.js';
 import { adminsView } from './admins.js';
 import { sitePhotosView } from './sitephotos.js';
@@ -104,7 +104,9 @@ const recall = () => {
 const remember = (value) => {
   try {
     value ? localStorage.setItem(REMEMBER, value) : localStorage.removeItem(REMEMBER);
-  } catch {}
+  } catch {
+    // Storage is blocked (e.g. a private window): the username just isn't remembered
+  }
 };
 
 function signInError(err) {
@@ -235,6 +237,7 @@ function dashboard(user, me) {
     { id: 'events', label: 'Events', mount: eventsView },
     { id: 'students', label: 'Students', mount: studentsView },
     { id: 'projects', label: 'Projects', mount: projectsView },
+    { id: 'companies', label: 'Companies', mount: companiesView },
     { id: 'batches', label: 'Batches', mount: batchesView },
     { id: 'mentors', label: 'Mentors', mount: mentorsView },
     { id: 'photos', label: 'Site photos', mount: sitePhotosView },

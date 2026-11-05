@@ -50,6 +50,7 @@ export function setupTerminal({ go } = {}) {
         ['placements', 'top placements'],
         ['team', 'the HOPE team'],
         ['batches [name]', 'see a batch, e.g. batches elite'],
+        ['companies', 'the company globe'],
         ['alumni', 'where HOPE alumni work'],
         ['mentors', 'meet the mentors'],
         ['home', 'back to the top'],
@@ -66,6 +67,7 @@ export function setupTerminal({ go } = {}) {
     team: () => jump('team'),
     home: () => (onHome() ? jump('top') : (location.href = '/')),
     alumni: () => (location.href = '/alumni/'),
+    companies: () => (location.href = '/companies/'),
     batches: async (arg) => {
       if (!arg) return (location.href = '/batches/');
       const batches = await getBatches();
@@ -80,7 +82,7 @@ export function setupTerminal({ go } = {}) {
       print(`${e.title}: ${formatDate(e.starts_at)}, ${formatTime(e.starts_at)}${e.venue ? `, ${e.venue}` : ''}`);
     },
     whoami: () => print('a future engineer.'),
-    ls: () => print('home/  batches/  alumni/  events  placements  mentors  team  lab  tracks'),
+    ls: () => print('home/  batches/  companies/  alumni/  events  placements  mentors  team  lab  tracks'),
     date: () => print(new Date().toString()),
     sudo: () => print('Permission denied. Nice try though.', 'term__err'),
     hello: () => print('Hello, world.'),

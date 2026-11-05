@@ -57,30 +57,112 @@ html.full .intro {
   background: var(--bg);
   mix-blend-mode: normal;
 }
-.intro__expand {
+/* Boot log: a small terminal under the wordmark */
+.boot {
+  width: min(34rem, 92vw);
+  margin-top: clamp(0.5rem, 2vh, 1.25rem);
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.5vw, 0.85rem);
+  line-height: 1.75;
+  text-align: left;
+  color: var(--muted);
+}
+.boot__prompt {
+  min-height: 1.75em;
   color: var(--fg);
-  font-size: var(--step-lead);
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-weight: 700;
 }
-.intro__expand b {
-  font-weight: 800;
-  -webkit-text-stroke: 0.6px var(--ink);
+.boot__prompt::after {
+  content: '';
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.2em;
+  vertical-align: -0.15em;
+  background: var(--ink);
+  animation: boot-caret 1s steps(1) infinite;
 }
-.intro__load {
-  width: min(220px, 50vw);
-  height: 3px;
-  margin-top: 0.5rem;
-  border-radius: 3px;
-  background: var(--line);
+.boot.is-done .boot__prompt::after {
+  display: none;
+}
+@keyframes boot-caret {
+  50% { opacity: 0; }
+}
+/* Fixed height for 7 lines; older lines fade out at the top as new ones push in */
+.boot__lines {
+  height: calc(1.75em * 7);
+  margin: 0;
+  padding: 0;
+  list-style: none;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 45%);
+  mask-image: linear-gradient(to bottom, transparent, #000 45%);
 }
-.intro__load span {
-  display: block;
-  height: 100%;
-  background: var(--hope-gradient);
-  transform-origin: left;
-  transform: scaleX(0);
+.boot__line {
+  display: grid;
+  grid-template-columns: 6ch minmax(0, 1fr) 4ch auto;
+  gap: 1ch;
+  white-space: nowrap;
+  animation: boot-in 0.25s var(--ease-out);
+}
+.boot__line > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.boot__verb {
+  color: var(--fg);
+  font-weight: 700;
+}
+.boot__target {
+  color: var(--fg);
+}
+.boot__status {
+  font-weight: 800;
+  color: var(--fg);
+  text-align: right;
+}
+.boot__detail {
+  text-align: right;
+}
+.boot__line.is-dim .boot__status,
+.boot__line.is-dim .boot__target {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+/* The closing line: the one moment the log speaks up */
+.boot__line.is-final {
+  grid-template-columns: 6ch auto minmax(0, 1fr);
+  margin-top: 0.25em;
+  color: var(--fg);
+}
+.boot__line.is-final .boot__target {
+  padding: 0 0.5ch;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 800;
+}
+.boot__line.is-final .boot__status {
+  display: none;
+}
+.boot__line.is-final .boot__detail {
+  text-align: left;
+}
+@keyframes boot-in {
+  from { opacity: 0; transform: translateY(0.6em); }
+}
+.boot__bar {
+  margin-top: 0.6em;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+@media (max-width: 520px) {
+  .boot__line {
+    grid-template-columns: 5ch minmax(0, 1fr) 3.5ch auto;
+  }
 }
 
 /* Photo tunnel the camera flies through */

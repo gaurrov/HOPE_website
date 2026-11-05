@@ -13,6 +13,7 @@ import { fillAllFrames, setSiteMedia } from './frames.js';
 import { getSiteMedia, getMentors, getEvents, getCompanies, getBatches, getBatchStats, getFeatured, getTeam, getStats } from './lib/data.js';
 import { el, emptyState, mentorCard, placementCard, teamCard } from './lib/render.js';
 import { runIntro, removeIntro } from './modules/intro.js';
+import { traced } from './modules/bootlog.js';
 import { buildRing, setupHero } from './modules/hero.js';
 import { setupReveals, setupStatement, setupTracks, setupVenue, setupPaths, setupMentors, setupEvents, setupPlacements, setupNumbers, setupFaq } from './modules/scenes.js';
 import { setupEventDeck } from './modules/events.js';
@@ -27,7 +28,7 @@ const root = document.documentElement;
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
 // Never let a slow network hold the page: render with whatever has arrived after 2.5 s
-const withTimeout = (promise, fallback) => Promise.race([promise, new Promise((r) => setTimeout(() => r(fallback), 2500))]);
+// Each request also prints a line in the loading screen's boot log (and gives up after 2.5 s)
 
 function renderMentors(mentors) {
   const grid = document.querySelector('.mentors__grid');
@@ -104,15 +105,15 @@ function renderCompanies(companies) {
 // Fetch the content, then build everything that depends on it
 async function buildPage() {
   const [media, mentors, events, companies, batches, stats, featured, team, numbers] = await Promise.all([
-    withTimeout(getSiteMedia(), {}),
-    withTimeout(getMentors(), []),
-    withTimeout(getEvents(), []),
-    withTimeout(getCompanies(), []),
-    withTimeout(getBatches(), []),
-    withTimeout(getBatchStats(), {}),
-    withTimeout(getFeatured(), []),
-    withTimeout(getTeam(), []),
-    withTimeout(getStats(), null),
+    traced('/site_media', getSiteMedia(), {}, 'photos'),
+    traced('/mentors', getMentors(), []),
+    traced('/events', getEvents(), []),
+    traced('/companies', getCompanies(), []),
+    traced('/batches', getBatches(), []),
+    traced('/students', getBatchStats(), {}, 'batches'),
+    traced('/placements', getFeatured(), []),
+    traced('/rpc/get_team', getTeam(), [], 'people'),
+    traced('/rpc/get_hope_stats', getStats(), null, 'fields'),
   ]);
   setSiteMedia(media);
   renderBatches(batches, stats);

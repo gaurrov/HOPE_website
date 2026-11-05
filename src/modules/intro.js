@@ -1,10 +1,12 @@
 import gsap from 'gsap';
 import { gallerySlots } from '../photos.js';
 import { makeFrame, letterFill } from '../frames.js';
+import { mountBootLog } from './bootlog.js';
 
 const intro = document.getElementById('intro');
 
-// The glitch doubles as the loading screen: at least MIN, until the page has loaded, never past MAX
+// The glitch doubles as the loading screen: at least MIN, until the page has loaded and the boot log
+// has printed, never past MAX
 const GLITCH_MIN = 3000;
 const GLITCH_MAX = 5000;
 // Code characters each letter flickers into
@@ -25,7 +27,6 @@ export function removeIntro() {
 // near the vanishing point, grows as it approaches, and slides off to its own side as it
 // passes, so photos never stack on top of each other.
 const TUNNEL_PHOTOS = 10;
-const PERSPECTIVE = 900; // must match .tunnel { perspective } in sections.css
 const SPACING = 1050; // depth between consecutive photos (px)
 const FIRST_Z = -1500; // where the first photo starts, already visible but small
 const FADE_FAR = -5200; // photos further than this are invisible...
@@ -213,13 +214,18 @@ export async function runIntro({ ready, onDone }) {
   const mark = intro.querySelector('.intro__mark');
   const letters = mark.querySelectorAll('.l');
   const paper = intro.querySelector('.intro__paper');
-  const bar = intro.querySelector('.intro__load span');
   letters.forEach((l) => (l.dataset.char = l.textContent));
 
   intro.classList.add('is-live');
-  const loading = gsap.to(bar, { scaleX: 0.85, duration: GLITCH_MIN / 1000, ease: 'power1.out' });
-  await glitch(mark, ready.catch(() => null));
-  loading.kill();
+  const log = mountBootLog(intro.querySelector('.boot'));
+  const assets = Promise.all([pageLoaded, document.fonts.ready]).then(() =>
+    log.step({ verb: 'get', target: 'assets', status: 'ok', detail: 'fonts, photos' }),
+  );
+  const built = ready.catch(() => null).then(() => log.step({ verb: 'build', target: 'render', status: 'ok', detail: 'hero, batches, events' }));
+  // Lock the glitch once everything has loaded and the log has caught up
+  await glitch(mark, Promise.all([assets, built]).then(() => log.drained()));
+  log.flush();
+  log.finish();
   const onReveal = await ready;
 
   const corridor = buildTunnel();
@@ -238,9 +244,8 @@ export async function runIntro({ ready, onDone }) {
     },
   });
 
-  tl.to(bar, { scaleX: 1, duration: 0.2, ease: 'power1.out' })
-    // 1. glitch locks: hold the clean mark for a beat
-    .to(['.intro__expand', '.intro__load'], { autoAlpha: 0, y: 12, duration: 0.3, ease: 'power2.in' }, '+=0.25')
+  // 1. glitch locks on "200 OK": hold the clean mark and the last line for a beat
+  tl.to('.boot', { autoAlpha: 0, y: 12, duration: 0.3, ease: 'power2.in' }, '+=0.55')
     // 2. letters become windows onto the photos
     .to(letters, { color: 'rgba(0,0,0,0)', duration: 0.5, stagger: 0.06, ease: 'power2.out' }, '-=0.1')
     // 3. the page goes dark and the tunnel appears behind the letters
