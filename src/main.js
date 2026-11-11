@@ -128,15 +128,38 @@ async function buildPage() {
   setupSecretDoor();
 }
 
+// A section link from another page (e.g. /#mentors) should land on that section once the page is built
+const hashTarget = location.hash.length > 1 ? decodeURIComponent(location.hash.slice(1)) : '';
+
+// The intro plays once per visit; coming back to the home page goes straight to the content
+const INTRO_KEY = 'hope-intro';
+function introSeen() {
+  try {
+    return sessionStorage.getItem(INTRO_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+function markIntroSeen() {
+  try {
+    sessionStorage.setItem(INTRO_KEY, '1');
+  } catch {
+    /* storage blocked: the intro plays on every visit */
+  }
+}
+
 async function startLite() {
   root.classList.replace('full', 'lite');
   removeIntro();
   await buildPage();
-  setupTerminal({ go: setupChrome(null) });
+  const go = setupChrome(null);
+  setupTerminal({ go });
   setupFaq();
+  if (hashTarget) go(hashTarget, { immediate: true });
 }
 
 function startFull() {
+  const skipIntro = Boolean(hashTarget && document.getElementById(hashTarget)) || introSeen();
   scrollTo(0, 0);
   // Wheel input amplified and eased like the reference (each flick glides further)
   const lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 1.2 });
@@ -146,6 +169,7 @@ function startFull() {
   lenis.stop();
 
   // The glitch loader runs while this builds; scroll scenes are measured after content is in place
+  let go = null;
   const ready = buildPage().then(() => {
     const heroIn = setupHero(lenis);
     setupReveals();
@@ -162,18 +186,34 @@ function startFull() {
     cursorGlyphs('.statement__glyphs .glyph, .paths .glyph--float');
     tiltAll('.mentor, .member');
     tiltAll('.placement', { max: 12, lift: 50 });
-    setupTerminal({ go: setupChrome(lenis) });
+    go = setupChrome(lenis);
+    setupTerminal({ go });
     setupFaq();
     return heroIn;
   });
 
-  runIntro({
-    ready,
-    onDone() {
-      lenis.start();
-      ScrollTrigger.refresh();
-    },
-  });
+  const onDone = () => {
+    lenis.start();
+    ScrollTrigger.refresh();
+    if (hashTarget) go?.(hashTarget, { immediate: true });
+  };
+
+  if (skipIntro) {
+    // The intro's plain backdrop covers the page while it builds, then fades away
+    ready
+      .catch(() => null)
+      .then((heroIn) => {
+        // Landing on a section: finish the hero first, so its scroll-away scene records the visible
+        // state and the photo ring is there when the visitor scrolls back to the top
+        if (hashTarget) heroIn?.({ instant: true });
+        onDone();
+        if (!hashTarget) heroIn?.();
+        gsap.to('#intro', { autoAlpha: 0, duration: 0.4, ease: 'power1.out', onComplete: removeIntro });
+      });
+  } else {
+    markIntroSeen();
+    runIntro({ ready, onDone });
+  }
 }
 
 async function boot() {

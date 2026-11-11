@@ -11,9 +11,13 @@ function sectionTop(el) {
 }
 
 export function setupChrome(lenis) {
-  const go = (target) => {
+  // immediate: jump without animating (used when arriving on the page with a #section link)
+  const go = (target, { immediate = false } = {}) => {
+    // Pins can grow the page in the same frame; Lenis would clamp to its old height without a fresh measure
+    if (immediate) lenis?.resize();
     const y = typeof target === 'number' ? target : sectionTop(target);
-    if (lenis) lenis.scrollTo(y, { duration: 1.4 });
+    if (lenis) lenis.scrollTo(y, immediate ? { immediate: true, force: true } : { duration: 1.4 });
+    else if (immediate) scrollTo({ top: y, behavior: 'instant' });
     else scrollTo({ top: y, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
@@ -55,6 +59,7 @@ export function setupChrome(lenis) {
 
   // Progress bar, header logo, prev/next
   const fill = document.querySelector('.progress__fill');
+  const head = document.querySelector('.site-head');
   const logo = document.querySelector('.site-head__logo');
   const prev = document.querySelector('.step-btn--prev');
   const next = document.querySelector('.step-btn--next');
@@ -64,6 +69,7 @@ export function setupChrome(lenis) {
     const max = root.scrollHeight - innerHeight;
     const p = max > 0 ? scrollY / max : 0;
     if (fill) fill.style.transform = `scaleX(${p})`;
+    head?.classList.toggle('is-scrolled', scrollY > 8);
     if (logo && !logo.dataset.always) logo.classList.toggle('is-visible', scrollY > innerHeight * 0.8);
     if (prev) prev.disabled = scrollY < 10;
     // The hero has its own scroll-down button, so "next" only appears after it
@@ -103,9 +109,9 @@ export function setupChrome(lenis) {
   }
 
   // Scroll to a section by id (used by the terminal)
-  return (id) => {
+  return (id, opts) => {
     const target = document.getElementById(id);
-    if (target) go(id === 'top' ? 0 : target);
+    if (target) go(id === 'top' ? 0 : target, opts);
   };
 }
 

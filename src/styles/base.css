@@ -15,6 +15,24 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Smooth page changes: the browser cross-fades from one page to the next instead of cutting,
+   while the top bar stays in place. The opt-in (@view-transition) is an inline <style> in each
+   page's <head> so it is there before first paint. Browsers without it just navigate normally. */
+.site-head {
+  view-transition-name: site-head;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: ease-out;
+}
+/* Lite mode (footer toggle) means no motion, page changes included */
+html.lite::view-transition-group(*),
+html.lite::view-transition-old(*),
+html.lite::view-transition-new(*) {
+  animation: none;
+}
+
 html.lenis,
 html.lenis body {
   height: auto;

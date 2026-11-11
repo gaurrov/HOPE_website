@@ -7,8 +7,9 @@ Add the page `$ARGUMENTS` (a folder name like `companies`) by doing every step b
 
 1. **HTML entry** `<name>/index.html`. Keep from the copied page:
    - the inline `<head>` script that adds `lite` or `full` to `<html>` (reads `localStorage['hope-lite']` and `prefers-reduced-motion`);
+   - the inline `<head>` `<style>` with `@view-transition { navigation: auto; }` (the cross-fade between pages; it must be inline, a Vite-injected stylesheet arrives too late);
    - the JetBrains Mono font link, `theme-color` `#000000`, favicon;
-   - the `site-head` header, the `#menu` nav (mark this page with `aria-current="page"`), the `inner-foot` footer with the `term-open` terminal button;
+   - the `site-head` header with its `site-nav` page links, and the `#menu` nav (mark this page with `aria-current="page"` in both), the `inner-foot` footer with the `term-open` terminal button. A new page also needs a link added to the `site-nav` and `#menu` of every other public page;
    - a `<script type="module" src="/src/pages/<name>.js">`.
 2. **Page script** `src/pages/<name>.js`: import `initInner` (and `isLite` if needed) from `./inner.js`, which loads the shared styles, Lenis, the menu, the title reveal and the terminal. Put page-only CSS in `src/styles/<name>.css` and import it from the script. Heavy libraries (like Three.js) go behind a dynamic `import()` so other pages don't load them.
 3. **Build input**: add the page to `build.rollupOptions.input` in `vite.config.js`, or it won't exist in `dist/`.

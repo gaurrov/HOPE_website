@@ -113,9 +113,11 @@ export function setupHero(lenis) {
 
   setupHeroInteraction(letters);
 
-  return function heroIn() {
-    gsap.timeline()
-      .fromTo(ring, { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 1.6, ease: 'power3.out' })
+  // instant: show the hero in its final state at once. Used before jumping to a #section, so the
+  // scroll-away timeline records the ring as fully visible and restores it when scrolling back up.
+  return function heroIn({ instant = false } = {}) {
+    const tl = gsap.timeline();
+    tl.fromTo(ring, { autoAlpha: 0, scale: 1.5 }, { autoAlpha: 1, scale: 1, duration: 1.6, ease: 'power3.out' })
       .fromTo(
         letters,
         // Entrance uses yPercent/scale only, so it never fights the scroll scatter's x/y/z/rotation
@@ -124,6 +126,7 @@ export function setupHero(lenis) {
         0.2,
       )
       .fromTo(rest, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' }, 0.6);
+    if (instant) tl.progress(1);
   };
 }
 

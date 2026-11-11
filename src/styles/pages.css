@@ -1582,7 +1582,8 @@ html.lite .events__field {
   justify-content: space-between;
   gap: 1rem;
   padding: 2.5rem var(--gutter);
-  border-top: 1px solid var(--line);
+  /* A divider that fades out towards both edges rather than a hard full-width line */
+  background: linear-gradient(90deg, transparent, var(--line) 20%, var(--line) 80%, transparent) top / 100% 1px no-repeat;
   color: var(--muted);
   font-size: var(--step-small);
 }

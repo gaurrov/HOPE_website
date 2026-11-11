@@ -236,6 +236,79 @@ html.lite .site-head__logo {
   align-items: center;
   gap: 12px;
 }
+/* Once the page scrolls, the bar gets a glass backing so the links stay readable over content.
+   It has no hard bottom line: a soft shadow below it fades into the page instead. */
+.site-head.is-scrolled {
+  background: rgba(7, 11, 22, 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.site-head::after {
+  content: '';
+  position: absolute;
+  inset: 100% 0 auto;
+  height: 28px;
+  background: linear-gradient(rgba(7, 11, 22, 0.55), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.site-head.is-scrolled::after {
+  opacity: 1;
+}
+
+/* Page links in the top bar (desktop); phones use the menu button */
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(13, 17, 32, 0.6);
+}
+.site-nav a {
+  position: relative;
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s, background-color 0.2s;
+}
+.site-nav a:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.06);
+}
+.site-nav a:focus-visible {
+  outline: 2px solid var(--h);
+  outline-offset: 2px;
+}
+.site-nav a[aria-current] {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.08);
+}
+.site-nav a[aria-current]::after {
+  content: '';
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 3px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--hope-gradient);
+}
+/* The full-screen menu covers the page; hide the bar links so they don't sit on top of it */
+.site-head:has(~ .menu.is-open) .site-nav {
+  visibility: hidden;
+}
+@media (max-width: 900px) {
+  .site-nav {
+    display: none;
+  }
+}
 
 .menu {
   position: fixed;
@@ -321,6 +394,9 @@ html.lite .site-head__logo {
   position: absolute;
   inset: 0;
   perspective: 900px;
+  /* Fade the photo wall into the page background (not into a flat colour), so the hero has no edge */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 72%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 72%, transparent);
 }
 .ring__tilt {
   position: absolute;
@@ -331,9 +407,7 @@ html.lite .site-head__logo {
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(42% 34% at 50% 44%, rgb(0 0 0 / 0.78), transparent 75%),
-    linear-gradient(to bottom, var(--bg), transparent 14%, transparent 80%, var(--bg));
+  background: radial-gradient(42% 34% at 50% 44%, rgb(0 0 0 / 0.78), transparent 75%);
 }
 /* The mirror floor: a faint sheen where the panels stand, fading into black */
 .ring::before {
@@ -513,13 +587,17 @@ html.lite .site-head__logo {
   height: 100svh;
   min-height: 600px;
   overflow: hidden;
-  background: var(--bg);
   color: var(--fg);
 }
 .venue__media,
 .venue__img {
   position: absolute;
   inset: 0;
+}
+/* The lab photo fades into the page background at its top and bottom instead of ending in a hard edge */
+.venue__media {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 84%, transparent);
 }
 .venue__img.frame {
   background: var(--bg);
@@ -1067,10 +1145,12 @@ html.lite .marquee__list {
   /* Navigation header */
   .site-head {
     padding: 10px var(--gutter);
-    background: rgba(7, 11, 22, 0.75);
+    background: rgba(7, 11, 22, 0.72);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .site-head::after {
+    opacity: 1;
   }
 
   /* Fullscreen mobile menu */
