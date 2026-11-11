@@ -100,7 +100,10 @@ export function setupHero(lenis) {
   });
   exit
     .to(tilt, { rotationX: -32, yPercent: 14, scale: 0.92, ease: 'none' }, 0)
-    .to(ring, { autoAlpha: 0.25, ease: 'power1.in' }, 0)
+    // Explicit start value: a plain .to() would record whatever opacity the ring had when this first
+    // rendered, and arriving on a #section can render it before the ring has faded in (then the
+    // ring stays invisible when scrolling back up)
+    .fromTo(ring, { autoAlpha: 1 }, { autoAlpha: 0.25, ease: 'power1.in', immediateRender: false }, 0)
     .fromTo(rest, { y: 0, autoAlpha: 1 }, { y: -60, autoAlpha: 0, ease: 'power1.in', duration: 0.5, immediateRender: false }, 0);
   letters.forEach((l, i) => {
     const [x, y, z, rx, ry, rz] = SCATTER[i];
