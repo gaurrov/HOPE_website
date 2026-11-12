@@ -693,18 +693,25 @@ html.lite .events__field {
 }
 
 /* ---------- People browser toolbar ---------- */
+/* Two deliberate rows: search, sort and layout on top; the filters underneath */
 .pb__bar {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    'search sort views'
+    'chips chips chips';
   align-items: center;
   gap: 0.75rem;
   padding: 0.85rem 1.15rem;
-  background: rgba(22, 22, 24, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--line);
   border-radius: 20px;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
+/* min-width: 0 lets the chip row scroll inside the bar on phones instead of widening the page */
+.pb__search { grid-area: search; min-width: 0; }
+.pb__sort { grid-area: sort; }
+.pb__chips { grid-area: chips; min-width: 0; }
+.pb__views { grid-area: views; }
 .pb__search,
 .pb__sort {
   min-height: 42px;
@@ -718,8 +725,7 @@ html.lite .events__field {
   transition: border-color 0.25s, box-shadow 0.25s, background-color 0.25s;
 }
 .pb__search {
-  flex: 1 1 240px;
-  max-width: 380px;
+  width: 100%;
   padding-left: 2.4rem;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -862,17 +868,23 @@ html.lite .events__field {
   transform: scale(1.05);
   filter: none;
 }
+/* Badges sit in the photo's corners (package bottom right, top placement top left) so they never
+   cover a face or the initials placeholder */
+.person__badge,
+.person__star {
+  position: absolute;
+  z-index: 2;
+}
 .person__badge {
   right: 0.7rem;
   bottom: 0.7rem;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  background: var(--p);
   color: #0b0d17;
   font-weight: 800;
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
   font-size: 0.75rem;
   letter-spacing: -0.01em;
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.45);
 }
 .person__star {
   left: 0.7rem;
@@ -1340,54 +1352,6 @@ html.lite .events__field {
     font-size: 0.95rem;
     line-height: 1.55;
   }
-  .page__eyebrow {
-    margin-bottom: 0.65rem;
-  }
-}
-.page__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-.badge-code {
-  font-family: var(--font-mono);
-  font-size: 0.775rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  padding: 0.25rem 0.75rem;
-  border-radius: 8px;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  color: #38bdf8;
-  box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
-}
-.live-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 12px #10b981;
-  animation: pulseDot 2s infinite ease-in-out;
-}
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 8px #10b981); }
-  50% { opacity: 0.4; transform: scale(0.8); }
-}
-.eyebrow-text {
-  font-size: var(--step-small);
-  color: var(--muted);
-  font-weight: 600;
-}
-/* On phones the floating glyphs sit where this label would be, so only the badge stays */
-@media (max-width: 480px) {
-  .eyebrow-text,
-  .page__eyebrow .live-dot {
-    display: none;
-  }
-  .badge-code {
-    white-space: nowrap;
-  }
 }
 .alumni-stats {
   display: grid;
@@ -1421,49 +1385,16 @@ html.lite .events__field {
     grid-template-columns: 1fr !important;
   }
 }
+/* Read-only figures, so no hover lift or glow that suggests they can be clicked */
 .astat-card {
   position: relative;
   padding: 1.35rem 1.5rem;
-  background: linear-gradient(145deg, rgba(20, 26, 44, 0.7) 0%, rgba(10, 13, 24, 0.88) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  overflow: hidden;
-  transition: transform 0.3s var(--ease-out), border-color 0.3s, box-shadow 0.3s;
-}
-.astat-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: var(--hope-gradient);
-  opacity: 0.7;
-}
-.astat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-}
-.astat-card:nth-child(1):hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(56, 189, 248, 0.25);
-}
-.astat-card:nth-child(2):hover {
-  border-color: rgba(251, 191, 36, 0.5);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(251, 191, 36, 0.25);
-}
-.astat-card:nth-child(3):hover {
-  border-color: rgba(168, 85, 247, 0.5);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(168, 85, 247, 0.25);
-}
-.astat-card:nth-child(4):hover {
-  border-color: rgba(52, 211, 153, 0.5);
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(52, 211, 153, 0.25);
 }
 .astat-label {
   font-size: 0.775rem;
@@ -1480,29 +1411,9 @@ html.lite .events__field {
   line-height: 1.1;
   margin: 0.2rem 0;
 }
-.astat-card:nth-child(1) .astat-value {
-  background: linear-gradient(135deg, #ffffff 20%, #38bdf8 100%);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-.astat-card:nth-child(2) .astat-value {
-  background: linear-gradient(135deg, #ffffff 20%, #fbbf24 100%);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-.astat-card:nth-child(3) .astat-value {
-  background: linear-gradient(135deg, #ffffff 20%, #c084fc 100%);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-.astat-card:nth-child(4) .astat-value {
-  background: linear-gradient(135deg, #ffffff 20%, #34d399 100%);
-  -webkit-background-clip: text;
-  color: transparent;
-}
 .astat-sub {
   font-size: 0.775rem;
-  color: #64748b;
+  color: var(--muted);
   font-weight: 500;
 }
 .page__title {
@@ -1515,17 +1426,6 @@ html.lite .events__field {
   color: var(--muted);
   font-size: var(--step-lead);
   line-height: 1.6;
-}
-.page__glyphs {
-  position: absolute;
-  inset: 0 0 auto;
-  height: 60vh;
-  pointer-events: none;
-  overflow: hidden;
-}
-.page__glyphs .glyph {
-  position: absolute;
-  font-size: clamp(3rem, 7vw, 6rem);
 }
 
 /* Batch / filter chips */
@@ -1587,10 +1487,15 @@ html.lite .events__field {
   color: var(--muted);
   font-size: var(--step-small);
 }
+/* The links are written back to back in the HTML, so the row needs flex-wrap to break on phones */
+.inner-foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
 .inner-foot a {
   color: var(--fg);
   text-decoration: none;
-  margin-right: 1.25rem;
 }
 .inner-foot a:hover {
   text-decoration: underline;
@@ -1603,11 +1508,12 @@ html.lite .events__field {
   gap: 1.25rem;
   padding: 18vh var(--gutter) 8vh;
 }
+/* --cols is set from the number of cards (balancedColumns in main.js) so no card sits alone on a row */
 .placements__wall {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   gap: clamp(1.25rem, 2.5vw, 2rem);
-  max-width: 1240px;
+  max-width: min(1240px, calc(var(--cols, 3) * 360px));
   width: 100%;
   margin: 0 auto;
   perspective: 1200px;
@@ -1623,24 +1529,24 @@ html.lite .events__field {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 .placement:hover {
-  border-color: rgba(251, 191, 36, 0.6);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 35px rgba(251, 191, 36, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
 }
-.placement:first-child {
-  grid-column: span 2;
-  grid-row: span 2;
-  border-color: rgba(251, 191, 36, 0.35);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(251, 191, 36, 0.15);
+/* Narrower screens use fixed column counts. This lives here because pages.css loads after sections.css. */
+@media (max-width: 1024px) {
+  .placements__wall,
+  .mentors__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 760px;
+  }
 }
-/* On phones the lead card must not span two columns, or the wall pushes the page sideways.
-   This lives here because pages.css loads after sections.css. */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .placements {
     grid-template-columns: minmax(0, 1fr);
   }
-  .placement:first-child {
-    grid-column: auto;
-    grid-row: auto;
+  .placements__wall,
+  .mentors__grid {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 380px;
   }
 }
 .placement__photo {
@@ -1665,9 +1571,6 @@ html.lite .events__field {
   font-weight: 750;
   line-height: 1.2;
   color: #f8fafc;
-}
-.placement:first-child .placement__name {
-  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
 }
 .placement__company {
   display: inline-flex;
@@ -1994,21 +1897,22 @@ html.lite .events__field {
 
 @media (max-width: 680px) {
   .pb__bar {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'search search'
+      'chips chips'
+      'sort views';
     gap: 0.65rem;
     padding: 0.75rem;
     border-radius: 16px;
   }
   .pb__search {
-    flex: none; /* the bar is a column here, so a flex-basis would set the height */
-    max-width: 100%;
-    width: 100%;
     min-height: 40px;
   }
   .pb__chips {
     width: 100%;
     overflow-x: auto;
+    scrollbar-width: none; /* swipeable; the cut-off last chip already shows there is more */
     flex-wrap: nowrap;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 4px;
@@ -2019,9 +1923,8 @@ html.lite .events__field {
     padding: 0.35rem 0.75rem;
     font-size: 0.8rem;
   }
-  .pb__views {
-    align-self: flex-end;
-    margin-left: 0;
+  .pb__sort {
+    justify-self: start;
   }
 }
 

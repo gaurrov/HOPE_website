@@ -30,6 +30,17 @@ if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 // Never let a slow network hold the page: render with whatever has arrived after 2.5 s
 // Each request also prints a line in the loading screen's boot log (and gives up after 2.5 s)
 
+// Column count that fills the last row as fully as possible (6 cards: 3 + 3, not 4 + 2)
+function balancedColumns(n, max) {
+  if (n <= max) return Math.max(n, 1);
+  let best = max;
+  for (let c = max; c >= 2; c--) {
+    const empty = (c - (n % c)) % c;
+    if (empty < (best - (n % best)) % best) best = c;
+  }
+  return best;
+}
+
 function renderMentors(mentors) {
   const grid = document.querySelector('.mentors__grid');
   if (!mentors.length) {
@@ -37,6 +48,7 @@ function renderMentors(mentors) {
     return;
   }
   mentors.forEach((m, i) => grid.append(mentorCard(m, i)));
+  grid.style.setProperty('--cols', balancedColumns(mentors.length, 4));
 }
 
 // The diagonal split shows the first two batches with live counts
@@ -70,12 +82,14 @@ function renderPlacements(featured) {
     return;
   }
   featured.forEach((s, i) => wall.append(placementCard(s, i)));
+  wall.style.setProperty('--cols', balancedColumns(featured.length, 4));
 }
 
 function renderTeam(team) {
   const grid = document.querySelector('.team__grid');
+  // Visitors shouldn't see a section that only says "coming soon"; it appears once an admin opts in
   if (!team.length) {
-    grid.replaceWith(emptyState('The HOPE coordinators will be introduced here.'));
+    document.getElementById('team')?.remove();
     return;
   }
   team.forEach((a, i) => grid.append(teamCard(a, i)));

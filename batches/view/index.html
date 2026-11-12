@@ -38,8 +38,8 @@
           <a href="/batches/" aria-current="page">Batches</a>
           <a href="/alumni/">Alumni</a>
           <a href="/companies/">Companies</a>
-          <a href="/#mentors">Mentors</a>
           <a href="/#events">Events</a>
+          <a href="/#mentors">Mentors</a>
         </nav>
         <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -48,28 +48,32 @@
     </header>
 
     <nav class="menu" id="menu" aria-label="Main" hidden>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/batches/" aria-current="page">Batches</a></li>
-        <li><a href="/alumni/">Alumni</a></li>
-        <li><a href="/companies/">Companies</a></li>
-        <li><a href="/#mentors">Mentors</a></li>
-        <li><a href="/#events">Events</a></li>
-      </ul>
+      <div class="menu__group">
+        <p class="menu__label">Pages</p>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/batches/" aria-current="page">Batches</a></li>
+          <li><a href="/alumni/">Alumni</a></li>
+          <li><a href="/companies/">Companies</a></li>
+        </ul>
+      </div>
+      <div class="menu__group menu__group--small">
+        <p class="menu__label">On the home page</p>
+        <ul>
+          <li><a href="/#tracks">What you'll learn</a></li>
+          <li><a href="/#events">Events</a></li>
+          <li><a href="/#batches">The two batches</a></li>
+          <li><a href="/#placements">Top placements</a></li>
+          <li><a href="/#mentors">Mentors</a></li>
+          <li><a href="/#faq">Questions</a></li>
+        </ul>
+      </div>
+      <a class="menu__mail" href="mailto:hope@yourcollege.edu">hope@yourcollege.edu</a>
     </nav>
 
-    <div class="page__glyphs" aria-hidden="true">
-      <span class="glyph glyph--3d t-h" style="right:8%;top:16%;--d:1"><span class="glyph__bob" style="--bob:5.5s">{</span></span>
-      <span class="glyph glyph--3d t-e" style="right:22%;top:38%;--d:1"><span class="glyph__bob" style="--bob:6.5s">}</span></span>
-    </div>
 
     <main id="main" class="page">
       <a class="crumb" href="/batches/">← All batches</a>
-      <div class="page__eyebrow">
-        <span class="badge-code">// Batch roster</span>
-        <span class="live-dot" aria-hidden="true"></span>
-        <span class="eyebrow-text">Cohort overview</span>
-      </div>
       <h1 class="page__title split-chars">&nbsp;</h1>
       <section class="bhero bhero--page" aria-live="polite">
         <div class="bhero__text">
@@ -104,7 +108,7 @@
 
     <footer class="inner-foot">
       <nav aria-label="Footer">
-        <a href="/">Home</a><a href="/batches/">Batches</a><a href="/companies/">Companies</a><a href="/alumni/">Alumni</a>
+        <a href="/">Home</a><a href="/batches/">Batches</a><a href="/alumni/">Alumni</a><a href="/companies/">Companies</a><a href="mailto:hope@yourcollege.edu">hope@yourcollege.edu</a>
       </nav>
       <button class="term-open" type="button" aria-label="Open the HOPE terminal"><span aria-hidden="true">&gt;_</span> Terminal <kbd>`</kbd></button>
       <p>HOPE, House of Programming Expertise</p>

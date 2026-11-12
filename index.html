@@ -71,8 +71,8 @@
           <a href="/batches/">Batches</a>
           <a href="/alumni/">Alumni</a>
           <a href="/companies/">Companies</a>
-          <a href="#mentors">Mentors</a>
           <a href="#events">Events</a>
+          <a href="#mentors">Mentors</a>
         </nav>
         <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 8h16M4 16h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -81,29 +81,30 @@
     </header>
 
     <nav class="menu" id="menu" aria-label="Main" hidden>
-      <ul>
-        <li><a href="/batches/">Batches</a></li>
-        <li><a href="/alumni/">Alumni</a></li>
-        <li><a href="/companies/">Companies</a></li>
-        <li><a href="#mentors">Mentors</a></li>
-        <li><a href="#events">Events</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#tracks">Tracks</a></li>
-        <li><a href="#lab">The lab</a></li>
-        <li><a href="#numbers">Numbers</a></li>
-        <li><a href="#placements">Top placements</a></li>
-        <li><a href="#team">Team</a></li>
-        <li><a href="#faq">Questions</a></li>
-      </ul>
+      <div class="menu__group">
+        <p class="menu__label">Pages</p>
+        <ul>
+          <li><a href="#top" aria-current="page">Home</a></li>
+          <li><a href="/batches/">Batches</a></li>
+          <li><a href="/alumni/">Alumni</a></li>
+          <li><a href="/companies/">Companies</a></li>
+        </ul>
+      </div>
+      <div class="menu__group menu__group--small">
+        <p class="menu__label">On the home page</p>
+        <ul>
+          <li><a href="#tracks">What you'll learn</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#batches">The two batches</a></li>
+          <li><a href="#placements">Top placements</a></li>
+          <li><a href="#mentors">Mentors</a></li>
+          <li><a href="#faq">Questions</a></li>
+        </ul>
+      </div>
+      <a class="menu__mail" href="mailto:hope@yourcollege.edu">hope@yourcollege.edu</a>
     </nav>
 
     <div class="progress" aria-hidden="true"><div class="progress__fill"></div></div>
-    <button class="icon-btn icon-btn--round step-btn step-btn--prev" type="button" aria-label="Previous section">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 15l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="icon-btn icon-btn--round step-btn step-btn--next" type="button" aria-label="Next section">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
 
     <main id="main">
       <!-- ============ Hero ============ -->
@@ -140,7 +141,7 @@
       <!-- ============ HOPE in numbers (live from the database) ============ -->
       <section class="numbers" id="numbers" data-step aria-labelledby="numbers-title">
         <h2 class="section-title split-lines" id="numbers-title">HOPE in numbers</h2>
-        <p class="mentors__note">Counted live from the batches, every time the page loads.</p>
+        <p class="mentors__note">Taken from the batch records.</p>
         <dl class="stats stats--home">
           <div class="stat"><dt>Students trained</dt><dd data-num="students">0</dd></div>
           <div class="stat"><dt>Placed or working</dt><dd data-num="placed">0</dd></div>
@@ -237,7 +238,7 @@
       <!-- ============ Paths ============ -->
       <section class="paths" id="paths" data-step>
         <div class="paths__pin">
-          <h2 class="paths__heading">Two batches. One Dream.</h2>
+          <h2 class="paths__heading">Two batches. One goal.</h2>
           <span class="glyph glyph--3d glyph--float t-o" aria-hidden="true">{</span>
           <span class="glyph glyph--3d glyph--float t-e" aria-hidden="true">}</span>
           <span class="glyph glyph--3d glyph--float t-p" aria-hidden="true">;</span>
@@ -348,16 +349,11 @@
       <div class="wordmark wordmark--3d foot__mark" aria-hidden="true">
         <span class="l l-h">H</span><span class="l l-o">O</span><span class="l l-p">P</span><span class="l l-e">E</span>
       </div>
-      <ul class="foot__social">
-        <li><a class="icon-btn icon-btn--round" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.1" fill="currentColor"/></svg></a></li>
-        <li><a class="icon-btn icon-btn--round" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.5 9.5v8M6.5 6.2v.1M10.5 17.5v-5a3 3 0 0 1 6 0v5M10.5 9.5v8" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg></a></li>
-        <li><a class="icon-btn icon-btn--round" href="#" aria-label="GitHub"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 19c-4 1.3-4-2-6-2.5m12 4.5v-3.5a3 3 0 0 0-.8-2.3c2.7-.3 5.6-1.3 5.6-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.6 11.6 0 0 0-6 0C6.6 1.7 5.6 2 5.6 2a4.3 4.3 0 0 0-.1 3.2 4.6 4.6 0 0 0-1.3 3.2c0 4.6 2.9 5.7 5.6 6a3 3 0 0 0-.8 2.3V21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
-        <li><a class="icon-btn icon-btn--round" href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 9.3v5.4l4.6-2.7z" fill="currentColor"/></svg></a></li>
-      </ul>
+      <!-- Social links go here once HOPE has real accounts; links that lead nowhere are worse than none -->
       <div class="foot__links">
         <a href="/batches/">Batches</a>
         <a href="/alumni/">Alumni</a>
-        <a href="#">Code of conduct</a>
+        <a href="/companies/">Companies</a>
         <a href="mailto:hope@yourcollege.edu">hope@yourcollege.edu</a>
         <button class="lite-toggle" type="button" aria-pressed="false">Lite version <span class="lite-toggle__state">off</span></button>
         <button class="term-open" type="button" aria-label="Open the HOPE terminal"><span aria-hidden="true">&gt;_</span> Terminal <kbd>`</kbd></button>

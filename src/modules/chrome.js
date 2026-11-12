@@ -33,37 +33,68 @@ export function setupChrome(lenis) {
     go(id === 'top' ? 0 : target);
   });
 
-  // Menu with a circular reveal from the button
+  // Menu (phones and tablets): fades in, keeps keyboard focus inside, and hands focus back on close
   const menu = document.getElementById('menu');
   const menuBtn = document.querySelector('.menu-btn');
+  const menuIcon = menuBtn?.innerHTML;
+  const closeIcon =
+    '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
   function openMenu() {
-    const r = menuBtn.getBoundingClientRect();
-    menu.style.setProperty('--mx', `${r.left + r.width / 2}px`);
-    menu.style.setProperty('--my', `${r.top + r.height / 2}px`);
     menu.hidden = false;
     requestAnimationFrame(() => menu.classList.add('is-open'));
     menuBtn.setAttribute('aria-expanded', 'true');
     menuBtn.setAttribute('aria-label', 'Close menu');
+    menuBtn.innerHTML = closeIcon;
+    root.style.overflow = 'hidden';
     lenis?.stop();
+    menu.querySelector('a')?.focus({ preventScroll: true });
   }
-  function closeMenu() {
+  function closeMenu({ restoreFocus = true } = {}) {
     if (!menu || menu.hidden) return;
     menu.classList.remove('is-open');
     menuBtn.setAttribute('aria-expanded', 'false');
     menuBtn.setAttribute('aria-label', 'Open menu');
-    menu.addEventListener('transitionend', () => !menu.classList.contains('is-open') && (menu.hidden = true), { once: true });
+    menuBtn.innerHTML = menuIcon;
+    root.style.overflow = '';
+    menu.hidden = true;
     lenis?.start();
+    if (restoreFocus) menuBtn.focus({ preventScroll: true });
   }
   menuBtn?.addEventListener('click', () => (menu.hidden ? openMenu() : closeMenu()));
-  addEventListener('keydown', (e) => e.key === 'Escape' && closeMenu());
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+    // Tab cycles between the menu links and the close button while the menu is open
+    if (e.key !== 'Tab' || !menu || menu.hidden) return;
+    const stops = [menuBtn, ...menu.querySelectorAll('a')];
+    const i = stops.indexOf(document.activeElement);
+    const nextStop = stops[(i + (e.shiftKey ? -1 : 1) + stops.length) % stops.length];
+    e.preventDefault();
+    nextStop.focus();
+  });
+  // Widening past the phone layout hides the menu button, so close the menu with it
+  matchMedia('(min-width: 901px)').addEventListener('change', (e) => e.matches && closeMenu({ restoreFocus: false }));
 
-  // Progress bar, header logo, prev/next
+  // On the home page, the bar marks the section being read (Events, Mentors) instead of always "Home"
+  const spyLinks = [...document.querySelectorAll('.site-nav a[href^="#"]')]
+    .map((a) => ({ a, target: document.getElementById(a.getAttribute('href').slice(1)) }))
+    .filter((l) => l.target);
+  const homeLink = spyLinks.find((l) => l.a.getAttribute('href') === '#top');
+  function spy() {
+    if (!spyLinks.length) return;
+    const line = innerHeight * 0.35;
+    let active = homeLink;
+    spyLinks.forEach((l) => {
+      if (l === homeLink) return;
+      const r = l.target.getBoundingClientRect();
+      if (r.top <= line && r.bottom > line) active = l;
+    });
+    spyLinks.forEach((l) => (l === active ? l.a.setAttribute('aria-current', l === homeLink ? 'page' : 'location') : l.a.removeAttribute('aria-current')));
+  }
+
+  // Progress bar, header backing, header logo
   const fill = document.querySelector('.progress__fill');
   const head = document.querySelector('.site-head');
   const logo = document.querySelector('.site-head__logo');
-  const prev = document.querySelector('.step-btn--prev');
-  const next = document.querySelector('.step-btn--next');
-  const steps = [...document.querySelectorAll('[data-step]')];
 
   function onScroll() {
     const max = root.scrollHeight - innerHeight;
@@ -71,30 +102,11 @@ export function setupChrome(lenis) {
     if (fill) fill.style.transform = `scaleX(${p})`;
     head?.classList.toggle('is-scrolled', scrollY > 8);
     if (logo && !logo.dataset.always) logo.classList.toggle('is-visible', scrollY > innerHeight * 0.8);
-    if (prev) prev.disabled = scrollY < 10;
-    // The hero has its own scroll-down button, so "next" only appears after it
-    if (next) next.disabled = p > 0.995 || scrollY < innerHeight * 0.5;
+    spy();
   }
   if (lenis) lenis.on('scroll', onScroll);
   else addEventListener('scroll', onScroll, { passive: true });
   onScroll();
-
-  const currentIndex = () => {
-    const y = scrollY + 4;
-    let idx = 0;
-    steps.forEach((s, i) => sectionTop(s) <= y && (idx = i));
-    return idx;
-  };
-  next?.addEventListener('click', () => {
-    const t = steps[currentIndex() + 1];
-    t ? go(t) : go(root.scrollHeight);
-  });
-  prev?.addEventListener('click', () => {
-    const i = currentIndex();
-    const here = sectionTop(steps[i]);
-    // Inside a long pinned section, go back to its start first
-    go(scrollY - here > 8 ? steps[i] : steps[Math.max(0, i - 1)]);
-  });
 
   // Lite toggle (stored, applied on reload)
   const toggle = document.querySelector('.lite-toggle');

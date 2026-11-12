@@ -16,6 +16,32 @@ html.full .intro {
   inset: 0;
   background: var(--bg);
 }
+.intro__skip {
+  position: absolute;
+  right: var(--gutter);
+  bottom: calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+  z-index: 5;
+  min-height: 40px;
+  padding: 0 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  background: rgba(7, 11, 22, 0.6);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.intro__skip:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.intro__skip:focus-visible {
+  outline: 2px solid var(--h);
+  outline-offset: 3px;
+}
+.intro__skip:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
 .intro__stage {
   position: absolute;
   inset: 0;
@@ -298,85 +324,91 @@ html.lite .site-head__logo {
   bottom: 3px;
   height: 2px;
   border-radius: 2px;
-  background: var(--hope-gradient);
+  background: var(--h);
 }
-/* The full-screen menu covers the page; hide the bar links so they don't sit on top of it */
-.site-head:has(~ .menu.is-open) .site-nav {
-  visibility: hidden;
+/* Desktop shows every link in the bar, so the menu button is only for narrower screens */
+.menu-btn {
+  display: none;
 }
 @media (max-width: 900px) {
   .site-nav {
     display: none;
   }
+  .menu-btn {
+    display: inline-grid;
+  }
 }
 
+/* Phone and tablet menu: a plain panel with the pages first, then shortcuts into the home page */
 .menu {
   position: fixed;
   inset: 0;
   z-index: 45;
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--bg) 97%, transparent);
-  clip-path: circle(0 at var(--mx, 100%) var(--my, 0%));
-  transition: clip-path 0.7s var(--ease-out);
+  overflow-y: auto;
+  padding: 88px var(--gutter) 2.5rem;
+  background: var(--paper);
+  opacity: 0;
+  transition: opacity 0.25s;
 }
 .menu.is-open {
-  clip-path: circle(150vmax at var(--mx, 100%) var(--my, 0%));
+  opacity: 1;
+}
+.menu__group + .menu__group {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+.menu__label {
+  margin-bottom: 0.5rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 .menu ul {
   display: grid;
-  gap: 0.4rem;
-  text-align: center;
 }
 .menu a {
-  display: inline-block;
-  font-size: clamp(2.2rem, 6vw, 4.5rem);
-  font-weight: 720;
-  letter-spacing: -0.015em;
-  line-height: 1.1;
+  display: block;
+  padding: 0.55rem 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
   text-decoration: none;
-  transition: translate 0.3s var(--ease-out);
 }
-.menu a:hover {
-  translate: 0.3em 0;
-  text-decoration: underline;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.12em;
+.menu__group--small a {
+  padding: 0.45rem 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--ink) 80%, transparent);
 }
-.menu a:hover::before {
-  content: '> ';
+.menu a:hover,
+.menu a[aria-current] {
+  color: var(--h);
+}
+.menu a:focus-visible {
+  outline: 2px solid var(--h);
+  outline-offset: 2px;
+}
+.menu__mail {
+  margin-top: 2rem;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
 }
 
+/* Reading progress: a hairline along the top edge, out of the way of the content */
 .progress {
   position: fixed;
-  left: 50%;
-  bottom: 10px;
-  z-index: 40;
-  width: min(40vw, 560px);
-  height: 3px;
-  translate: -50% 0;
-  border-radius: 3px;
-  background: var(--line);
-  overflow: hidden;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: 2px;
+  pointer-events: none;
 }
 .progress__fill {
   height: 100%;
-  background: var(--hope-gradient);
+  background: var(--h);
   transform-origin: left;
   transform: scaleX(0);
-}
-
-.step-btn {
-  position: fixed;
-  bottom: 22px;
-  z-index: 40;
-  transition: opacity 0.3s, transform 0.25s var(--ease-out);
-}
-.step-btn--prev { left: var(--gutter); }
-.step-btn--next { right: var(--gutter); }
-.step-btn[disabled] {
-  opacity: 0;
-  pointer-events: none;
 }
 
 /* =========================================================
@@ -880,9 +912,10 @@ html.lite .site-head__logo {
   font-size: var(--step-lead);
   text-align: center;
 }
+/* --cols comes from the number of mentors (balancedColumns in main.js) */
 .mentors__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   gap: clamp(1.5rem, 3vw, 2.75rem);
   max-width: 1200px;
   width: 100%;
@@ -1101,6 +1134,8 @@ html.lite .tracks__pin {
   padding: 14vh 0 10vh;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 html.lite .track {
   scroll-snap-align: start;
@@ -1125,6 +1160,9 @@ html.lite .paths__pin {
   justify-content: center;
 }
 html.lite .paths__heading {
+  /* No horizontal scroll scene here, so let the line shrink and wrap instead of running off both edges */
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: normal;
   text-align: center;
   font-size: var(--step-display);
@@ -1153,29 +1191,8 @@ html.lite .marquee__list {
     opacity: 1;
   }
 
-  /* Fullscreen mobile menu */
   .menu {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 5rem 1.5rem 3rem;
-  }
-  .menu ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
-    width: 100%;
-    max-width: 360px;
-    margin: auto 0;
-  }
-  .menu a {
-    font-size: clamp(1.4rem, 5.5vw, 2.2rem);
-    padding: 0.25rem 0.5rem;
-    text-align: center;
+    padding-top: 76px;
   }
 
   /* Hero */
@@ -1424,13 +1441,6 @@ html.lite .marquee__list {
   .foot__links {
     flex-direction: column;
     gap: 0.65rem;
-  }
-
-  .progress {
-    width: 50vw;
-  }
-  .step-btn {
-    display: none;
   }
 }
 

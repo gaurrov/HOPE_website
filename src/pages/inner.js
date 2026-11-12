@@ -10,7 +10,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 import { setupChrome } from '../modules/chrome.js';
-import { cursorGlyphs } from '../modules/interact.js';
 import { setupTerminal } from '../modules/terminal.js';
 import { formatDate } from '../lib/data.js';
 
@@ -30,13 +29,8 @@ export async function initInner() {
     const title = SplitText.create('.page__title', { type: 'chars', mask: 'chars' });
     gsap.from(title.chars, { yPercent: 100, rotation: 10, stagger: 0.05, duration: 0.9, ease: 'power3.out' });
     gsap.from('.page__lead, .chips', { y: 24, autoAlpha: 0, stagger: 0.1, duration: 0.8, delay: 0.3, ease: 'power3.out' });
-    // Header glyphs drift away as the page scrolls
-    gsap.utils.toArray('.page__glyphs .glyph').forEach((g, i) => {
-      gsap.to(g, { y: -180 - i * 80, rotation: i % 2 ? 60 : -45, ease: 'none', scrollTrigger: { start: 0, end: innerHeight, scrub: true } });
-    });
   }
   setupTerminal({ go: setupChrome(lenis) });
-  cursorGlyphs('.page__glyphs .glyph');
   return lenis;
 }
 

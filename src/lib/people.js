@@ -136,7 +136,7 @@ export function peopleBrowser(root, { showBatch = false, emptyText = 'No student
   }
 
   const search = el('input', 'pb__search');
-  Object.assign(search, { type: 'search', placeholder: 'Search by name, skill or company' });
+  Object.assign(search, { type: 'search', placeholder: 'Name, skill or company' });
   search.setAttribute('aria-label', 'Search students');
   const chips = el('div', 'pb__chips');
   chips.setAttribute('role', 'group');

@@ -36,15 +36,20 @@ export function fillFrame(el) {
     img.alt = el.dataset.alt || '';
     img.decoding = 'async';
     if (!el.closest('.hero, .intro')) img.loading = 'lazy';
+    // A missing file falls back to the same placeholder as a record with no photo, never a blank box
     img.onerror = () => {
       img.remove();
       el.classList.remove('has-photo');
+      placeholder(el, slot);
     };
     el.prepend(img);
     if (real) el.classList.add('has-photo');
     return;
   }
+  placeholder(el, slot);
+}
 
+function placeholder(el, slot) {
   const ph = document.createElement('span');
   ph.className = 'frame__ph';
   if (el.dataset.initials) {

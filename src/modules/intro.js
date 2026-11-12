@@ -217,6 +217,25 @@ export async function runIntro({ ready, onDone }) {
   letters.forEach((l) => (l.dataset.char = l.textContent));
 
   intro.classList.add('is-live');
+
+  // The full intro runs about 13 s, so first-time visitors can skip straight to the page.
+  // Skipping still waits for the content to load; it only drops the fly-through.
+  let skipped = false;
+  let tl = null;
+  const skipBtn = document.createElement('button');
+  skipBtn.type = 'button';
+  skipBtn.className = 'intro__skip';
+  skipBtn.textContent = 'Skip intro';
+  const skip = () => {
+    skipped = true;
+    skipBtn.disabled = true;
+    tl?.progress(1);
+  };
+  const onKey = (e) => e.key === 'Escape' && skip();
+  skipBtn.addEventListener('click', skip);
+  addEventListener('keydown', onKey);
+  intro.append(skipBtn);
+
   const log = mountBootLog(intro.querySelector('.boot'));
   const assets = Promise.all([pageLoaded, document.fonts.ready]).then(() =>
     log.step({ verb: 'get', target: 'assets', status: 'ok', detail: 'fonts, photos' }),
@@ -235,10 +254,11 @@ export async function runIntro({ ready, onDone }) {
   });
   const zoom = aimAtO(mark);
 
-  const tl = gsap.timeline({
+  tl = gsap.timeline({
     paused: new URLSearchParams(location.search).has('debug-intro'),
     onComplete() {
       lines.stop();
+      removeEventListener('keydown', onKey);
       removeIntro();
       onDone?.();
     },
@@ -267,5 +287,6 @@ export async function runIntro({ ready, onDone }) {
     .to(intro, { autoAlpha: 0, duration: 0.6, ease: 'power1.out' }, `fly+=${tunnelEnd - 0.4}`);
 
   if (import.meta.env.DEV) window.__introTl = tl;
+  if (skipped) tl.progress(1);
   return tl;
 }
